@@ -1,4 +1,4 @@
-﻿using FlashcardsWEB.Domain.Entities;
+﻿using Flashcards.Domain.Entities;
 using FlashcardsWEB.Domain.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 

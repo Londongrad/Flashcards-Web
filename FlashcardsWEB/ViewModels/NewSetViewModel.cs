@@ -1,4 +1,4 @@
-﻿using FlashcardsWEB.Domain.Entities;
+﻿using Flashcards.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace FlashcardsWEB.ViewModels
