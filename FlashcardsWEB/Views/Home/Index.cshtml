@@ -1,0 +1,60 @@
+﻿@model List<Set>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+
+    <div class="row pt-4 pb-3">
+
+        <div class="col-6">
+            <h2 class="text-primary">
+                Your sets
+            </h2>
+        </div>
+
+        <div class="col-6 text-end">
+            <a title="Create new set" type="button" class="btn btn-primary text-bg-dark" asp-controller="Home" asp-action="AddNewSet">
+                <i class="bi bi-plus-lg"></i> Add new set
+            </a>
+        </div>
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Set name
+                    </th>
+                    <th>
+                        Time created
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var set in Model)
+                {
+                    <tr>
+                        <td>@set.Name</td>
+                        <td>@set.TimeCreated</td>
+                        <td>
+                            <div class="w-50 btn-group" role="group">
+                                <a asp-controller="Home" asp-action="Edit" asp-route-id="@set.Id" class="btn btn-primary text-bg-dark mx-2">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <a asp-controller="Home" asp-action="Delete" asp-route-id="@set.Id" class="btn btn-primary text-bg-dark mx-2">
+                                    <i class="bi bi-trash3"></i> Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
