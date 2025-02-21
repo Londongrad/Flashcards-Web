@@ -23,6 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Flashcards.Domain\Flashcards.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="wwwroot\images\i.webp" />
   </ItemGroup>
 

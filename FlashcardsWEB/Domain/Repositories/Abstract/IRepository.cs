@@ -1,4 +1,4 @@
-﻿using FlashcardsWEB.Domain.Entities;
+﻿using Flashcards.Domain.Entities;
 
 namespace FlashcardsWEB.Domain.Repositories.Abstract
 {

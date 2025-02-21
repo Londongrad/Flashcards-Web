@@ -1,4 +1,4 @@
-﻿namespace FlashcardsWEB.Domain.Entities
+﻿namespace Flashcards.Domain.Entities
 {
     public abstract class EntityBase(int id)
     {
