@@ -1,3 +1,4 @@
+using AutoMapper;
 using FlashcardsWEB.Domain.Entities;
 using FlashcardsWEB.Domain.Repositories.Abstract;
 using FlashcardsWEB.ViewModels;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FlashcardsWEB.Controllers
 {
     //[Authorize]
-    public class HomeController(IRepository<Set> repository) : Controller
+    public class HomeController(IRepository<Set> repository, IMapper mapper) : Controller
     {
         public async Task<IActionResult> Index()
         {
@@ -19,7 +20,7 @@ namespace FlashcardsWEB.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewSet(NewSetViewModel set)
+        public async Task<IActionResult> AddNewSet(SetViewModel set)
         {
             if (!ModelState.IsValid)
                 return View(set);
@@ -38,11 +39,11 @@ namespace FlashcardsWEB.Controllers
             if (set is null)
                 return NotFound();
 
-            return View(set);
+            return View(mapper.Map<SetViewModel>(set));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(NewSetViewModel set)
+        public async Task<IActionResult> Edit(SetViewModel set)
         {
             if (!ModelState.IsValid)
                 return View(set);
@@ -64,6 +65,18 @@ namespace FlashcardsWEB.Controllers
             await repository.DeleteAsync(id);
 
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> CheckSet(string name)
+        {
+            var sets = await repository.GetAllAsync();
+
+            foreach (var set in sets)
+            {
+                if (set.Name == name)
+                    return Json(false);
+            }
+            return Json(true);
         }
     }
 }

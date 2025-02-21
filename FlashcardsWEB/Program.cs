@@ -6,6 +6,7 @@ using FlashcardsWEB.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Reflection;
 
 namespace FlashcardsWEB
 {
@@ -27,7 +28,6 @@ namespace FlashcardsWEB
             builder.Services.AddDbContext<ApplicationDbContext>
                 (
                     options => options.UseSqlServer(config.Database.ConnectionString)
-                    .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
                 );
 
             //Identity system
@@ -58,6 +58,7 @@ namespace FlashcardsWEB
             builder.Services.AddTransient<IRepository<Set>, SetRepository>();
             builder.Services.AddTransient<IRepository<Word>, WordRepository>();
             builder.Services.AddTransient<DataManager>();
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var app = builder.Build();
 

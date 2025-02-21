@@ -4,25 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlashcardsWEB.Domain.Repositories.EntityFramework
 {
-    public class WordRepository : IRepository<Word>
+    public class WordRepository(ApplicationDbContext dbContext) : IRepository<Word>
     {
-        private readonly ApplicationDbContext _dbContext;
-
-        public WordRepository(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
         public async Task DeleteAsync(int id)
         {
-            await _dbContext.Words.Where(w => w.Id == id)
+            await dbContext.Words.Where(w => w.Id == id)
                 .ExecuteDeleteAsync();
         }
 
         public async Task UpdateAsync(Word entity)
         {
-            _dbContext.Entry(entity).State = entity.Id == default ? EntityState.Added : EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
+            dbContext.Entry(entity).State = entity.Id == default ? EntityState.Added : EntityState.Modified;
+            await dbContext.SaveChangesAsync();
         }
 
         public Task<IEnumerable<Word>> GetAllAsync()
