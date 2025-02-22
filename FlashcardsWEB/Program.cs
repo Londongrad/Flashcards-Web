@@ -1,11 +1,9 @@
-using Flashcards.Domain.Entities;
-using FlashcardsWEB.Domain;
+using FlashcardsWEB.Domain.Data;
+using FlashcardsWEB.Domain.Entities;
 using FlashcardsWEB.Domain.Repositories.Abstract;
 using FlashcardsWEB.Domain.Repositories.EntityFramework;
-using FlashcardsWEB.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Reflection;
 
 namespace FlashcardsWEB
@@ -23,11 +21,10 @@ namespace FlashcardsWEB
                 .AddEnvironmentVariables();
 
             IConfiguration configuration = configBuild.Build();
-            AppConfig config = configuration.GetSection("Project").Get<AppConfig>()!;
 
             builder.Services.AddDbContext<ApplicationDbContext>
                 (
-                    options => options.UseSqlServer(config.Database.ConnectionString)
+                    options => options.UseSqlServer(builder.Configuration.GetConnectionString("ASP_Project"))
                 );
 
             //Identity system

@@ -1,7 +1,7 @@
-﻿using Flashcards.Domain.Entities;
+﻿using FlashcardsWEB.Domain.Entities;
 using FlashcardsWEB.Domain.Repositories.Abstract;
 
-namespace FlashcardsWEB.Domain
+namespace FlashcardsWEB.Domain.Data
 {
     public class DataManager(IRepository<Set> setRepository, IRepository<Word> wordRepository)
     {
