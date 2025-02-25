@@ -45,11 +45,25 @@ button.accept-policy {
     line-height: 60px;
 }
 
-.container_main {
-    background-color: aliceblue;
+.card {
+    background-color: #181735;
+    height: 200px;
+    width: 200px;
+    border-radius: 45%;
+    border: 1px solid #000;
     align-items: center;
     align-content: center;
     vertical-align: central;
     justify-content: center;
     display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.textInCard{
+    font-size: 26px;
+}
+
+.background-normal {
+    background-color: #272544;
 }

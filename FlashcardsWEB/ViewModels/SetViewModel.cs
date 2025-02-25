@@ -10,7 +10,7 @@ namespace FlashcardsWEB.ViewModels
 
         [Required(ErrorMessage = "Name is required.")]
         [Display(Name = "Name of the set")]
-        [MaxLength(2, ErrorMessage = "The name of the set must with a maximum length of 2 characters")]
+        [MaxLength(2, ErrorMessage = "The name of the set must be with a maximum length of 2 characters")]
         [Remote(action: "CheckSet", controller: "Home", ErrorMessage = "Set with this name is already exists")]
         public string? Name { get; set; }
 

@@ -24,7 +24,8 @@ namespace FlashcardsWEB
 
             builder.Services.AddDbContext<ApplicationDbContext>
                 (
-                    options => options.UseSqlServer(builder.Configuration.GetConnectionString("ASP_Project"))
+                    //options => options.UseSqlServer(builder.Configuration.GetConnectionString("ASP_Project"))
+                    options => options.UseSqlite("Data Source=asp_project.db")
                 );
 
             //Identity system

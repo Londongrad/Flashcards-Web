@@ -5,12 +5,13 @@
 
     @await Html.PartialAsync("_CssPartial")
 </head>
-<body>
-
-    @await Html.PartialAsync("_HeaderPartial")
+<body class="background-normal">
+    <partial name="_HeaderPartial" />
+    @* @await Html.PartialAsync("_HeaderPartial") *@
 
     <div class="container">
         <main role="main" class="pb-3">
+            <partial name="_NotificationPartial" />
             @RenderBody()
         </main>
     </div>

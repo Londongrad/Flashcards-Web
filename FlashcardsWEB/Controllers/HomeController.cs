@@ -26,6 +26,7 @@ namespace FlashcardsWEB.Controllers
                 return View(set);
 
             await repository.UpdateAsync(new Set(0, set.Name!));
+            TempData["success"] = "New set has been added successfully";
             return RedirectToAction("Index");
         }
 
@@ -49,8 +50,10 @@ namespace FlashcardsWEB.Controllers
                 return View(set);
                 
             await repository.UpdateAsync(new Set(set.Id, set.Name!));
+            TempData["success"] = "Set has been edited successfully";
             return RedirectToAction("Index");
         }
+
 
         public async Task<IActionResult> Delete(int id)
         {
@@ -63,7 +66,7 @@ namespace FlashcardsWEB.Controllers
                 return NotFound();
 
             await repository.DeleteAsync(id);
-
+            TempData["success"] = "Set has been deleted successfully";
             return RedirectToAction("Index");
         }
 
