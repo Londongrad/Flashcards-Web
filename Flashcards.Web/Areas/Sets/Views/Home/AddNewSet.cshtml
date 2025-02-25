@@ -1,0 +1,37 @@
+﻿@model SetViewModel
+
+<form asp-action="AddNewSet" method="post">
+    <div class="border p-3 mt-4">
+
+        <div class="row pb-2">
+            <h2 class="text-primary">Create new set</h2>
+            <hr />
+        </div>
+
+        <div class="input-group input-group-sm mb-3 row">
+            <label asp-for="Name" class="input-group-text" id="input-group-lg-example"></label>
+            <input asp-for="Name" class="form-control" aria-label="Large input group" aria-describedby="input-group-lg">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="input-group input-group-sm mb-3 row">
+            <label class="input-group-text" id="input-group-lg-example">Termin</label>
+            <input type="text" class="form-control" aria-label="Large input group" aria-describedby="input-group-lg">
+        </div>
+
+        <div class="input-group input-group-sm mb-3 row">
+            <label class="input-group-text" id="input-group-lg-example">Definition</label>
+            <input type="text" class="form-control" aria-label="Large input group" aria-describedby="input-group-lg">
+        </div>
+
+        <div class="row">
+            <div class="col-6 col-md-3 m-auto">
+                <button type="submit" class="m-auto btn btn-primary form-control border-black border-1">Create set</button>
+            </div>
+
+            <div class="col-6 col-md-3 m-auto">
+                <a asp-area="Sets" asp-controller="Home" asp-action="Index" class="btn btn-secondary form-control border-black border-1">Back</a>
+            </div>
+        </div>
+    </div>
+</form>
