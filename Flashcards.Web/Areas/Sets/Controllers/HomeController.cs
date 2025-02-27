@@ -80,5 +80,18 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             }
             return Json(true);
         }
+
+        public async Task<IActionResult> SelectedSet(int id)
+        {
+            if (id is 0)
+                return NotFound();
+
+            var set = await repository.GetAsync(id);
+
+            if (set is null)
+                return NotFound();
+
+            return View(mapper.Map<SetViewModel>(set));
+        }
     }
 }

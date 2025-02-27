@@ -18,12 +18,15 @@
             </a>
         </div>
 
-        @foreach (var set in Model)
+        @foreach (var set in Model.OrderByDescending(x => x.Id))
         {
-            <div class="card">
-                <div class="textInCard">@set.Name</div>
-                <div class="textInCard">@set.Words?.Count termins</div>
-            </div>
+            <form>
+                <button type="submit" asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@set.Id" class="card">
+
+                    <div class="textInCard">@set.Name</div>
+                    <div class="textInCard">@set.Words?.Count termins</div>
+                </button>
+            </form>
         }
 
     </div>

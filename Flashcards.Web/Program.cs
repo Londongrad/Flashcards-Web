@@ -14,18 +14,10 @@ namespace Flashcards.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //Appsettings.json
-            IConfigurationBuilder configBuild = new ConfigurationBuilder()
-                .SetBasePath(builder.Environment.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddEnvironmentVariables();
-
-            IConfiguration configuration = configBuild.Build();
-
             builder.Services.AddDbContext<ApplicationDbContext>
                 (
-                    //options => options.UseSqlServer(builder.Configuration.GetConnectionString("ASP_Project"))
-                    options => options.UseSqlite("Data Source=asp_project.db")
+                    options => options.UseSqlServer(builder.Configuration.GetConnectionString("ASP_Project"))
+                    //options => options.UseSqlite("Data Source=asp_project.db")
                 );
 
             //Identity system
@@ -41,15 +33,14 @@ namespace Flashcards.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            //Auth cookie
-            //builder.Services.ConfigureApplicationCookie(options =>
-            //{
-            //    options.Cookie.Name = "myAppAuth";
-            //    options.Cookie.HttpOnly = true;
-            //    options.LoginPath = "/account/login";
-            //    options.AccessDeniedPath = "/admin/accessdenied";
-            //    options.SlidingExpiration = true;
-            //});
+            // Auth cookie
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "myAppAuth";
+                options.Cookie.HttpOnly = true;
+                options.LoginPath = "/account/account/login";
+                options.SlidingExpiration = true;
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
