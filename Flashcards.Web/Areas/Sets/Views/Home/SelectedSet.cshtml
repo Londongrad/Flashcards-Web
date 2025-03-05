@@ -1,37 +1,81 @@
 ﻿@model SetViewModel
 
-<h2 class="text-light text-center my-5">Name of the set is @Model.Name. This set has in total @Model.Words?.Count words</h2>
+<div class="container">
 
-<table class="table table-bordered table-striped border-light text-light">
-    <thead>
-        <tr class="text-center">
-            <th>Word</th>
-            <th>Definition</th>
-            <th>Image</th>
-            <th></th>
-        </tr>
-    </thead>
+    @if (@Model.Words?.Count == 1)
+    {
+        <h2 class="text-light text-center my-5">
+            Name of the set is @Model.Name. This set has in total @Model.Words?.Count word
+        </h2>
+    }
+    else
+    {
+        <h2 class="text-light text-center my-5">
+            Name of the set is @Model.Name. This set has in total @Model.Words?.Count words
+        </h2>
+    }
+    .</ h2 >
+    <div>
 
-    <tbody>
-        @foreach (var word in Model.Words!)
-        {
-            <tr style="text-align: center; vertical-align: middle">
-                <td>@word.Name</td>
-                <td>@word.Definition</td>
-                <td><img src="@word.ImagePath" alt="" width="100" asp-append-version="true"/></td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary border-black border-1 bg-black m-1 p-2 text-center text-nowrap">
-                            <i class="bi bi-pencil-square"></i> Edit
-                        </a>
+        <div class="float-start">
+            <a asp-area="Sets" asp-controller="Home" asp-action="Index" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
+                <i class="bi bi-arrow-down-left-circle"></i> Back
+            </a>
+        </div>
 
-                        <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary border-black bg-black border-1 m-1 p-2 text-nowrap text-center">
-                            <i class="bi bi-trash-fill"></i> Delete
-                        </a>
-                    </div>
+        <div class="float-start">
+            <a asp-area="" asp-controller="" asp-action="" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
+                <i class="bi bi-yin-yang"></i> Study this set
+            </a>
+        </div>
 
-                </td>
+        <form asp-area="Sets" asp-controller="Home" asp-action="DeleteSet" asp-route-id="@Model.Id" method="get"
+              onclick="return confirm('Are you sure you want to delete this set?')">
+            <div class="float-end">
+                <button title="Delete set" type="submit" class="btn btn-danger border-1 border-dark-subtle">
+                    <i class="bi bi-trash3"></i> Delete set
+                </button>
+            </div>
+
+        </form>
+        <div class="float-end">
+            <a asp-area="Sets" asp-controller="Home" asp-action="AddNewWord" asp-route-id="@Model.Id" title="Create new word" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
+                <i class="bi bi-plus-lg"></i> Add new word
+            </a>
+        </div>
+
+    </div>
+    <table class="table table-bordered table-striped border-light text-light">
+        <thead>
+            <tr class="text-center">
+                <th>Word</th>
+                <th>Definition</th>
+                <th>Image</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+
+        <tbody>
+            @foreach (var word in Model.Words!)
+            {
+                <tr style="text-align: center; vertical-align: middle">
+                    <td>@word.Name</td>
+                    <td>@word.Definition</td>
+                    <td><img src="@word.ImagePath" alt="" width="100" asp-append-version="true" /></td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary border-black border-1 bg-black m-1 p-2 text-center text-nowrap">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+
+                            <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary border-black bg-black border-1 m-1 p-2 text-nowrap text-center">
+                                <i class="bi bi-trash-fill"></i> Delete
+                            </a>
+                        </div>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,33 @@
+﻿@model WordViewModel
+
+<form asp-action="AddNewWord" method="post">
+    <div class="border p-3 mt-4">
+
+        <div class="row pb-2">
+            <h2 class="text-light">Create new word</h2>
+            <hr />
+        </div>
+
+        <div class="input-group input-group-sm mb-3 row">
+            <label asp-for="Name" class="input-group-text" id="input-group-lg-example"></label>
+            <input asp-for="Name" class="form-control" aria-label="Large input group" aria-describedby="input-group-lg">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="input-group input-group-sm mb-3 row">
+            <label asp-for="Definition" class="input-group-text" id="input-group-lg-example"></label>
+            <input asp-for="Definition" class="form-control" aria-label="Large input group" aria-describedby="input-group-lg">
+            <span asp-validation-for="Definition" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-6 col-md-3 m-auto">
+                <button asp-route-SetId="@Model.SetId" type="submit" class="m-auto btn btn-primary form-control border-black border-1">Create word</button>
+            </div>
+
+            <div class="col-6 col-md-3 m-auto">
+                <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.SetId" class="btn btn-secondary form-control border-black border-1">Back</a>
+            </div>
+        </div>
+    </div>
+</form>
