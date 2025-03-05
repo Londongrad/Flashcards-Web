@@ -7,15 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Flashcards.Web.Areas.Sets.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Area("Sets")]
     public class HomeController(IRepository<Set> setRepository, IRepository<Word> wordRepository, IMapper mapper) : Controller
     {
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View(await setRepository.GetAllAsync());
         }
 
+        [HttpGet]
         public IActionResult AddNewSet()
         {
             return View();
@@ -32,6 +34,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             if (id is 0)
@@ -56,6 +59,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
         public async Task<IActionResult> DeleteSet(int id)
         {
             if (id is 0)
@@ -71,6 +75,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
         public async Task<IActionResult> CheckSet(string name)
         {
             var sets = await setRepository.GetAllAsync();
@@ -83,6 +88,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             return Json(true);
         }
 
+        [HttpGet]
         public async Task<IActionResult> SelectedSet(int id)
         {
             if (id is 0)
@@ -96,6 +102,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             return View(mapper.Map<SetViewModel>(set));
         }
 
+        [HttpGet]
         public IActionResult AddNewWord(int id)
         {
             if (id is 0)
