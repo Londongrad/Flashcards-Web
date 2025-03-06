@@ -24,9 +24,9 @@ namespace Flashcards.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Word?> GetAsync(int id)
+        public async Task<Word?> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await dbContext.Words.FirstOrDefaultAsync(s => s.Id == id);
         }
     }
 }

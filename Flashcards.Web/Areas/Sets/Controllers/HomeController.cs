@@ -24,7 +24,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewSet(SetViewModel set)
+        public async Task<IActionResult> AddNewSet(AddSetViewModel set)
         {
             if (!ModelState.IsValid)
                 return View(set);
@@ -45,11 +45,11 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (set is null)
                 return NotFound();
 
-            return View(mapper.Map<SetViewModel>(set));
+            return View(mapper.Map<AddSetViewModel>(set));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(SetViewModel set)
+        public async Task<IActionResult> Edit(AddSetViewModel set)
         {
             if (!ModelState.IsValid)
                 return View(set);
@@ -63,7 +63,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         public async Task<IActionResult> DeleteSet(int id)
         {
             if (id is 0)
-                return NotFound();
+                return BadRequest();
 
             var set = await setRepository.GetAsync(id);
 
@@ -99,28 +99,44 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (set is null)
                 return NotFound();
 
-            return View(mapper.Map<SetViewModel>(set));
+            return View(mapper.Map<AddSetViewModel>(set));
         }
 
         [HttpGet]
-        public IActionResult AddNewWord(int id)
+        public IActionResult AddNewWord(int setId)
         {
-            if (id is 0)
-                return NotFound();
+            if (setId is 0)
+                return BadRequest();
 
-            var wordVM = new WordViewModel { SetId = id };
+            var wordVM = new AddWordViewModel { SetId = setId };
 
             return View(wordVM);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewWord(WordViewModel word)
+        public async Task<IActionResult> AddNewWord(AddWordViewModel word)
         {
             if (!ModelState.IsValid)
                 return View(word);
             await wordRepository.UpdateAsync(mapper.Map<Word>(word));
             TempData["success"] = "The new word has been successfully added";
             return RedirectToAction("SelectedSet", new { id = word.SetId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteWord(int id)
+        {
+            if (id is 0)
+                return BadRequest();
+
+            var word = await wordRepository.GetAsync(id);
+
+            if (word is null)
+                return NotFound();
+
+            await wordRepository.DeleteAsync(id);
+            TempData["success"] = "The word has been successfully deleted";
+            return RedirectToAction("Index");
         }
     }
 }

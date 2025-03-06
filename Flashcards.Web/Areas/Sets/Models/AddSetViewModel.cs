@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Flashcards.Web.Areas.Sets.Models
 {
-    public class SetViewModel
+    public class AddSetViewModel
     {
         public int Id { get; set; }
 

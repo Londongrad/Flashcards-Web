@@ -1,6 +1,9 @@
-﻿@model WordViewModel
+﻿@model AddWordViewModel
 
 <form asp-action="AddNewWord" method="post">
+
+    <input hidden asp-for="SetId" />
+
     <div class="border p-3 mt-4">
 
         <div class="row pb-2">
@@ -22,7 +25,7 @@
 
         <div class="row">
             <div class="col-6 col-md-3 m-auto">
-                <button asp-route-SetId="@Model.SetId" type="submit" class="m-auto btn btn-primary form-control border-black border-1">Create word</button>
+                <button type="submit" class="m-auto btn btn-primary form-control border-black border-1">Create word</button>
             </div>
 
             <div class="col-6 col-md-3 m-auto">

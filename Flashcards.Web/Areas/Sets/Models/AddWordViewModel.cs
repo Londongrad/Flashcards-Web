@@ -2,7 +2,7 @@
 
 namespace Flashcards.Web.Areas.Sets.Models
 {
-    public class WordViewModel
+    public class AddWordViewModel
     {
         public int Id { get; set; }
 
