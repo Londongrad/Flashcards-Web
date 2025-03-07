@@ -10,10 +10,8 @@
     @* @await Html.PartialAsync("_HeaderPartial") *@
 
     <div class="container">
-        <main role="main" class="pb-3">
-            <partial name="_NotificationPartial" />
-            @RenderBody()
-        </main>
+        <partial name="_NotificationPartial" />
+        @RenderBody()
     </div>
 
     @await Html.PartialAsync("_ScriptsPartial")

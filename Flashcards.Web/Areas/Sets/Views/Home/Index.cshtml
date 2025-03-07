@@ -2,32 +2,30 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-<div class="container">
 
-    <div class="row pt-4 pb-3">
+<div class="row pt-4 pb-3">
 
-        <div class="col-6">
-            <h2 class="text-primary text-light">
-                Your sets
-            </h2>
-        </div>
-
-        <div class="col-6 text-end">
-            <a asp-area="Sets" asp-controller="Home" asp-action="AddNewSet" title="Create new set" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
-                <i class="bi bi-plus-lg"></i> Add new set
-            </a>
-        </div>
-
-        @foreach (var set in Model.OrderByDescending(x => x.Id))
-        {
-            <form>
-                <button type="submit" asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@set.Id" class="card">
-
-                    <div class="textInCard">@set.Name</div>
-                    <div class="textInCard">@set.Words?.Count termins</div>
-                </button>
-            </form>
-        }
-
+    <div class="col-6">
+        <h2 class="text-primary text-light">
+            Your sets
+        </h2>
     </div>
+
+    <div class="col-6 text-end">
+        <a asp-area="Sets" asp-controller="Home" asp-action="AddNewSet" title="Create new set" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
+            <i class="bi bi-plus-lg"></i> Add new set
+        </a>
+    </div>
+
+    @foreach (var set in Model.OrderByDescending(x => x.Id))
+    {
+        <form>
+            <button type="submit" asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@set.Id" class="card">
+
+                <div class="textInCard">@set.Name</div>
+                <div class="textInCard">@set.Words?.Count termins</div>
+            </button>
+        </form>
+    }
+
 </div>
