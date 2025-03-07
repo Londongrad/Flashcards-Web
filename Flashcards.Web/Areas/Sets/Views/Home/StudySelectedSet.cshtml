@@ -1,0 +1,28 @@
+﻿@model SetViewModel
+
+@{
+    var index = 0;
+}
+
+<div class="d-flex align-items-center">
+    <div class="d-inline-block">
+        <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.Id" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
+            <i class="bi bi-arrow-down-left-circle"></i> Back to the set
+        </a>
+
+        <h3>@(index+1)/@Model.Words?.Count</h3>
+    </div>
+
+    <div>
+        @Model.Words?[index].Name
+    </div>
+
+    <div>
+        @Model.Words?[index].Definition
+    </div>
+
+    <div>
+        <img src="@Model.Words?[index].ImagePath" />
+    </div>
+
+</div>

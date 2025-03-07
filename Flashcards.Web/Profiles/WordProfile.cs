@@ -8,7 +8,7 @@ namespace Flashcards.Web.Profiles
     {
         public WordProfile()
         {
-            CreateMap<Word, AddWordViewModel>().ReverseMap();
+            CreateMap<Word, WordViewModel>().ReverseMap();
         }
     }
 }

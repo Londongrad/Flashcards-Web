@@ -19,9 +19,9 @@ namespace Flashcards.Infrastructure.Repositories
             await dbContext.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<Word>> GetAllAsync()
+        public async Task<IEnumerable<Word>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await dbContext.Words.ToListAsync();
         }
 
         public async Task<Word?> GetAsync(int id)

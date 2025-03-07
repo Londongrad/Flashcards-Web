@@ -8,7 +8,7 @@ namespace Flashcards.Web.Profiles
     {
         public SetProfile()
         {
-            CreateMap<Set, AddSetViewModel>().ReverseMap();
+            CreateMap<Set, SetViewModel>().ReverseMap();
         }
     }
 }

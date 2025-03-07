@@ -1,13 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Flashcards.Web.Areas.Sets.Models
 {
-    public class AddWordViewModel
+    public class WordViewModel
     {
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Name is required.")]
         [Display(Name = "Name of the word")]
+        [Remote(action: "CheckWord", controller: "Home", areaName: "Sets", ErrorMessage = "Word with this name is already exists")]
         public string Name { get; set; } = "";
 
         [Required(ErrorMessage = "Definition is required.")]
