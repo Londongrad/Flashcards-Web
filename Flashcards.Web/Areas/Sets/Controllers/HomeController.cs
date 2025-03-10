@@ -65,7 +65,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             var set = await setRepository.GetAsync(id);
 
             if (set is null)
-                return NotFound();
+                return NotFound();            
 
             return View(mapper.Map<SetViewModel>(set));
         }

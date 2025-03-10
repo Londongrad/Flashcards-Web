@@ -4,25 +4,32 @@
     var index = 0;
 }
 
-<div class="d-flex align-items-center">
-    <div class="d-inline-block">
-        <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.Id" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark p-0">
+<div class="row">
+
+    <div class="col-12 text-center">
+        <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.Id" type="button" class="btn btn-primary text-bg-dark mb-4">
             <i class="bi bi-arrow-down-left-circle"></i> Back to the set
         </a>
 
-        <h3>@(index+1)/@Model.Words?.Count</h3>
+        <h3 class="text-white">@(index + 1)/@Model.Words?.Count</h3>
     </div>
 
-    <div>
-        @Model.Words?[index].Name
+    <div class="text-center text-white mt-4 text-to-learn">
+        @Model.Words![index].Name
     </div>
 
-    <div>
+    <div class="text-center text-white my-4 text-to-learn">
         @Model.Words?[index].Definition
     </div>
 
-    <div>
+    <div class="text-center">
         <img src="@Model.Words?[index].ImagePath" />
     </div>
+
+    <div class="text-center my-4">
+        <button onclick="@index--" class="btn btn-primary bg-black w-25">Назад</button>
+        <button onclick="@index++" class="btn btn-primary text-bg-dark-subtle w-25">Вперед</button>
+    </div>
+    
 
 </div>
