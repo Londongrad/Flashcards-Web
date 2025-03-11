@@ -1,6 +1,8 @@
 using AutoMapper;
 using Flashcards.Application.Common.Interfaces;
 using Flashcards.Domain.Entities;
+using Flashcards.Infrastructure.Data;
+using Flashcards.Infrastructure.Repositories;
 using Flashcards.Web.Areas.Sets.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,14 +11,14 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 {
     [Authorize]
     [Area("Sets")]
-    public class HomeController(IRepository<Set> setRepository, IRepository<Word> wordRepository, IMapper mapper) : Controller
+    public class HomeController(DataManager dataManager, IMapper mapper) : Controller
     {
         private static SetViewModel _set = new();
         private static CurrentWordViewModel _wordVM = new();
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await setRepository.GetAllAsync());
+            return View(await dataManager.SetRepository.GetAllAsync());
         }
 
         [HttpGet]
@@ -25,7 +27,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (id is 0)
                 return BadRequest();
 
-            var set = await setRepository.GetAsync(id);
+            var set = await dataManager.SetRepository.GetAsync(id);
 
             if (set is null)
                 return NotFound();
@@ -39,7 +41,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (id is 0)
                 return BadRequest();
 
-            _set = mapper.Map<SetViewModel>(await setRepository.GetAsync(id));
+            _set = mapper.Map<SetViewModel>(await dataManager.SetRepository.GetAsync(id));
 
             if (_set is null)
                 return NotFound();
@@ -57,8 +59,11 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public IActionResult SwitchWord(int index = 0)
         {
-            _wordVM.Index = index;
-            _wordVM.CurrentWord = _set.Words![_wordVM.Index];
+            if (_set.Words!.Count != 0)
+            {
+                _wordVM.Index = index;
+                _wordVM.CurrentWord = _set.Words![_wordVM.Index];
+            }
             return View("StudySelectedSet", _wordVM);
         }
 
@@ -70,7 +75,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (id is 0)
                 return BadRequest();
 
-            var set = await setRepository.GetAsync(id);
+            var set = await dataManager.SetRepository.GetAsync(id);
 
             if (set is null)
                 return NotFound();
@@ -84,7 +89,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (!ModelState.IsValid)
                 return View(set);
 
-            await setRepository.UpdateAsync(new Set(set.Id, set.Name!));
+            await dataManager.SetRepository.UpdateAsync(new Set(set.Id, set.Name!));
             TempData["success"] = "The set has been successfully edited";
             return RedirectToAction("SelectedSet", new { id = set.Id });
         }
@@ -95,7 +100,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (id is 0)
                 return BadRequest();
 
-            var word = await wordRepository.GetAsync(id);
+            var word = await dataManager.WordRepository.GetAsync(id);
 
             if (word is null)
                 return NotFound();
@@ -109,7 +114,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (!ModelState.IsValid)
                 return View(word);
 
-            await wordRepository.UpdateAsync(mapper.Map<Word>(word));
+            await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
             TempData["success"] = "The set has been successfully edited";
             return RedirectToAction("SelectedSet", new { id = word.SetId });
         }
@@ -130,7 +135,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (!ModelState.IsValid)
                 return View(set);
 
-            await setRepository.UpdateAsync(new Set(0, set.Name!));
+            await dataManager.SetRepository.UpdateAsync(new Set(0, set.Name!));
             TempData["success"] = "The new set has been successfully added";
             return RedirectToAction("Index");
         }
@@ -152,7 +157,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (!ModelState.IsValid)
                 return View(word);
             word.ImagePath ??= "";
-            await wordRepository.UpdateAsync(mapper.Map<Word>(word));
+            await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
             TempData["success"] = "The new word has been successfully added";
             return RedirectToAction("SelectedSet", new { id = word.SetId });
         }
@@ -167,7 +172,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (setId is 0 || wordId is 0)
                 return BadRequest();
 
-            await wordRepository.DeleteAsync(wordId);
+            await dataManager.WordRepository.DeleteAsync(wordId);
             TempData["success"] = "The word has been successfully deleted";
             return RedirectToAction("SelectedSet", new { id = setId });
         }
@@ -178,12 +183,12 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (id is 0)
                 return BadRequest();
 
-            var set = await setRepository.GetAsync(id);
+            var set = await dataManager.SetRepository.GetAsync(id);
 
             if (set is null)
                 return NotFound();
 
-            await setRepository.DeleteAsync(id);
+            await dataManager.SetRepository.DeleteAsync(id);
             TempData["success"] = "The set has been successfully deleted";
             return RedirectToAction("Index");
         }
@@ -195,7 +200,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public async Task<IActionResult> CheckSet(string name)
         {
-            var sets = await setRepository.GetAllAsync();
+            var sets = await dataManager.SetRepository.GetAllAsync();
 
             foreach (var set in sets)
             {
@@ -208,7 +213,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public async Task<IActionResult> CheckWord(string name)
         {
-            var words = await wordRepository.GetAllAsync();
+            var words = await dataManager.WordRepository.GetAllAsync();
 
             foreach (var word in words)
             {

@@ -1,5 +1,9 @@
 ﻿@model CurrentWordViewModel
 
+@{
+    Layout = "_LayoutForStudyWords";
+}
+
 <div class="row text-center align-items-center">
     <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.SetId" type="button" class="btn btn-primary text-bg-dark col-2">
         <i class="bi bi-arrow-down-left-circle"></i> Back to the set
@@ -42,17 +46,19 @@
     <script type="text/javascript">
         const BtnPrev = document.getElementById('BtnPrev');
         const BtnNext = document.getElementById('BtnNext');
-        if (@Model.Index === 0) {
+        if (@Model.Index == 0) {
             BtnPrev.style.pointerEvents="none";
             BtnPrev.style.cursor="default";
-        }
-        else if (@Model.Index === @Model.Count - 1){
-            BtnNext.style.pointerEvents="none";
-            BtnNext.style.cursor="default";
         }
         else {
             BtnPrev.style.pointerEvents="auto";
             BtnPrev.style.cursor="pointer";
+        }
+        if (@Model.Index == @Model.Count - 1){
+            BtnNext.style.pointerEvents="none";
+            BtnNext.style.cursor="default";
+        }
+        else {
             BtnNext.style.pointerEvents="auto";
             BtnNext.style.cursor="pointer";
         }
@@ -76,7 +82,7 @@
             const text = textEl.innerText;
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.pitch = 0.7;
-            utterance.rate = 0.5;
+            utterance.rate = 0.7;
             utterance.volume = 0.5;
             window.speechSynthesis.speak(utterance);
         }

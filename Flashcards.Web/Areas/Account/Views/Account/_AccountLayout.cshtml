@@ -2,9 +2,8 @@
 <html lang="en">
 
 <head>
-    @await Html.PartialAsync("_MetaPartial")
-
-    @await Html.PartialAsync("_CssPartial")
+    <partial name="_MetaPartial" />
+    <partial name="_CssPartial" />
 </head>
 
 <body>
@@ -12,7 +11,6 @@
     <div>
         @RenderBody()
     </div>
-
-    @await Html.PartialAsync("_ScriptsPartial")
+    <partial name="_ScriptsPartial" />
 </body>
 </html>
