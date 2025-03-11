@@ -1,13 +1,14 @@
 ﻿@model WordViewModel
 
-<form asp-action="AddNewWord" method="post">
+<form asp-action="EditWord" method="post">
 
     <input hidden asp-for="SetId" />
+    <input hidden asp-for="ImagePath" />
 
     <div class="border p-3 mt-4">
 
         <div class="row pb-2">
-            <h2 class="text-light">Create new word</h2>
+            <h2 class="text-white">Edit word</h2>
             <hr />
         </div>
 
@@ -30,7 +31,7 @@
 
         <div class="row">
             <div class="col-6 col-md-3 m-auto">
-                <button type="submit" class="m-auto btn btn-primary form-control border-black border-1">Create word</button>
+                <button type="submit" class="m-auto btn btn-primary form-control border-black border-1">Update word</button>
             </div>
 
             <div class="col-6 col-md-3 m-auto">

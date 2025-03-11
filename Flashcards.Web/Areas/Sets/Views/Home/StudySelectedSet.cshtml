@@ -1,35 +1,84 @@
-﻿@model SetViewModel
+﻿@model CurrentWordViewModel
 
-@{
-    var index = 0;
-}
+<div class="row text-center align-items-center">
+    <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.SetId" type="button" class="btn btn-primary text-bg-dark col-2">
+        <i class="bi bi-arrow-down-left-circle"></i> Back to the set
+    </a>
 
-<div class="row">
+    <h3 class="text-white col-8 m-0">@(Model.Index + 1)/@Model.Count</h3>
 
-    <div class="col-12 text-center">
-        <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.Id" type="button" class="btn btn-primary text-bg-dark mb-4">
-            <i class="bi bi-arrow-down-left-circle"></i> Back to the set
-        </a>
+    <div class="col-2 text-white">
+        <a class="btn sound-fav-btn" id="soundBtn" title="Sound"><i class="bi bi-volume-up"></i></a>
+        <a class="btn sound-fav-btn" title="Favorite"><i class="bi bi-star-fill"></i></a>
+    </div>
+</div>
 
-        <h3 class="text-white">@(index + 1)/@Model.Words?.Count</h3>
+<div class="tile">
+    <div class="text-center tile__face tile__face--front">
+        <h2 class="text-white text-to-learn" id="tts">@Model.CurrentWord.Name</h2>
     </div>
 
-    <div class="text-center text-white mt-4 text-to-learn">
-        @Model.Words![index].Name
+    <div class="text-center tile__face tile__face--back">
+        <img src="@Model.CurrentWord.ImagePath" style="height: 500px; width: auto; margin-top: 30px;" />
     </div>
 
-    <div class="text-center text-white my-4 text-to-learn">
-        @Model.Words?[index].Definition
+    <div class="text-center text-white text-to-learn tile__face tile__face--back">
+        @Model.CurrentWord.Definition
     </div>
-
-    <div class="text-center">
-        <img src="@Model.Words?[index].ImagePath" />
-    </div>
-
-    <div class="text-center my-4">
-        <button onclick="@index--" class="btn btn-primary bg-black w-25">Назад</button>
-        <button onclick="@index++" class="btn btn-primary text-bg-dark-subtle w-25">Вперед</button>
-    </div>
-    
 
 </div>
+
+<div class="text-center mt-3">
+    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index - 1)" id="BtnPrev" type="button" class="btn btn-primary bg-black w-25">
+        <i class="bi bi-chevron-left"></i> Previous
+    </a>
+
+    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index + 1)" id="BtnNext" type="button" class="btn btn-primary text-bg-dark-subtle w-25">
+        Next <i class="bi bi-chevron-right"></i>
+    </a>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        const BtnPrev = document.getElementById('BtnPrev');
+        const BtnNext = document.getElementById('BtnNext');
+        if (@Model.Index === 0) {
+            BtnPrev.style.pointerEvents="none";
+            BtnPrev.style.cursor="default";
+        }
+        else if (@Model.Index === @Model.Count - 1){
+            BtnNext.style.pointerEvents="none";
+            BtnNext.style.cursor="default";
+        }
+        else {
+            BtnPrev.style.pointerEvents="auto";
+            BtnPrev.style.cursor="pointer";
+            BtnNext.style.pointerEvents="auto";
+            BtnNext.style.cursor="pointer";
+        }
+    </script>
+
+    <script type="text/javascript">
+        const tile = document.querySelector(".tile");
+        tile.addEventListener("click", function () {
+          tile.classList.toggle("is-flipped");
+        });
+    </script>
+
+    <script type="text/javascript">
+        const textEl = document.getElementById('tts');
+        const soundBtn = document.getElementById('soundBtn');
+
+        soundBtn.addEventListener('click', speakText);
+
+        function speakText() {
+            window.speechSynthesis.cancel();
+            const text = textEl.innerText;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.pitch = 0.7;
+            utterance.rate = 0.5;
+            utterance.volume = 0.5;
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+}

@@ -15,6 +15,7 @@ namespace Flashcards.Infrastructure.Repositories
 
         public async Task UpdateAsync(Word entity)
         {
+            entity.ImagePath ??= "";
             dbContext.Entry(entity).State = entity.Id == default ? EntityState.Added : EntityState.Modified;
             await dbContext.SaveChangesAsync();
         }

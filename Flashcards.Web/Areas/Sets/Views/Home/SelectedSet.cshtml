@@ -1,16 +1,19 @@
 ﻿@model SetViewModel
 
+<input hidden asp-for="Id" />
 
 @if (@Model.Words?.Count == 1)
 {
     <h2 class="text-light text-center my-5">
         Name of the set is @Model.Name. This set has in total @Model.Words?.Count word.
+        <a asp-area="Sets" asp-controller="Home" asp-action="EditSet" asp-route-id="@Model.Id" class="btn sound-fav-btn" id="soundBtn" type="button" title="Edit"><i class="bi bi-pencil-square"></i></a>
     </h2>
 }
 else
 {
     <h2 class="text-light text-center my-5">
         Name of the set is @Model.Name. This set has in total @Model.Words?.Count words.
+        <a asp-area="Sets" asp-controller="Home" asp-action="EditSet" asp-route-id="@Model.Id" class="btn sound-fav-btn" id="soundBtn" type="button" title="Edit"><i class="bi bi-pencil-square"></i></a>
     </h2>
 }
 
@@ -45,7 +48,7 @@ else
 
 </div>
 
-<table class="table table-bordered table-striped">
+<table class="table table-bordered table-striped" cellpadding="0">
     <thead>
         <tr class="text-center">
             <th>Word</th>
@@ -59,18 +62,26 @@ else
         @foreach (var word in Model.Words!)
         {
             <tr class="table-align">
-                <td class="table-data">@word.Name</td>
+                <td class="table-data" style="width:18%">@word.Name</td>
                 <td class="table-data">@word.Definition</td>
-                <td><img src="@word.ImagePath" alt="Null" class="zoom-img" asp-append-version="true" /></td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <a asp-area="" asp-controller="" asp-action="" class="btn border-black border-1 text-bg-info m-1 p-2 text-center text-nowrap">
+                <td style="width:18%">
+                    @if (!string.IsNullOrEmpty(@word.ImagePath))
+                    {
+                        <img src="@word.ImagePath" class="zoom-img" asp-append-version="true" />
+                    }
+                    else{
+                        <p>No image</p>
+                    }
+                </td>
+                <td style="width:10%">
+                    <div class="btn-group-vertical" role="group">
+                        <a asp-area="Sets" asp-controller="Home" asp-action="EditWord" asp-route-id="@word.Id" class="btn border-black border-1 text-bg-info p-2 text-center text-nowrap">
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
 
                         <form asp-area="Sets" asp-controller="Home" asp-action="DeleteWord" asp-route-wordid="@word.Id" asp-route-setid="@word.SetId" method="post"
                               onclick="return confirm('Are you sure you want to delete this word?')">
-                            <button type="submit" class="btn text-bg-dark border-1 m-1 p-2 text-nowrap text-center">
+                            <button type="submit" class="btn border-black border-1 text-bg-dark p-2 text-center text-nowrap">
                                 <i class="bi bi-trash-fill"></i> Delete
                             </button>
                         </form>
@@ -99,7 +110,7 @@ else
     <script type="text/javascript">
         mediumZoom('.zoom-img', {
             margin: 50,
-            background: '#000'
+            background: "transparent"
         });
     </script>
 }

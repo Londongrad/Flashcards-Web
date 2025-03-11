@@ -49,7 +49,7 @@ button.accept-policy {
     background-color: #181735;
     height: 200px;
     width: 200px;
-    border-radius: 5%;
+    border-radius: 50%;
     border: 1px solid #000;
     align-items: center;
     align-content: center;
@@ -60,7 +60,7 @@ button.accept-policy {
     flex-wrap: wrap;
 }
 
-.textInCard{
+.textInCard {
     font-size: 26px;
     color: wheat;
 }
@@ -89,4 +89,47 @@ button.accept-policy {
 .zoom-img {
     width: 150px;
     height: 100px;
+}
+
+.sound-fav-btn {
+    width: 30px;
+    height: 30px;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 50%;
+    padding: 0;
+    margin: 0;
+    color: white;
+    background-color: transparent;
+    font-size: 18px;
+}
+
+    .sound-fav-btn:hover {
+        background-color: black;
+    }
+
+.tile {
+    margin-top: 40px;
+    background-color: #003142;
+    transform-style: preserve-3d;
+    transition: all 0.5s;
+}
+
+    .tile:hover {
+        box-shadow: 0px 0px 40px -15px rgba(66, 68, 90, 1);
+    }
+
+.tile__face {
+    backface-visibility: hidden;
+    /*hide element on back*/
+}
+
+.tile__face--back {
+    transform: rotateX(180deg);
+}
+
+.tile.is-flipped {
+    transform: rotateX(-180deg);
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace Flashcards.Web.Areas.Sets.Models
@@ -16,8 +17,9 @@ namespace Flashcards.Web.Areas.Sets.Models
         [Display(Name = "Definition of the word")]
         public string Definition { get; set; } = "";
 
-        [Display(Name = "Image")]
-        public string ImagePath { get; set; } = "";
+        [Display(Name = "Image URL")]
+        [ValidateNever]
+        public string? ImagePath { get; set; }
 
         public bool IsFavorite { get; set; } = false;
 

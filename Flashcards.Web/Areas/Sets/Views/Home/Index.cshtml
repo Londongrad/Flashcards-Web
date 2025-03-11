@@ -1,6 +1,6 @@
 ﻿@model List<Flashcards.Domain.Entities.Set>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Flashcards";
 }
 
 <div class="row pt-4 pb-3">
@@ -21,7 +21,6 @@
     {
         <form>
             <button type="submit" asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@set.Id" class="card">
-
                 <div class="textInCard">@set.Name</div>
                 <div class="textInCard">@set.Words?.Count termins</div>
             </button>

@@ -11,6 +11,8 @@ namespace Flashcards.Web.Areas.Sets.Controllers
     [Area("Sets")]
     public class HomeController(IRepository<Set> setRepository, IRepository<Word> wordRepository, IMapper mapper) : Controller
     {
+        private static SetViewModel _set = new();
+        private static CurrentWordViewModel _wordVM = new();
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -18,35 +20,10 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            if (id is 0)
-                return NotFound();
-
-            var set = await setRepository.GetAsync(id);
-
-            if (set is null)
-                return NotFound();
-
-            return View(mapper.Map<SetViewModel>(set));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(SetViewModel set)
-        {
-            if (!ModelState.IsValid)
-                return View(set);
-
-            await setRepository.UpdateAsync(new Set(set.Id, set.Name!));
-            TempData["success"] = "The set has been successfully edited";
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
         public async Task<IActionResult> SelectedSet(int id)
         {
             if (id is 0)
-                return NotFound();
+                return BadRequest();
 
             var set = await setRepository.GetAsync(id);
 
@@ -60,17 +37,86 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         public async Task<IActionResult> StudySelectedSet(int id)
         {
             if (id is 0)
+                return BadRequest();
+
+            _set = mapper.Map<SetViewModel>(await setRepository.GetAsync(id));
+
+            if (_set is null)
                 return NotFound();
+
+            if (_set.Words!.Count != 0)
+            {
+                _wordVM.Index = 0;
+                _wordVM.Count = _set.Words!.Count;
+                _wordVM.SetId = id;
+                _wordVM.CurrentWord = _set.Words[0];
+            }
+            return View(_wordVM);
+        }
+
+        [HttpGet]
+        public IActionResult SwitchWord(int index = 0)
+        {
+            _wordVM.Index = index;
+            _wordVM.CurrentWord = _set.Words![_wordVM.Index];
+            return View("StudySelectedSet", _wordVM);
+        }
+
+        #region [ EDIT METHODS ]
+
+        [HttpGet]
+        public async Task<IActionResult> EditSet(int id)
+        {
+            if (id is 0)
+                return BadRequest();
 
             var set = await setRepository.GetAsync(id);
 
             if (set is null)
-                return NotFound();            
+                return NotFound();
 
             return View(mapper.Map<SetViewModel>(set));
         }
 
-        #region [ Add new entity ]
+        [HttpPost]
+        public async Task<IActionResult> EditSet(SetViewModel set)
+        {
+            if (!ModelState.IsValid)
+                return View(set);
+
+            await setRepository.UpdateAsync(new Set(set.Id, set.Name!));
+            TempData["success"] = "The set has been successfully edited";
+            return RedirectToAction("SelectedSet", new { id = set.Id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditWord(int id)
+        {
+            if (id is 0)
+                return BadRequest();
+
+            var word = await wordRepository.GetAsync(id);
+
+            if (word is null)
+                return NotFound();
+
+            return View(mapper.Map<WordViewModel>(word));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditWord(WordViewModel word)
+        {
+            if (!ModelState.IsValid)
+                return View(word);
+
+            await wordRepository.UpdateAsync(mapper.Map<Word>(word));
+            TempData["success"] = "The set has been successfully edited";
+            return RedirectToAction("SelectedSet", new { id = word.SetId });
+        }
+
+        #endregion [ EDIT METHODS ]
+
+        #region [ ADD NEW ENTITY ]
 
         [HttpGet]
         public IActionResult AddNewSet()
@@ -105,14 +151,15 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         {
             if (!ModelState.IsValid)
                 return View(word);
+            word.ImagePath ??= "";
             await wordRepository.UpdateAsync(mapper.Map<Word>(word));
             TempData["success"] = "The new word has been successfully added";
             return RedirectToAction("SelectedSet", new { id = word.SetId });
         }
 
-        #endregion [ Add new entity ]
+        #endregion [ ADD NEW ENTITY ]
 
-        #region [ Delete ]
+        #region [ DELETE ACTIONS ]
 
         [HttpPost]
         public async Task<IActionResult> DeleteWord(int wordId, int setId)
@@ -141,9 +188,9 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             return RedirectToAction("Index");
         }
 
-        #endregion [ Delete ]
+        #endregion [ DELETE ACTIONS ]
 
-        #region [ Check if exists in DB ]
+        #region [ CHECK IF EXISTS IN DB ]
 
         [HttpGet]
         public async Task<IActionResult> CheckSet(string name)
@@ -171,6 +218,6 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             return Json(true);
         }
 
-        #endregion [ Check if exists in DB ]
+        #endregion [ CHECK IF EXISTS IN DB ]
     }
 }

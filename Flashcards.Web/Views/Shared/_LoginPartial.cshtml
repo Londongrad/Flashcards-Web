@@ -4,7 +4,11 @@
     @if (signInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            <a asp-area="Account" asp-controller="Account" asp-action="Logout" class="nav-link text-light">Logout</a>
+            <form method="post" asp-area="Account" asp-controller="Account" asp-action="Logout">
+                <button asp-area="Account" asp-controller="Account" asp-action="Logout" type="submit" class="nav-link text-light">
+                    Logout @User.Identity!.Name
+                </button>
+            </form>
         </li>
     }
     else

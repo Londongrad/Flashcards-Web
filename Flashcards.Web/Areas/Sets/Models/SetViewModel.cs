@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace Flashcards.Web.Areas.Sets.Models
@@ -13,6 +14,6 @@ namespace Flashcards.Web.Areas.Sets.Models
         [Remote(action: "CheckSet", controller: "Home", areaName: "Sets", ErrorMessage = "Set with this name is already exists")]
         public string Name { get; set; } = null!;
 
-        public List<WordViewModel>? Words { get; set; } = [];
+        public List<WordViewModel> Words { get; set; } = [];
     }
 }

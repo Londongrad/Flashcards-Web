@@ -8,6 +8,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
     [Area("Account")]
     public class AccountController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager) : Controller
     {
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
@@ -33,6 +34,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
             return View(model);
         }
 
+        [HttpGet]
         public IActionResult Register()
         {
             return View();
@@ -68,6 +70,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
             return View(model);
         }
 
+        [HttpGet]
         public IActionResult VerifyEmail()
         {
             return View();
@@ -93,6 +96,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
             return View(model);
         }
 
+        [HttpGet]
         public IActionResult ChangePassword(string email)
         {
             if (string.IsNullOrEmpty(email))
@@ -141,6 +145,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
 
         }
         [Authorize]
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();

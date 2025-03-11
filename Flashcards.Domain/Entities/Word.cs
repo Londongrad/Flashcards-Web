@@ -6,7 +6,7 @@
 
         public string Definition { get; set; } = definition;
 
-        public string ImagePath { get; set; } = imagePath;
+        public string? ImagePath { get; set; } = imagePath;
 
         public bool IsFavorite { get; set; } = isFavorite;
 
