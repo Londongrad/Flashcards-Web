@@ -201,10 +201,20 @@ namespace Flashcards.Web.Areas.Account.Controllers
         public async Task<IActionResult> DeleteAccount(UserViewModel vm)
         {
             var user = await userManager.GetUserAsync(User);
-            Response.Cookies.Delete("myAppAuth");
-            await userManager.DeleteAsync(user!);
-            //await signInManager.SignOutAsync();
-            return RedirectToAction("Login");
+            if (user is null) 
+            {
+                return BadRequest();
+            }
+            else
+            {
+                Response.Cookies.Delete("myAppAuth");
+                var result = await userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Login");
+                }
+            }
+            return BadRequest();
         }
 
         #endregion [ UserActions ]
