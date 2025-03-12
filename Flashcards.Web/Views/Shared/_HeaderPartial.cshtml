@@ -1,17 +1,31 @@
-﻿
+﻿@inject UserManager<ApplicationUser> userManager
+
+@{
+    var user = await userManager.GetUserAsync(User);
+}
+
 <header>
     <nav class="navbar navbar-dark bg-primary border-bottom box-shadow mb-3">
 
         <div class="container-fluid">
 
-            <a asp-area="Sets" asp-controller="Home" asp-action="Index" class="navbar-brand mx-5">Flashcards</a>
+            <a asp-area="Sets" asp-controller="Home" asp-action="Index" class="navbar-brand ms-5">Flashcards</a>
 
-            <div class="dropdown mx-5">
+            <div class="dropdown me-5">
 
-                <button class="btn dropdown-toggle text-bg-dark"
-                        type="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-expanded="false">
-                    @User.Identity!.Name
-                </button>
+                @if (@user!.ImageURL is null)
+                {
+                    <button class="btn dropdown-toggle text-bg-dark"
+                            type="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-expanded="false">
+                        @user!.UserName
+
+                    </button>
+                }
+                else{
+                    <a class="btn dropdown-toggle avatar-container-header" id="dropdownMenu1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img class="user-link-photo" src="@user!.ImageURL" />
+                    </a>
+                }
 
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                     <li class="text-center text-big">
@@ -25,6 +39,7 @@
                         </form>
                     </li>
                 </ul>
+
             </div>
         </div>
     </nav>

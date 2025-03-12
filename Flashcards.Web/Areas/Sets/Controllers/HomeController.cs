@@ -19,7 +19,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await userManager.GetUserAsync(User);
-            var sets = await dataManager.SetRepository.GetAllAsync(user!.Id);
+            var sets = mapper.Map<List<SetViewModel>>(await dataManager.SetRepository.GetAllAsync(user!.Id));
             return View(sets);
         }
 

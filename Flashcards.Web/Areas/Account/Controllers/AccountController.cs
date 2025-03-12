@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace Flashcards.Web.Areas.Account.Controllers
 {
     [Area("Account")]
+    [Authorize]
     public class AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager) : Controller
     {
         #region [ Login ]
-        
+
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -41,12 +44,14 @@ namespace Flashcards.Web.Areas.Account.Controllers
 
         #region [ Register ]
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -80,13 +85,15 @@ namespace Flashcards.Web.Areas.Account.Controllers
         #endregion [ Register ]
 
         #region [ Email ]
-        
+
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult VerifyEmail()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> VerifyEmail(VerifyEmailViewModel model)
         {
@@ -110,7 +117,8 @@ namespace Flashcards.Web.Areas.Account.Controllers
         #endregion [ Email ]
 
         #region [ Password ]
-        
+
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult ChangePassword(string email)
         {
@@ -121,6 +129,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
             return View(new ChangePasswordViewModel() { Email = email });
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
@@ -164,7 +173,6 @@ namespace Flashcards.Web.Areas.Account.Controllers
 
         #region [ UserActions ]
         
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
@@ -176,7 +184,27 @@ namespace Flashcards.Web.Areas.Account.Controllers
         public async Task<IActionResult> Settings()
         {
             var user = await userManager.GetUserAsync(User);
-            return View(user);
+
+            return View(new UserViewModel() { Id = user!.Id, ImageURL = user!.ImageURL });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAvatar(UserViewModel vm)
+        {
+            var user = await userManager.GetUserAsync(User);
+            user!.ImageURL = vm.ImageURL;
+            await userManager.UpdateAsync(user);
+            return RedirectToAction("Settings");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAccount(UserViewModel vm)
+        {
+            var user = await userManager.GetUserAsync(User);
+            Response.Cookies.Delete("myAppAuth");
+            await userManager.DeleteAsync(user!);
+            //await signInManager.SignOutAsync();
+            return RedirectToAction("Login");
         }
 
         #endregion [ UserActions ]
