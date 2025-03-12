@@ -45,24 +45,17 @@ button.accept-policy {
     line-height: 60px;
 }
 
-.card {
+.my-card {
     background-color: #181735;
-    height: 200px;
-    width: 200px;
-    border-radius: 50%;
-    border: 1px solid #000;
-    align-items: center;
-    align-content: center;
-    vertical-align: central;
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
+    font-size: 20px;
+    
 }
+    .my-card:hover {
+        box-shadow: 0px 0px 40px -15px rgba(66, 68, 90, 1);
+    }
 
-.textInCard {
-    font-size: 26px;
-    color: wheat;
+.text-big {
+    font-size: 20px;
 }
 
 .text-to-learn {
@@ -132,4 +125,25 @@ button.accept-policy {
 
 .tile.is-flipped {
     transform: rotateX(-180deg);
+}
+
+.outer {
+    display: table;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto;
+    width: 700px;
+    /* Whatever width you want */
 }

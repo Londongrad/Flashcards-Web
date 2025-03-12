@@ -1,24 +1,26 @@
 using AutoMapper;
-using Flashcards.Application.Common.Interfaces;
 using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
-using Flashcards.Infrastructure.Repositories;
 using Flashcards.Web.Areas.Sets.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Flashcards.Web.Areas.Sets.Controllers
 {
     [Authorize]
     [Area("Sets")]
-    public class HomeController(DataManager dataManager, IMapper mapper) : Controller
+    public class HomeController(DataManager dataManager, IMapper mapper, UserManager<ApplicationUser> userManager) : Controller
     {
         private static SetViewModel _set = new();
         private static CurrentWordViewModel _wordVM = new();
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await dataManager.SetRepository.GetAllAsync());
+            var user = await userManager.GetUserAsync(User);
+            var sets = await dataManager.SetRepository.GetAllAsync(user!.Id);
+            return View(sets);
         }
 
         [HttpGet]
@@ -89,7 +91,9 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (!ModelState.IsValid)
                 return View(set);
 
-            await dataManager.SetRepository.UpdateAsync(new Set(set.Id, set.Name!));
+            var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            await dataManager.SetRepository.UpdateAsync(new Set(set.Id, set.Name!, user!));
             TempData["success"] = "The set has been successfully edited";
             return RedirectToAction("SelectedSet", new { id = set.Id });
         }
@@ -135,7 +139,9 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (!ModelState.IsValid)
                 return View(set);
 
-            await dataManager.SetRepository.UpdateAsync(new Set(0, set.Name!));
+            var user = await userManager.GetUserAsync(User);
+
+            await dataManager.SetRepository.AddAsync(new Set(set.Id, set.Name!, user!.Id!));
             TempData["success"] = "The new set has been successfully added";
             return RedirectToAction("Index");
         }
@@ -156,8 +162,8 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         {
             if (!ModelState.IsValid)
                 return View(word);
-            word.ImagePath ??= "";
-            await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
+
+            await dataManager.WordRepository.AddAsync(mapper.Map<Word>(word));
             TempData["success"] = "The new word has been successfully added";
             return RedirectToAction("SelectedSet", new { id = word.SetId });
         }
@@ -200,7 +206,9 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public async Task<IActionResult> CheckSet(string name)
         {
-            var sets = await dataManager.SetRepository.GetAllAsync();
+            var user = await userManager.GetUserAsync(User);
+
+            var sets = await dataManager.SetRepository.GetAllAsync(user!.Id);
 
             foreach (var set in sets)
             {
@@ -213,12 +221,20 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public async Task<IActionResult> CheckWord(string name)
         {
-            var words = await dataManager.WordRepository.GetAllAsync();
+            var user = await userManager.GetUserAsync(User);
 
-            foreach (var word in words)
+            var sets = await dataManager.SetRepository.GetAllAsync(user!.Id);
+
+            if (sets != null)
             {
-                if (word.Name == name)
-                    return Json(false);
+                foreach (var set in sets)
+                {
+                    foreach (var word in set.Words!)
+                    {
+                        if (word.Name == name)
+                            return Json(false);
+                    }
+                }
             }
             return Json(true);
         }

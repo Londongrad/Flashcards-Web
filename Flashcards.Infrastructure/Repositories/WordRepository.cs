@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Flashcards.Infrastructure.Repositories
 {
-    public class WordRepository(ApplicationDbContext dbContext) : IRepository<Word>
+    public class WordRepository(ApplicationDbContext dbContext) : IWordRepository
     {
         public async Task DeleteAsync(int id)
         {
@@ -13,11 +13,20 @@ namespace Flashcards.Infrastructure.Repositories
                 .ExecuteDeleteAsync();
         }
 
-        public async Task UpdateAsync(Word entity)
+        public async Task AddAsync(Word word)
         {
-            entity.ImagePath ??= "";
-            dbContext.Entry(entity).State = entity.Id == default ? EntityState.Added : EntityState.Modified;
+            await dbContext.Words.AddAsync(word);
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(Word word)
+        {
+            await dbContext.Words.Where(w => w.Id == word.Id)
+                .ExecuteUpdateAsync(sp => sp
+                   .SetProperty(c => c.Name, word.Name)
+                   .SetProperty(c => c.Definition, word.Definition)
+                   .SetProperty(c => c.ImagePath, word.ImagePath)
+                );
         }
 
         public async Task<IEnumerable<Word>> GetAllAsync()

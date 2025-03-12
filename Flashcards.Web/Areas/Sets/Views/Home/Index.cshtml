@@ -5,26 +5,42 @@
 
 <div class="row pt-4 pb-3">
 
-    <div class="col-6">
-        <h2 class="text-primary text-light">
-            your library
-        </h2>
-    </div>
+
+    <h2 class="text-light mb-0 col-6 align-content-center">
+        your library
+    </h2>
 
     <div class="col-6 text-end">
         <a asp-area="Sets" asp-controller="Home" asp-action="AddNewSet" title="Create new set" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
             <i class="bi bi-plus-lg"></i> Add new set
         </a>
     </div>
-
-    @foreach (var set in Model.OrderByDescending(x => x.Id))
+    @if (Model.Count == 0)
     {
-        <form>
-            <button type="submit" asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@set.Id" class="card">
-                <div class="textInCard">@set.Name</div>
-                <div class="textInCard">@set.Words?.Count termins</div>
-            </button>
-        </form>
+        <div class="row m-5">
+            <img src="~/images/empty.png" style="width: 70px; height: 60px;" class="col-2 mx-1 p-0"/>
+            <h2 class="text-light col-10 m-0 p-0">
+                Currently you don't have any sets in your library.
+                Add one by pressing button above.
+            </h2>
+        </div>
+        
+        
     }
-
+    else
+    {
+        @foreach (var set in Model.OrderByDescending(x => x.Id))
+        {
+            <form>
+                <div class="card border-0" style="background-color: transparent;">
+                    <button type="submit" asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@set.Id" class="btn btn-primary mt-2 my-card">
+                        <div class="card-body">
+                            <div class="card-title">@set.Name</div>
+                            <div class="card-text">@set.Words?.Count termins</div>
+                        </div>
+                    </button>
+                </div>
+            </form>
+        }
+    }
 </div>

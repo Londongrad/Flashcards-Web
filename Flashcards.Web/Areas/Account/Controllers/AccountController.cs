@@ -1,4 +1,5 @@
-﻿using Flashcards.Web.Areas.Account.Models;
+﻿using Flashcards.Infrastructure.Data;
+using Flashcards.Web.Areas.Account.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -6,8 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Flashcards.Web.Areas.Account.Controllers
 {
     [Area("Account")]
-    public class AccountController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager) : Controller
+    public class AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager) : Controller
     {
+        #region [ Login ]
+        
         [HttpGet]
         public IActionResult Login()
         {
@@ -34,6 +37,10 @@ namespace Flashcards.Web.Areas.Account.Controllers
             return View(model);
         }
 
+        #endregion [ Login ]
+
+        #region [ Register ]
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -45,7 +52,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityUser user = new()
+                ApplicationUser user = new()
                 {
                     UserName = model.Username,
                     Email = model.Email
@@ -70,6 +77,10 @@ namespace Flashcards.Web.Areas.Account.Controllers
             return View(model);
         }
 
+        #endregion [ Register ]
+
+        #region [ Email ]
+        
         [HttpGet]
         public IActionResult VerifyEmail()
         {
@@ -96,6 +107,10 @@ namespace Flashcards.Web.Areas.Account.Controllers
             return View(model);
         }
 
+        #endregion [ Email ]
+
+        #region [ Password ]
+        
         [HttpGet]
         public IActionResult ChangePassword(string email)
         {
@@ -144,6 +159,11 @@ namespace Flashcards.Web.Areas.Account.Controllers
             }
 
         }
+
+        #endregion [ Password ]
+
+        #region [ UserActions ]
+        
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
@@ -151,5 +171,14 @@ namespace Flashcards.Web.Areas.Account.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Settings()
+        {
+            var user = await userManager.GetUserAsync(User);
+            return View(user);
+        }
+
+        #endregion [ UserActions ]
     }
 }

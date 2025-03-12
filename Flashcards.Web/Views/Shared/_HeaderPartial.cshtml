@@ -1,14 +1,29 @@
-﻿<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
+﻿
+<header>
+    <nav class="navbar navbar-dark bg-primary border-bottom box-shadow mb-3">
+
         <div class="container-fluid">
-            <a class="navbar-brand" asp-area="Sets" asp-controller="Home" asp-action="Index">Flashcards</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <partial name="_LoginPartial" />
+
+            <a asp-area="Sets" asp-controller="Home" asp-action="Index" class="navbar-brand mx-5">Flashcards</a>
+
+            <div class="dropdown mx-5">
+
+                <button class="btn dropdown-toggle text-bg-dark"
+                        type="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-expanded="false">
+                    @User.Identity!.Name
+                </button>
+
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li class="text-center text-big">
+                        <a asp-area="Account" asp-controller="Account" asp-action="Settings" class="dropdown-item">Settings</a>
+                    </li>
+                    <li class="text-center text-big">
+                        <form method="post" asp-area="Account" asp-controller="Account" asp-action="Logout">
+                            <button type="submit" class="dropdown-item">
+                                Logout
+                            </button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>

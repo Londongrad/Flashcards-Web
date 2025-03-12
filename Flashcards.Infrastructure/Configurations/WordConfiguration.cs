@@ -10,8 +10,6 @@ namespace Flashcards.Infrastructure.Configurations
         {
             builder.HasKey(c => c.Id);
 
-            builder.HasIndex(c => c.Name).IsUnique();
-
             builder.Property(c => c.Name)
                 .IsRequired().HasMaxLength(100);
 

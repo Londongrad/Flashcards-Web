@@ -1,5 +1,4 @@
 using Flashcards.Application.Common.Interfaces;
-using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
 using Flashcards.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +20,7 @@ namespace Flashcards.Web
                 );
 
             //Identity system
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
                 options.Password.RequiredLength = 6;
@@ -44,9 +43,9 @@ namespace Flashcards.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddTransient<IRepository<Set>, SetRepository>();
-            builder.Services.AddTransient<IRepository<Word>, WordRepository>();
-            builder.Services.AddTransient<DataManager>();
+            builder.Services.AddScoped<ISetRepository, SetRepository>();
+            builder.Services.AddScoped<IWordRepository, WordRepository>();
+            builder.Services.AddScoped<DataManager>();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var app = builder.Build();

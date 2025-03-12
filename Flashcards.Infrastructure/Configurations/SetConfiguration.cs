@@ -17,8 +17,6 @@ namespace Flashcards.Infrastructure.Configurations
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(c => c.Name).IsUnique();
-
             builder.Property(c => c.Name)
                 .IsRequired().HasMaxLength(20);
         }

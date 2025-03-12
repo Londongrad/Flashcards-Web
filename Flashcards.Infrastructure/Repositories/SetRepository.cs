@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Flashcards.Infrastructure.Repositories
 {
-    public class SetRepository(ApplicationDbContext dbContext) : IRepository<Set>
+    public class SetRepository(ApplicationDbContext dbContext) : ISetRepository
     {
         public async Task DeleteAsync(int id)
         {
@@ -13,9 +13,9 @@ namespace Flashcards.Infrastructure.Repositories
                 .ExecuteDeleteAsync();
         }
 
-        public async Task<IEnumerable<Set>> GetAllAsync()
+        public async Task<IEnumerable<Set>> GetAllAsync(string userId)
         {
-            return await dbContext.Sets.Include(s => s.Words).ToListAsync();
+            return await dbContext.Sets.Where(s => s.UserId == userId).Include(s => s.Words).ToListAsync();
         }
 
         public async Task<Set?> GetAsync(int id)
@@ -23,9 +23,17 @@ namespace Flashcards.Infrastructure.Repositories
             return await dbContext.Sets.Include(s => s.Words).FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task UpdateAsync(Set entity)
+        public async Task UpdateAsync(Set set)
         {
-            dbContext.Entry(entity).State = entity.Id == default ? EntityState.Added : EntityState.Modified;
+            await dbContext.Sets.Where(s => s.Id == set.Id)
+                .ExecuteUpdateAsync(sp => sp
+                .SetProperty(s => s.Name, set.Name)
+                );
+        }
+
+        public async Task AddAsync(Set set)
+        {
+            await dbContext.Sets.AddAsync(set);
             await dbContext.SaveChangesAsync();
         }
     }
