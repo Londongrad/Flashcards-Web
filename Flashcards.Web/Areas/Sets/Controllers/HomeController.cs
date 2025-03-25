@@ -14,7 +14,8 @@ namespace Flashcards.Web.Areas.Sets.Controllers
     public class HomeController(DataManager dataManager, IMapper mapper, UserManager<ApplicationUser> userManager) : Controller
     {
         private static SetViewModel _set = new();
-        private static CurrentWordViewModel _wordVM = new();
+        private static readonly CurrentWordViewModel _wordVM = new();
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
