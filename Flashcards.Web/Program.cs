@@ -9,6 +9,11 @@ namespace Flashcards.Web
 {
     public class Program
     {
+        //TODO: Объеденить методы по довавлению/редактированию.
+        //TODO: Использование Ajax & Jquery.
+        //TODO: Починить редактирование слова.
+        //TODO: Реализовать систему отслеживания прогресса по обучению
+        //TODO: Реализовать систему сохранения избранных слов
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +48,7 @@ namespace Flashcards.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<ISetRepository, SetRepository>();
             builder.Services.AddScoped<IWordRepository, WordRepository>();
             builder.Services.AddScoped<DataManager>();

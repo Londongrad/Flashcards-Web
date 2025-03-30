@@ -170,6 +170,8 @@ button.accept-policy {
     display: inline-block;
     vertical-align: middle;
     width: 70px;
+    min-height: 70px;
+    min-width: 70px;
     height: 70px;
     border-radius: 50%;
     overflow: hidden;

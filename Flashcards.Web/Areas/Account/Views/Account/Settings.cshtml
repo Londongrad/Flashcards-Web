@@ -27,23 +27,23 @@
                 <i class="bi bi-card-image"></i> Change avatar
             </button>
 
+            <!-- Modal for image -->
             <form asp-area="Account" asp-controller="Account" asp-action="UpdateAvatar" method="post">
-                <!-- Modal -->
-                <div class="modal fade" id="img" tabindex="-1" aria-labelledby="lableIMG" aria-hidden="true">
+                <div class="modal fade" id="img" tabindex="-1" aria-labelledby="lableIMG" aria-hidden="true" data-bs-theme="dark">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="lableIMG">AVATAR</h5>
+                                <h5 class="modal-title text-light" id="lableIMG">AVATAR</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <div class="input-group row">
-                                    <label asp-for="@Model.ImageURL" class="input-group-text"></label>
-                                    <input asp-for="@Model.ImageURL" class="form-control">
+                                <div class="input-group row m-0 p-0">
+                                    <label asp-for="@Model.ImageURL" class="input-group-text bg-dark text-light"></label>
+                                    <input asp-for="@Model.ImageURL" class="form-control bg-dark text-light">
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
 
                                 <button type="submit" class="btn btn-primary">
                                     Save changes
@@ -55,12 +55,161 @@
                 </div>
             </form>
 
-            <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary m-2">
+            <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#pass">
                 <i class="bi bi-arrow-repeat"></i> Change password
-            </a>
-            <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary m-2">
+            </button>
+
+            <!-- Modal for password -->
+            <form asp-area="Account" asp-controller="Account" asp-action="ChangePasswordInSettings" method="post">
+
+                <input hidden asp-for="Id" />
+
+                <div class="modal fade" id="pass" tabindex="-1" aria-labelledby="lablePass" aria-hidden="true" data-bs-theme="dark">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title text-light" id="lablePass">Password</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="input-group row m-0 p-0">
+                                    <label asp-for="@Model.OldPassword" class="input-group-text bg-dark text-light"></label>
+                                    <input asp-for="@Model.OldPassword" class="form-control bg-dark text-light">
+                                    <span asp-validation-for="@Model.OldPassword" class="text-danger"></span>
+                                </div>
+                                <div class="input-group row m-0 p-0">
+                                    <label asp-for="@Model.NewPassword" class="input-group-text bg-dark text-light"></label>
+                                    <input asp-for="@Model.NewPassword" class="form-control bg-dark text-light">
+                                    <span asp-validation-for="@Model.NewPassword" class="text-danger"></span>
+                                </div>
+                                <div class="input-group row m-0 p-0">
+                                    <label asp-for="@Model.ConfirmPassword" class="input-group-text bg-dark text-light"></label>
+                                    <input asp-for="@Model.ConfirmPassword" class="form-control bg-dark text-light">
+                                    <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+
+                                <button type="submit" class="btn btn-primary">
+                                    Save changes
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#email">
                 <i class="bi bi-arrow-repeat"></i> Change email
-            </a>
+            </button>
+
+            <!-- Modal for email -->
+            <form asp-area="Account" asp-controller="Account" asp-action="ChangeEmail" method="post">
+
+                <input hidden asp-for="Id" />
+
+                <div class="modal fade" id="email" tabindex="-1" aria-labelledby="lableEmail" aria-hidden="true" data-bs-theme="dark">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title text-light" id="lableEmail">Email</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="input-group row m-0 p-0">
+                                    <label asp-for="@Model.Email" class="input-group-text bg-dark text-light"></label>
+                                    <input asp-for="@Model.Email" class="form-control bg-dark text-light">
+                                    <span asp-validation-for="@Model.Email" class="text-danger"></span>
+                                </div>
+                                <hr />
+                                <div>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+
+                                <button type="submit" class="btn btn-primary">
+                                    Save changes
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <button class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#username">
+                <i class="bi bi-arrow-repeat"></i> Change username
+            </button>
+
+            <!-- Modal for username -->
+            <form asp-area="Account" asp-controller="Account" asp-action="ChangeUsername" method="post">
+
+                <input hidden asp-for="Id" />
+
+                <div class="modal fade" id="username" tabindex="-1" aria-labelledby="lableUsername" aria-hidden="true" data-bs-theme="dark">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title text-light" id="lableUsername">Username</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="input-group row m-0 p-0">
+                                    <label asp-for="@Model.Username" class="input-group-text bg-dark text-light"></label>
+                                    <input asp-for="@Model.Username" class="form-control bg-dark text-light">
+                                    <span asp-validation-for="@Model.Username" class="text-danger"></span>
+                                </div>
+                                <hr />
+                                <div>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+
+                                <button type="submit" class="btn btn-primary">
+                                    Save changes
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="d-inline-flex">
+            <h1 class="text-light mt-5">Styling</h1>
+            <p class="text-light align-content-center mt-5">(Yet to implement)</p>
+        </div>
+        <hr class="border-bottom border-white" />
+
+        <div class="settings-container">
+            <div class="dropdown m-2">
+                <button class="btn btn-primary dropdown-toggle"
+                        type="button" id="dropdownMenu1" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    Theme
+                </button>
+                <div class="dropdown-menu dropdown-menu-dark text-center text-big" aria-labelledby="dropdownMenu1">
+                    <a class="dropdown-item" href="#!">Dark</a>
+                    <a class="dropdown-item" href="#!">Light</a>
+                </div>
+            </div>
+
+            <div class="dropdown m-2">
+                <button class="btn btn-primary dropdown-toggle" 
+                        type="button" id="dropdownMenu1" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    Language
+                </button>
+                <div class="dropdown-menu dropdown-menu-dark text-center text-big" aria-labelledby="dropdownMenu1">
+                    <a class="dropdown-item" href="#!">Russian</a>
+                    <a class="dropdown-item" href="#!">English</a>
+                </div>
+            </div>
         </div>
 
         <h1 class="text-danger mt-5">Danger zone</h1>
@@ -68,6 +217,9 @@
 
         <form asp-area="Account" asp-controller="Account" asp-action="DeleteAccount" method="post"
               onclick="return confirm('Are you sure you want to delete this account?')">
+
+            <input hidden asp-for="Id" />
+
             <button title="Delete account" type="submit" class="btn btn-danger border-1 border-dark-subtle">
                 <i class="bi bi-x-octagon"></i> Delete account
             </button>

@@ -14,13 +14,13 @@ namespace Flashcards.Web.Areas.Sets.Controllers
     public class HomeController(DataManager dataManager, IMapper mapper, UserManager<ApplicationUser> userManager) : Controller
     {
         private static SetViewModel _set = new();
-        private static readonly CurrentWordViewModel _wordVM = new();
+        private static CurrentWordViewModel _wordVM = new();
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var user = await userManager.GetUserAsync(User);
-            var sets = mapper.Map<List<SetViewModel>>(await dataManager.SetRepository.GetAllAsync(user!.Id));
+            var sets = mapper.Map<List<SetViewModel>>(await dataManager.SetRepository.GetAllAsync());
             return View(sets);
         }
 
@@ -49,13 +49,11 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (_set is null)
                 return NotFound();
 
-            if (_set.Words!.Count != 0)
-            {
-                _wordVM.Index = 0;
-                _wordVM.Count = _set.Words!.Count;
-                _wordVM.SetId = id;
-                _wordVM.CurrentWord = _set.Words[0];
-            }
+            _wordVM.Index = 0;
+            _wordVM.Count = _set.Words!.Count;
+            _wordVM.SetId = id;
+            _wordVM.CurrentWord = _set.Words[0];
+
             return View(_wordVM);
         }
 
@@ -68,7 +66,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                 _wordVM.CurrentWord = _set.Words![_wordVM.Index];
             }
             return View("StudySelectedSet", _wordVM);
-        }
+        }                                     
 
         #region [ EDIT METHODS ]
 
@@ -92,20 +90,25 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (!ModelState.IsValid)
                 return View(set);
 
-            var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await dataManager.SetRepository.UpdateAsync(new Set(set.Id, set.Name!, user!));
+            await dataManager.SetRepository.UpdateAsync(new Set(set.Id, set.Name!, userId!));
             TempData["success"] = "The set has been successfully edited";
             return RedirectToAction("SelectedSet", new { id = set.Id });
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditWord(int id)
+        public async Task<IActionResult> EditWord(int id, int setId)
         {
-            if (id is 0)
+            if (id is 0 || setId is 0)
                 return BadRequest();
 
-            var word = await dataManager.WordRepository.GetAsync(id);
+            var set = await dataManager.SetRepository.GetAsync(setId);
+
+            if (set is null)
+                return NotFound();
+
+            var word = set.Words!.FirstOrDefault(x => x.Id == id);
 
             if (word is null)
                 return NotFound();
@@ -148,12 +151,17 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         }
 
         [HttpGet]
-        public IActionResult AddNewWord(int setId)
+        public async Task<IActionResult> AddNewWord(int setId)
         {
             if (setId is 0)
                 return BadRequest();
 
-            var wordVM = new WordViewModel { SetId = setId };
+            var set = await dataManager.SetRepository.GetAsync(setId);
+
+            if (set is null)
+                return BadRequest();
+
+            var wordVM = new WordViewModel { SetId = set.Id };
 
             return View(wordVM);
         }
@@ -209,7 +217,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         {
             var user = await userManager.GetUserAsync(User);
 
-            var sets = await dataManager.SetRepository.GetAllAsync(user!.Id);
+            var sets = await dataManager.SetRepository.GetAllAsync();
 
             foreach (var set in sets)
             {
@@ -224,7 +232,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         {
             var user = await userManager.GetUserAsync(User);
 
-            var sets = await dataManager.SetRepository.GetAllAsync(user!.Id);
+            var sets = await dataManager.SetRepository.GetAllAsync();
 
             if (sets != null)
             {

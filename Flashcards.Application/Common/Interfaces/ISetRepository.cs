@@ -8,7 +8,7 @@ namespace Flashcards.Application.Common.Interfaces
 
         Task DeleteAsync(int id);
 
-        Task<IEnumerable<Set>> GetAllAsync(string userId);
+        Task<IEnumerable<Set>> GetAllAsync();
 
         Task<Set?> GetAsync(int id);
 

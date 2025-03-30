@@ -1,31 +1,41 @@
 ﻿using Flashcards.Application.Common.Interfaces;
 using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Flashcards.Infrastructure.Repositories
 {
-    public class SetRepository(ApplicationDbContext dbContext) : ISetRepository
+    public class SetRepository : ISetRepository
     {
+        private readonly ApplicationDbContext _dbContext;
+        private readonly string _userId;
+
+        public SetRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+        {
+            _dbContext = dbContext;
+            _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        }
         public async Task DeleteAsync(int id)
         {
-            await dbContext.Sets.Where(s => s.Id == id)
+            await _dbContext.Sets.Where(s => s.Id == id)
                 .ExecuteDeleteAsync();
         }
 
-        public async Task<IEnumerable<Set>> GetAllAsync(string userId)
+        public async Task<IEnumerable<Set>> GetAllAsync()
         {
-            return await dbContext.Sets.Where(s => s.UserId == userId).Include(s => s.Words).ToListAsync();
+            return await _dbContext.Sets.Where(s => s.UserId == _userId).Include(s => s.Words).ToListAsync();
         }
 
         public async Task<Set?> GetAsync(int id)
         {
-            return await dbContext.Sets.Include(s => s.Words).FirstOrDefaultAsync(s => s.Id == id);
+            return await _dbContext.Sets.Where(s => s.UserId == _userId).Include(s => s.Words).FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task UpdateAsync(Set set)
         {
-            await dbContext.Sets.Where(s => s.Id == set.Id)
+            await _dbContext.Sets.Where(s => s.Id == set.Id)
                 .ExecuteUpdateAsync(sp => sp
                 .SetProperty(s => s.Name, set.Name)
                 );
@@ -33,8 +43,8 @@ namespace Flashcards.Infrastructure.Repositories
 
         public async Task AddAsync(Set set)
         {
-            await dbContext.Sets.AddAsync(set);
-            await dbContext.SaveChangesAsync();
+            await _dbContext.Sets.AddAsync(set);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

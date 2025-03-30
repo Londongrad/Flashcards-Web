@@ -3,6 +3,7 @@ using Flashcards.Web.Areas.Account.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.Project;
 
 namespace Flashcards.Web.Areas.Account.Controllers
 {
@@ -172,7 +173,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
         #endregion [ Password ]
 
         #region [ UserActions ]
-        
+
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
@@ -185,7 +186,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
         {
             var user = await userManager.GetUserAsync(User);
 
-            return View(new UserViewModel() { Id = user!.Id, ImageURL = user!.ImageURL });
+            return View(new UserViewModel() { Id = user!.Id, ImageURL = user!.ImageURL, Username = user!.UserName, Email = user!.Email });
         }
 
         [HttpPost]
@@ -198,16 +199,16 @@ namespace Flashcards.Web.Areas.Account.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteAccount(UserViewModel vm)
+        public async Task<IActionResult> DeleteAccount(UserViewModel model)
         {
-            var user = await userManager.GetUserAsync(User);
-            if (user is null) 
+            var user = await userManager.FindByIdAsync(model.Id);
+            if (user is null)
             {
                 return BadRequest();
             }
             else
             {
-                Response.Cookies.Delete("myAppAuth");
+                await signInManager.SignOutAsync();
                 var result = await userManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
@@ -215,6 +216,90 @@ namespace Flashcards.Web.Areas.Account.Controllers
                 }
             }
             return BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePasswordInSettings(UserViewModel model)
+        {
+            if (!(string.IsNullOrEmpty(model.OldPassword) && string.IsNullOrEmpty(model.NewPassword) && string.IsNullOrEmpty(model.Id)))
+            {
+                var user = await userManager.FindByIdAsync(model.Id)!;
+                if (user != null)
+                {
+                    IdentityResult result = await userManager.ChangePasswordAsync(user, model.OldPassword!, model.NewPassword!);
+                    if (result.Succeeded)
+                    {
+                        TempData["success"] = "Password has been successfully updated";
+                        return RedirectToAction("Settings");
+                    }
+                    TempData["error"] = "An error occured during this process. Try again";
+                    return RedirectToAction("Settings");
+                }
+                else
+                    return Unauthorized();
+            }
+            TempData["error"] = "An error occured during this process";
+            return RedirectToAction("Settings");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeEmail(UserViewModel model)
+        {
+            if (!(string.IsNullOrEmpty(model.Id) && string.IsNullOrEmpty(model.Email)))
+            {
+                var user = await userManager.FindByIdAsync(model.Id);
+                if (user != null)
+                {
+                    if (string.Equals(model.Email, user!.Email))
+                    {
+                        TempData["error"] = "Same email";
+                        return RedirectToAction("Settings");
+                    }
+                    var emailToken = await userManager.GenerateChangeEmailTokenAsync(user, model.Email!);
+                    IdentityResult result = await userManager.ChangeEmailAsync(user, model.Email!, emailToken);
+                    if (result.Succeeded)
+                    {
+                        TempData["success"] = "Email has been successfully updated";
+                        return RedirectToAction("Settings");
+                    }
+                    TempData["error"] = "An error occured during this process. Most likely user with this email is already exists";
+                    return RedirectToAction("Settings");
+                }
+                else
+                    return Unauthorized();
+            }
+            TempData["error"] = "An error occured during this process";
+            return RedirectToAction("Settings");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeUsername(UserViewModel model)
+        {
+            if (!(string.IsNullOrEmpty(model.Id) && string.IsNullOrEmpty(model.Username)))
+            {
+                var user = await userManager.FindByIdAsync(model.Id);
+                if (user != null)
+                {
+                    if (string.Equals(model.Username, user!.UserName))
+                    {
+                        TempData["error"] = "Same username";
+                        return RedirectToAction("Settings");
+                    }
+                    user.UserName = model.Username;
+                    IdentityResult result = await userManager.UpdateAsync(user);
+                    if (result.Succeeded)
+                    {
+                        TempData["success"] = "Username has been successfully updated";
+                        return RedirectToAction("Settings");
+                    }
+                    TempData["error"] = "An error occured during this process. Most likely user with this username is already exists";
+                    return RedirectToAction("Settings");
+                }
+                else
+                    return Unauthorized();
+            }
+            TempData["error"] = "An error occured during this process";
+            return RedirectToAction("Settings");
         }
 
         #endregion [ UserActions ]
