@@ -5,6 +5,7 @@ using Flashcards.Web.Areas.Sets.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Flashcards.Web.Areas.Sets.Controllers
@@ -66,7 +67,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                 _wordVM.CurrentWord = _set.Words![_wordVM.Index];
             }
             return View("StudySelectedSet", _wordVM);
-        }                                     
+        }
 
         #region [ EDIT METHODS ]
 
@@ -89,10 +90,16 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         {
             if (!ModelState.IsValid)
                 return View(set);
+            try
+            {
+                await dataManager.SetRepository.UpdateAsync(mapper.Map<Set>(set));
+            }
+            catch (Exception)
+            {
+                TempData["error"] = "Set with this name is already exists";
+                return View(set);
+            }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            await dataManager.SetRepository.UpdateAsync(new Set(set.Id, set.Name!, userId!));
             TempData["success"] = "The set has been successfully edited";
             return RedirectToAction("SelectedSet", new { id = set.Id });
         }
@@ -121,9 +128,16 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         {
             if (!ModelState.IsValid)
                 return View(word);
-
-            await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
-            TempData["success"] = "The set has been successfully edited";
+            try
+            {
+                await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
+            }
+            catch (Exception)
+            {
+                TempData["error"] = "Word with this name is already exists";
+                return View(word);
+            }
+            TempData["success"] = "The word has been successfully edited";
             return RedirectToAction("SelectedSet", new { id = word.SetId });
         }
 
@@ -132,9 +146,15 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         #region [ ADD NEW ENTITY ]
 
         [HttpGet]
-        public IActionResult AddNewSet()
+        public async Task<IActionResult> AddNewSet()
         {
-            return View();
+            var user = await userManager.GetUserAsync(User);
+
+            if (user is null)
+                return BadRequest();
+
+            var set = new SetViewModel { UserId = user.Id };
+            return View(set);
         }
 
         [HttpPost]
@@ -143,9 +163,8 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (!ModelState.IsValid)
                 return View(set);
 
-            var user = await userManager.GetUserAsync(User);
+            await dataManager.SetRepository.AddAsync(mapper.Map<Set>(set));
 
-            await dataManager.SetRepository.AddAsync(new Set(set.Id, set.Name!, user!.Id!));
             TempData["success"] = "The new set has been successfully added";
             return RedirectToAction("Index");
         }
@@ -210,44 +229,5 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
         #endregion [ DELETE ACTIONS ]
 
-        #region [ CHECK IF EXISTS IN DB ]
-
-        [HttpGet]
-        public async Task<IActionResult> CheckSet(string name)
-        {
-            var user = await userManager.GetUserAsync(User);
-
-            var sets = await dataManager.SetRepository.GetAllAsync();
-
-            foreach (var set in sets)
-            {
-                if (set.Name == name)
-                    return Json(false);
-            }
-            return Json(true);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> CheckWord(string name)
-        {
-            var user = await userManager.GetUserAsync(User);
-
-            var sets = await dataManager.SetRepository.GetAllAsync();
-
-            if (sets != null)
-            {
-                foreach (var set in sets)
-                {
-                    foreach (var word in set.Words!)
-                    {
-                        if (word.Name == name)
-                            return Json(false);
-                    }
-                }
-            }
-            return Json(true);
-        }
-
-        #endregion [ CHECK IF EXISTS IN DB ]
     }
 }

@@ -24,6 +24,8 @@ namespace Flashcards.Infrastructure.Configurations
 
             builder.Property(c => c.IsLastWord)
                 .HasDefaultValue(false);
+
+            builder.HasIndex(w => w.Name).IsUnique();
         }
     }
 }

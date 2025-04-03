@@ -1,6 +1,9 @@
 ﻿@model SetViewModel
 
 <form asp-area="Sets" asp-controller="Home" asp-action="AddNewSet" method="post">
+
+    <input asp-for="UserId" hidden />
+
     <div class="border p-3 mt-4">
 
         <div class="row pb-2">
