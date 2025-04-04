@@ -3,7 +3,6 @@ using Flashcards.Web.Areas.Account.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.Scaffolding.Shared.Project;
 
 namespace Flashcards.Web.Areas.Account.Controllers
 {
@@ -143,7 +142,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
                     var result = await userManager.RemovePasswordAsync(user);
                     if (result.Succeeded)
                     {
-                        result = await userManager.AddPasswordAsync(user, model.NewPassword!);
+                        await userManager.AddPasswordAsync(user, model.NewPassword!);
                         return RedirectToAction("Login");
                     }
                     else
@@ -158,7 +157,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Email not found");
+                    ModelState.AddModelError("", "Email is not found");
                     return View(model);
                 }
             }
@@ -167,7 +166,6 @@ namespace Flashcards.Web.Areas.Account.Controllers
                 ModelState.AddModelError("", "Something went wrong! Try again.");
                 return View(model);
             }
-
         }
 
         #endregion [ Password ]
@@ -186,14 +184,21 @@ namespace Flashcards.Web.Areas.Account.Controllers
         {
             var user = await userManager.GetUserAsync(User);
 
-            return View(new UserViewModel() { Id = user!.Id, ImageURL = user!.ImageURL, Username = user!.UserName, Email = user!.Email });
+            if (user is null)
+                return BadRequest();
+
+            return View(new UserViewModel() { Id = user.Id, ImageURL = user.ImageURL, Username = user.UserName, Email = user.Email });
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateAvatar(UserViewModel vm)
         {
             var user = await userManager.GetUserAsync(User);
-            user!.ImageURL = vm.ImageURL;
+
+            if (user is null)
+                return BadRequest();
+
+            user.ImageURL = vm.ImageURL;
             await userManager.UpdateAsync(user);
             return RedirectToAction("Settings");
         }
@@ -202,10 +207,9 @@ namespace Flashcards.Web.Areas.Account.Controllers
         public async Task<IActionResult> DeleteAccount(UserViewModel model)
         {
             var user = await userManager.FindByIdAsync(model.Id);
+
             if (user is null)
-            {
                 return BadRequest();
-            }
             else
             {
                 await signInManager.SignOutAsync();
@@ -223,7 +227,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
         {
             if (!(string.IsNullOrEmpty(model.OldPassword) && string.IsNullOrEmpty(model.NewPassword) && string.IsNullOrEmpty(model.Id)))
             {
-                var user = await userManager.FindByIdAsync(model.Id)!;
+                var user = await userManager.FindByIdAsync(model.Id);
                 if (user != null)
                 {
                     IdentityResult result = await userManager.ChangePasswordAsync(user, model.OldPassword!, model.NewPassword!);
@@ -289,7 +293,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
                     IdentityResult result = await userManager.UpdateAsync(user);
                     if (result.Succeeded)
                     {
-                        TempData["success"] = "Username has been successfully updated";
+                        TempData["success"] = "Username has been successfully changed";
                         return RedirectToAction("Settings");
                     }
                     TempData["error"] = "An error occured during this process. Most likely user with this username is already exists";

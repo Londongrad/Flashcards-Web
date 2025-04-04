@@ -17,6 +17,7 @@ namespace Flashcards.Infrastructure.Repositories
             _dbContext = dbContext;
             _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
         }
+
         public async Task DeleteAsync(int id)
         {
             await _dbContext.Sets.Where(s => s.Id == id)

@@ -28,7 +28,7 @@ namespace Flashcards.Web.Areas.Account.Models
         [DataType(DataType.Password)]
         public string? ConfirmPassword { get; set; } = null!;
 
-        #endregion
+        #endregion [ PASSWORD ]
 
         [StringLength(20, MinimumLength = 6, ErrorMessage = "The {0} must be at {2} and at max {1} characters long.")]
         [Required(ErrorMessage = "Email is required")]

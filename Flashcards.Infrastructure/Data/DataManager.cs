@@ -1,5 +1,4 @@
 ﻿using Flashcards.Application.Common.Interfaces;
-using Flashcards.Domain.Entities;
 
 namespace Flashcards.Infrastructure.Data
 {

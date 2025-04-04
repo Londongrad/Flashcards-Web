@@ -13,7 +13,7 @@
 
             <div class="dropdown me-5">
 
-                @if (@user!.ImageURL is null)
+                @if (user is not null && @user.ImageURL is null)
                 {
                     <button class="btn dropdown-toggle text-bg-dark" data-bs-auto-close="outside"
                             type="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-expanded="false">

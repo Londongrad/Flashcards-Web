@@ -5,8 +5,6 @@ using Flashcards.Web.Areas.Sets.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Flashcards.Web.Areas.Sets.Controllers
 {
@@ -20,7 +18,6 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var user = await userManager.GetUserAsync(User);
             var sets = mapper.Map<List<SetViewModel>>(await dataManager.SetRepository.GetAllAsync());
             return View(sets);
         }
