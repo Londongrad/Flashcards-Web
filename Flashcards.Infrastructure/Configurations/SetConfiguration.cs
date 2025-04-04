@@ -19,8 +19,6 @@ namespace Flashcards.Infrastructure.Configurations
 
             builder.Property(c => c.Name)
                 .IsRequired().HasMaxLength(20);
-
-            builder.HasIndex(s => s.Name).IsUnique();
         }
     }
 }

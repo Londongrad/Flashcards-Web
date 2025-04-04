@@ -66,134 +66,124 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             return View("StudySelectedSet", _wordVM);
         }
 
-        #region [ EDIT METHODS ]
+        #region [ ADD/EDIT METHODS ]
 
         [HttpGet]
-        public async Task<IActionResult> EditSet(int id)
+        public async Task<IActionResult> AddOrEditSet(int id = 0)
         {
             if (id is 0)
-                return BadRequest();
-
-            var set = await dataManager.SetRepository.GetAsync(id);
-
-            if (set is null)
-                return NotFound();
-
-            return View(mapper.Map<SetViewModel>(set));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditSet(SetViewModel set)
-        {
-            if (!ModelState.IsValid)
-                return View(set);
-            try
             {
-                await dataManager.SetRepository.UpdateAsync(mapper.Map<Set>(set));
-            }
-            catch (Exception)
-            {
-                TempData["error"] = "Set with this name is already exists";
+                var user = await userManager.GetUserAsync(User);
+
+                if (user is null)
+                    return BadRequest();
+
+                var set = new SetViewModel { UserId = user.Id };
                 return View(set);
             }
+            else
+            {
+                var set = await dataManager.SetRepository.GetAsync(id);
 
-            TempData["success"] = "The set has been successfully edited";
-            return RedirectToAction("SelectedSet", new { id = set.Id });
-        }
+                if (set is null)
+                    return NotFound();
 
-        [HttpGet]
-        public async Task<IActionResult> EditWord(int id, int setId)
-        {
-            if (id is 0 || setId is 0)
-                return BadRequest();
-
-            var set = await dataManager.SetRepository.GetAsync(setId);
-
-            if (set is null)
-                return NotFound();
-
-            var word = set.Words!.FirstOrDefault(x => x.Id == id);
-
-            if (word is null)
-                return NotFound();
-
-            return View(mapper.Map<WordViewModel>(word));
+                return View(mapper.Map<SetViewModel>(set));
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditWord(WordViewModel word)
-        {
-            if (!ModelState.IsValid)
-                return View(word);
-            try
-            {
-                await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
-            }
-            catch (Exception)
-            {
-                TempData["error"] = "Word with this name is already exists";
-                return View(word);
-            }
-            TempData["success"] = "The word has been successfully edited";
-            return RedirectToAction("SelectedSet", new { id = word.SetId });
-        }
-
-        #endregion [ EDIT METHODS ]
-
-        #region [ ADD NEW ENTITY ]
-
-        [HttpGet]
-        public async Task<IActionResult> AddNewSet()
-        {
-            var user = await userManager.GetUserAsync(User);
-
-            if (user is null)
-                return BadRequest();
-
-            var set = new SetViewModel { UserId = user.Id };
-            return View(set);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddNewSet(SetViewModel set)
+        public async Task<IActionResult> AddOrEditSet(SetViewModel set)
         {
             if (!ModelState.IsValid)
                 return View(set);
 
-            await dataManager.SetRepository.AddAsync(mapper.Map<Set>(set));
+            if (set.Id == 0)
+            {
+                await dataManager.SetRepository.AddAsync(mapper.Map<Set>(set));
 
-            TempData["success"] = "The new set has been successfully added";
-            return RedirectToAction("Index");
+                TempData["success"] = "The new set has been successfully added";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                try
+                {
+                    await dataManager.SetRepository.UpdateAsync(mapper.Map<Set>(set));
+                }
+                catch (Exception)
+                {
+                    TempData["error"] = "Set with this name is already exists";
+                    return View(set);
+                }
+
+                TempData["success"] = "The set has been successfully edited";
+                return RedirectToAction("SelectedSet", new { id = set.Id });
+            }
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddNewWord(int setId)
+        public async Task<IActionResult> AddOrEditWord(int setId, int id = 0)
         {
             if (setId is 0)
                 return BadRequest();
 
-            var set = await dataManager.SetRepository.GetAsync(setId);
+            if (id == 0)
+            {
+                var set = await dataManager.SetRepository.GetAsync(setId);
 
-            if (set is null)
-                return BadRequest();
+                if (set is null)
+                    return BadRequest();
 
-            var wordVM = new WordViewModel { SetId = set.Id };
+                var wordVM = new WordViewModel { SetId = set.Id };
 
-            return View(wordVM);
+                return View(wordVM);
+            }
+            else
+            {
+                var set = await dataManager.SetRepository.GetAsync(setId);
+
+                if (set is null)
+                    return NotFound();
+
+                var word = set.Words!.FirstOrDefault(x => x.Id == id);
+
+                if (word is null)
+                    return NotFound();
+
+                return View(mapper.Map<WordViewModel>(word));
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewWord(WordViewModel word)
+        public async Task<IActionResult> AddOrEditWord(WordViewModel word)
         {
             if (!ModelState.IsValid)
                 return View(word);
 
-            await dataManager.WordRepository.AddAsync(mapper.Map<Word>(word));
-            TempData["success"] = "The new word has been successfully added";
-            return RedirectToAction("SelectedSet", new { id = word.SetId });
+            if (word.Id == 0)
+            {
+                await dataManager.WordRepository.AddAsync(mapper.Map<Word>(word));
+                TempData["success"] = "The new word has been successfully added";
+                return RedirectToAction("SelectedSet", new { id = word.SetId });
+            }
+            else
+            {
+                try
+                {
+                    await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
+                }
+                catch (Exception)
+                {
+                    TempData["error"] = "Word with this name is already exists";
+                    return View(word);
+                }
+                TempData["success"] = "The word has been successfully edited";
+                return RedirectToAction("SelectedSet", new { id = word.SetId });
+            }
         }
 
-        #endregion [ ADD NEW ENTITY ]
+        #endregion [ ADD/EDIT METHODS ]
 
         #region [ DELETE ACTIONS ]
 

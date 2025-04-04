@@ -1,14 +1,21 @@
 ﻿@model WordViewModel
 
-<form asp-action="EditWord" method="post">
+<form asp-area="Sets" asp-controller="Home" asp-action="AddOrEditWord" method="post">
 
     <input hidden asp-for="SetId" />
-    <input hidden asp-for="ImagePath" />
+    <input hidden asp-for="Id" />
 
     <div class="border p-3 mt-4">
 
         <div class="row pb-2">
-            <h2 class="text-white">Edit word</h2>
+            @if (Model.Id == 0)
+            {
+                <h2 class="text-white">Add new word</h2>
+            }
+            else
+            {
+                <h2 class="text-white">Edit word</h2>
+            }
             <hr />
         </div>
 
@@ -31,7 +38,14 @@
 
         <div class="row">
             <div class="col-6 col-md-3 m-auto">
-                <button type="submit" class="m-auto btn btn-primary form-control border-black border-1">Update word</button>
+                @if (Model.Id == 0)
+                {
+                    <button type="submit" class="m-auto btn btn-primary form-control border-black border-1">Add word</button>
+                }
+                else
+                {
+                    <button type="submit" class="m-auto btn btn-primary form-control border-black border-1">Update word</button>
+                }
             </div>
 
             <div class="col-6 col-md-3 m-auto">

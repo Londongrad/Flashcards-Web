@@ -3,7 +3,6 @@
 @{
     var user = await userManager.GetUserAsync(User);
 }
-
 <header>
     <nav class="navbar navbar-dark bg-primary border-bottom box-shadow mb-3">
 
@@ -11,56 +10,59 @@
 
             <a asp-area="Sets" asp-controller="Home" asp-action="Index" class="navbar-brand ms-5">Flashcards</a>
 
-            <div class="dropdown me-5">
+            @if (user is not null)
+            {
+                <div class="dropdown me-5">
 
-                @if (user is not null && @user.ImageURL is null)
-                {
-                    <button class="btn dropdown-toggle text-bg-dark" data-bs-auto-close="outside"
-                            type="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-expanded="false">
-                        @user!.UserName
+                    @if (@user.ImageURL is null)
+                    {
+                        <button class="btn dropdown-toggle text-bg-dark" data-bs-auto-close="outside"
+                                type="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-expanded="false">
+                            @user.UserName
 
-                    </button>
-                }
-                else
-                {
-                    <a class="btn dropdown-toggle avatar-container-header" id="dropdownMenu1" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img class="user-link-photo" src="@user!.ImageURL" />
-                    </a>
-                }
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="dropdownMenu1">
-                    <li class="justify-content-center" style="display: flex">
-                        @if (@user!.ImageURL is not null)
-                        {
-                            <img class="user-link-photo ms-2" src="@user!.ImageURL" />
-                        }
-                        <div class="text-center align-content-center mx-2 text-nowrap">
-                            <p class="m-0">@user.UserName</p>
-                            <p class="m-0">@user.Email</p>
-                        </div>
-                    </li>
-                    <li class="dropdown-divider"></li>
-                    <li class="text-center text-big">
-                        <a asp-area="Account" asp-controller="Account" asp-action="Settings" class="dropdown-item">
-                            <i class="bi bi-gear"></i> Achievements
+                        </button>
+                    }
+                    else
+                    {
+                        <a class="btn dropdown-toggle avatar-container-header" id="dropdownMenu1" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img class="user-link-photo" src="@user.ImageURL" />
                         </a>
-                    </li>
-                    <li class="text-center text-big">
-                        <a asp-area="Account" asp-controller="Account" asp-action="Settings" class="dropdown-item">
-                            <i class="bi bi-gear"></i> Settings
-                        </a>
-                    </li>
-                    <li class="dropdown-divider"></li>
-                    <li class="text-center text-big">
-                        <form method="post" asp-area="Account" asp-controller="Account" asp-action="Logout">
-                            <button type="submit" class="dropdown-item">
-                                <i class="bi bi-x-circle"></i> Logout
-                            </button>
-                        </form>
-                    </li>
-                </ul>
+                    }
 
-            </div>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="dropdownMenu1">
+                        <li class="justify-content-center" style="display: flex">
+                            @if (@user.ImageURL is not null)
+                            {
+                                <img class="user-link-photo ms-2" src="@user.ImageURL" />
+                            }
+                            <div class="text-center align-content-center mx-2 text-nowrap">
+                                <p class="m-0">@user.UserName</p>
+                                <p class="m-0">@user.Email</p>
+                            </div>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li class="text-center text-big">
+                            <a asp-area="Account" asp-controller="Account" asp-action="Settings" class="dropdown-item">
+                                <i class="bi bi-gear"></i> Achievements
+                            </a>
+                        </li>
+                        <li class="text-center text-big">
+                            <a asp-area="Account" asp-controller="Account" asp-action="Settings" class="dropdown-item">
+                                <i class="bi bi-gear"></i> Settings
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li class="text-center text-big">
+                            <form method="post" asp-area="Account" asp-controller="Account" asp-action="Logout">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-x-circle"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+
+                </div>
+            }
         </div>
     </nav>
 </header>
