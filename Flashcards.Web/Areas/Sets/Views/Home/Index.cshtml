@@ -10,7 +10,7 @@
     </h2>
 
     <div class="col-6 text-end">
-        <a asp-area="Sets" asp-controller="Home" asp-action="AddOrEditSet" title="Create new set" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
+        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", null, Context.Request.Scheme)', 'New set')" title="Create new set" class="btn btn-secondary">
             <i class="bi bi-plus-lg"></i> Add new set
         </a>
     </div>
@@ -41,4 +41,20 @@
             </form>
         }
     }
+</div>
+
+
+@* Add/Edit set popup menu *@
+<div class="modal fade" id="form-modal" tabindex="-1" aria-labelledby="addset" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="addset"></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
 </div>
