@@ -1,5 +1,9 @@
 ﻿@model WordViewModel
 
+@{
+    Layout = "_LayoutForStudyWords";
+}
+
 <form asp-area="Sets" asp-controller="Home" asp-action="AddOrEditWord" method="post">
 
     <input hidden asp-for="SetId" />
@@ -7,49 +11,33 @@
 
     <div class="border p-3 mt-4">
 
-        <div class="row pb-2">
-            @if (Model.Id == 0)
-            {
-                <h2 class="text-white">Add new word</h2>
-            }
-            else
-            {
-                <h2 class="text-white">Edit word</h2>
-            }
-            <hr />
-        </div>
-
         <div class="input-group mb-3 row">
-            <label asp-for="Name" class="input-group-text"></label>
-            <input asp-for="Name" class="form-control">
+            <label asp-for="Name" class="input-group-text text-light bg-dark"></label>
+            <input asp-for="Name" class="form-control text-light bg-dark">
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
         <div class="input-group mb-3 row">
-            <label asp-for="Definition" class="input-group-text"></label>
-            <input asp-for="Definition" class="form-control">
+            <label asp-for="Definition" class="input-group-text text-light bg-dark"></label>
+            <input asp-for="Definition" class="form-control text-light bg-dark">
             <span asp-validation-for="Definition" class="text-danger"></span>
         </div>
 
         <div class="input-group mb-3 row">
-            <label asp-for="ImagePath" class="input-group-text"></label>
-            <input asp-for="ImagePath" class="form-control">
+            <label asp-for="ImagePath" class="input-group-text text-light bg-dark"></label>
+            <input asp-for="ImagePath" class="form-control text-light bg-dark">
         </div>
 
         <div class="row">
-            <div class="col-6 col-md-3 m-auto">
+            <div class="col-6 m-auto">
                 @if (Model.Id == 0)
                 {
-                    <button type="submit" class="m-auto btn btn-primary form-control border-black border-1">Add word</button>
+                    <button type="submit" class="m-auto btn btn-primary form-control border-black border-1 text-white">Add word</button>
                 }
                 else
                 {
-                    <button type="submit" class="m-auto btn btn-primary form-control border-black border-1">Update word</button>
+                    <button type="submit" class="m-auto btn btn-primary form-control border-black border-1 text-white">Update word</button>
                 }
-            </div>
-
-            <div class="col-6 col-md-3 m-auto">
-                <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.SetId" class="btn btn-secondary form-control border-black border-1">Back</a>
             </div>
         </div>
     </div>

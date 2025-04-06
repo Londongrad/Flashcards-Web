@@ -26,12 +26,12 @@ namespace Flashcards.Infrastructure.Repositories
 
         public async Task<IEnumerable<Set>> GetAllAsync()
         {
-            return await _dbContext.Sets.Where(s => s.UserId == _userId).Include(s => s.Words).ToListAsync();
+            return await _dbContext.Sets.Where(s => s.UserId == _userId).Include(s => s.Words).AsNoTracking().ToListAsync();
         }
 
         public async Task<Set?> GetAsync(int id)
         {
-            return await _dbContext.Sets.Where(s => s.UserId == _userId).Include(s => s.Words).FirstOrDefaultAsync(s => s.Id == id);
+            return await _dbContext.Sets.Where(s => s.UserId == _userId).Include(s => s.Words).AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task UpdateAsync(Set set)

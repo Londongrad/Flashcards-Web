@@ -6,14 +6,18 @@
 {
     <h2 class="text-light text-center my-5">
         Name of the set is @Model.Name. This set has in total @Model.Words?.Count word.
-        <a asp-area="Sets" asp-controller="Home" asp-action="AddOrEditSet" asp-route-id="@Model.Id" class="btn sound-fav-btn" id="soundBtn" type="button" title="Edit"><i class="bi bi-pencil-square"></i></a>
+        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id }, Context.Request.Scheme)', 'Edit set')" class="btn sound-fav-btn" title="Edit">
+            <i class="bi bi-pencil-square"></i>
+        </a>
     </h2>
 }
 else
 {
     <h2 class="text-light text-center my-5">
         Name of the set is @Model.Name. This set has in total @Model.Words?.Count words.
-        <a asp-area="Sets" asp-controller="Home" asp-action="AddOrEditSet" asp-route-id="@Model.Id" class="btn sound-fav-btn" id="soundBtn" type="button" title="Edit"><i class="bi bi-pencil-square"></i></a>
+        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id }, Context.Request.Scheme)', 'Edit set')" class="btn sound-fav-btn" title="Edit">
+            <i class="bi bi-pencil-square"></i>
+        </a>
     </h2>
 }
 
@@ -41,7 +45,7 @@ else
     </form>
 
     <div class="float-end">
-        <a asp-area="Sets" asp-controller="Home" asp-action="AddOrEditWord" asp-route-setid="@Model.Id" title="Create new word" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
+        <a onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { setId = Model.Id }, Context.Request.Scheme)', 'Add new word')" title="Create new word" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
             <i class="bi bi-plus-lg"></i> Add new word
         </a>
     </div>
@@ -69,13 +73,14 @@ else
                     {
                         <img src="@word.ImagePath" class="zoom-img" asp-append-version="true" />
                     }
-                    else{
+                    else
+                    {
                         <p>No image</p>
                     }
                 </td>
                 <td style="width:10%">
                     <div class="btn-group-vertical" role="group">
-                        <a asp-area="Sets" asp-controller="Home" asp-action="AddOrEditWord" asp-route-id="@word.Id" asp-route-setid="@word.SetId" class="btn border-black border-1 text-bg-info p-2 text-center text-nowrap">
+                        <a onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { word.SetId, word.Id }, Context.Request.Scheme)', 'Edit word')" class="btn border-black border-1 text-bg-info p-2 text-center text-nowrap">
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
 

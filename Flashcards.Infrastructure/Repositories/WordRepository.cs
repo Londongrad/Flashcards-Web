@@ -31,12 +31,12 @@ namespace Flashcards.Infrastructure.Repositories
 
         public async Task<IEnumerable<Word>> GetAllAsync()
         {
-            return await dbContext.Words.ToListAsync();
+            return await dbContext.Words.AsNoTracking().ToListAsync();
         }
 
         public async Task<Word?> GetAsync(int id)
         {
-            return await dbContext.Words.FirstOrDefaultAsync(s => s.Id == id);
+            return await dbContext.Words.AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
         }
     }
 }

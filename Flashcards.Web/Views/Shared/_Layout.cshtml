@@ -13,6 +13,23 @@
         <partial name="_NotificationPartial" />
         @RenderBody()
     </div>
+
+    @* Add/Edit popup menu *@
+    <div class="modal fade" id="form-modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="pop" aria-hidden="true" data-bs-theme="dark">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title text-light" id="pop"></h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <partial name="_ScriptsPartial" />
     @await RenderSectionAsync("Scripts", required: false)
 </body>

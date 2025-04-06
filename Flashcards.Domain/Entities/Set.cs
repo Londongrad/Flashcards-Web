@@ -4,7 +4,7 @@
     {
         public string Name { get; set; } = name;
 
-        public List<Word>? Words { get; set; }
+        public List<Word> Words { get; set; } = [];
 
         public string UserId { get; set; } = userId;
     }

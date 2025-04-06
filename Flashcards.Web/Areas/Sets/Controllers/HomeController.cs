@@ -216,5 +216,61 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
         #endregion [ DELETE ACTIONS ]
 
+        #region [ CHECK IF EXISTS ]
+
+        [HttpPost]
+        public async Task<IActionResult> CheckSet(string name, int id)
+        {
+            return Json(!await IsSetUnique(name, id));
+        }
+
+        private async Task<bool> IsSetUnique(string name, int id)
+        {
+            var sets = await dataManager.SetRepository.GetAllAsync();
+            if (id == 0)
+            {
+                return sets.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
+            }
+            else
+            {
+                return sets.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase) && s.Id != id);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CheckWord(string name, int id)
+        {
+            return Json(await IsWordUnique(name, id));
+        }
+
+        private async Task<bool> IsWordUnique(string name, int id)
+        {
+            var sets = await dataManager.SetRepository.GetAllAsync();
+            if (id == 0)
+            {
+                foreach (var word in sets.SelectMany(s => s.Words))
+                {
+                    if (string.Equals(word.Name, name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                foreach (var word in sets.SelectMany(s => s.Words))
+                {
+                    if (string.Equals(word.Name, name, StringComparison.OrdinalIgnoreCase) && word.Id != id)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        #endregion [ CHECK IF EXISTS ]
+
     }
 }
