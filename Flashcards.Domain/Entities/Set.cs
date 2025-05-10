@@ -1,8 +1,7 @@
 ﻿namespace Flashcards.Domain.Entities
 {
-    public class Set(int id, string name, string userId) : EntityBase(id)
+    public class Set(int id, string name, string userId) : EntityBase(id, name)
     {
-        public string Name { get; set; } = name;
 
         public List<Word> Words { get; set; } = [];
 

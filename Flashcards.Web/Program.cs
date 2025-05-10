@@ -9,9 +9,7 @@ namespace Flashcards.Web
 {
     public class Program
     {
-        //TODO: Объеденить методы по довавлению/редактированию.
         //TODO: Использование Ajax & Jquery.
-        //TODO: Починить редактирование слова.
         //TODO: Реализовать систему отслеживания прогресса по обучению
         //TODO: Реализовать систему сохранения избранных слов
         public static void Main(string[] args)
@@ -20,8 +18,7 @@ namespace Flashcards.Web
 
             builder.Services.AddDbContext<ApplicationDbContext>
                 (
-                    //options => options.UseSqlServer(builder.Configuration.GetConnectionString("ASP_Project"))
-                    options => options.UseSqlite("Data Source=asp_project.db")
+                    options => options.UseSqlServer(builder.Configuration.GetConnectionString("Host"))
                 );
 
             //Identity system

@@ -10,7 +10,7 @@ namespace Flashcards.Web.Areas.Sets.Models
 
         [Required(ErrorMessage = "Name is required.")]
         [Display(Name = "Name of the word")]
-        [Remote(action: "CheckWord", controller: "Home", areaName: "Sets", HttpMethod = "POST", AdditionalFields = "Id",ErrorMessage = "Word with this name is already exist")]
+        [Remote(action: "CheckWord", controller: "Home", areaName: "Sets", HttpMethod = "POST", AdditionalFields = "Id", ErrorMessage = "Word with this name is already exists")]
         public string Name { get; set; } = "";
 
         [Required(ErrorMessage = "Definition is required.")]

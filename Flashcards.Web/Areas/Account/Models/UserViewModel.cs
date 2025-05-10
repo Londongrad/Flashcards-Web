@@ -24,7 +24,7 @@ namespace Flashcards.Web.Areas.Account.Models
         [Compare("ConfirmPassword", ErrorMessage = "Password does not match.")]
         public string? NewPassword { get; set; } = null!;
 
-        [Display(Name = "Confirm password")]
+        [Display(Name = "Confirm new password")]
         [DataType(DataType.Password)]
         public string? ConfirmPassword { get; set; } = null!;
 

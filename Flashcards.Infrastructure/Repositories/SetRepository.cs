@@ -7,16 +7,10 @@ using System.Security.Claims;
 
 namespace Flashcards.Infrastructure.Repositories
 {
-    public class SetRepository : ISetRepository
+    public class SetRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : ISetRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly string _userId;
-
-        public SetRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
-        {
-            _dbContext = dbContext;
-            _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-        }
+        private readonly ApplicationDbContext _dbContext = dbContext;
+        private readonly string _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
         public async Task DeleteAsync(int id)
         {

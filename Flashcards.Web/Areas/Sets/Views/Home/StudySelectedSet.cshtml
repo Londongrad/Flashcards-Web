@@ -1,15 +1,16 @@
-﻿@model CurrentWordViewModel
+﻿@model List<WordViewModel>
 
 @{
     Layout = "_LayoutForStudyWords";
+    var index = 0;
 }
 
 <div class="row text-center align-items-center mx-0">
-    <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.SetId" type="button" class="btn btn-primary text-bg-dark col-2">
+    <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model[0].SetId" type="button" class="btn btn-primary text-bg-dark col-2">
         <i class="bi bi-arrow-down-left-circle"></i> Back to the set
     </a>
 
-    <h3 class="text-white col-8 m-0">@(Model.Index + 1)/@Model.Count</h3>
+    <h3 id="counter" class="text-white col-8 m-0">@(index + 1)/@Model.Count</h3>
 
     <div class="col-2 text-white">
         <a class="btn sound-fav-btn" id="soundBtn" title="Sound"><i class="bi bi-volume-up"></i></a>
@@ -19,31 +20,31 @@
 
 <div class="tile">
     <div class="text-center tile__face tile__face--front">
-        <h2 class="text-white text-to-learn" id="tts">@Model.CurrentWord.Name</h2>
+        <h2 class="text-white text-to-learn" id="wordName">@Model[index].Name</h2>
     </div>
 
     <div class="text-center tile__face tile__face--back">
-        <img src="@Model.CurrentWord.ImagePath" style="height: 400px; width: auto; margin-top: 10px;" />
+        <img id="wordImage" src="@Model[index].ImagePath" style="height: 400px; width: auto; margin-top: 10px;" />
     </div>
 
     <div class="text-center text-white text-to-learn tile__face tile__face--back">
-        @Model.CurrentWord.Definition
+        <p id="wordDefinition">@Model[index].Definition</p>
     </div>
 
 </div>
 
 <div class="text-center mt-3">
-    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index - 1)" id="BtnPrev" type="button" class="btn btn-primary bg-black w-25">
+    <button disabled id="BtnPrev" class="btn btn-primary bg-black w-25">
         <i class="bi bi-chevron-left"></i> Previous
-    </a>
+    </button>
 
-    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index + 1)" id="BtnNext" type="button" class="btn btn-primary text-bg-dark-subtle w-25">
+    <button id="BtnNext" class="btn btn-primary text-bg-dark-subtle w-25">
         Next <i class="bi bi-chevron-right"></i>
-    </a>
+    </button>
 </div>
 
 @section Scripts {
-    <script type="text/javascript">
+    @* <script type="text/javascript">
         const BtnPrev = document.getElementById('BtnPrev');
         const BtnNext = document.getElementById('BtnNext');
         if (@Model.Index == 0) {
@@ -62,7 +63,7 @@
             BtnNext.style.pointerEvents="auto";
             BtnNext.style.cursor="pointer";
         }
-    </script>
+    </script> *@
 
     <script type="text/javascript">
         const tile = document.querySelector(".tile");
@@ -72,7 +73,7 @@
     </script>
 
     <script type="text/javascript">
-        const textEl = document.getElementById('tts');
+        const textEl = document.getElementById('wordName');
         const soundBtn = document.getElementById('soundBtn');
 
         soundBtn.addEventListener('click', speakText);
@@ -86,5 +87,45 @@
             utterance.volume = 0.5;
             window.speechSynthesis.speak(utterance);
         }
+    </script>
+
+    <script type="text/javascript">
+        var currentIndex = 0;
+        var totalCount = @Model.Count;
+
+        function loadWord(index) {
+            $.ajax({
+                url: '@Url.Action("SwitchWord", "Home")',
+                type: 'GET',
+                data: { index: index },
+                success: function (data) {
+                    $("#counter").text((index + 1) + "/" + totalCount);
+                    $("#wordName").text(data.name);
+                    $("#wordDefinition").text(data.definition);
+                    $("#wordImage").attr("src", data.imagePath);
+
+                    // Enable/Disable buttons based on index
+                    $("#BtnPrev").prop("disabled", index === 0);
+                    $("#BtnNext").prop("disabled", index === totalCount - 1);
+
+                    currentIndex = index;
+                },
+                error: function () {
+                    alert("No more items.");
+                }
+            });
+        }
+
+        $("#BtnNext").click(function () {
+            if (currentIndex < totalCount - 1) {
+                loadWord(currentIndex + 1);
+            }
+        });
+
+        $("#BtnPrev").click(function () {
+            if (currentIndex > 0) {
+                loadWord(currentIndex - 1);
+            }
+        });
     </script>
 }

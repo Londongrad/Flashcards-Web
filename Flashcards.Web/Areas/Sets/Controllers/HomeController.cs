@@ -13,7 +13,6 @@ namespace Flashcards.Web.Areas.Sets.Controllers
     public class HomeController(DataManager dataManager, IMapper mapper, UserManager<ApplicationUser> userManager) : Controller
     {
         private static SetViewModel _set = new();
-        private static CurrentWordViewModel _wordVM = new();
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -47,23 +46,17 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (_set is null)
                 return NotFound();
 
-            _wordVM.Index = 0;
-            _wordVM.Count = _set.Words!.Count;
-            _wordVM.SetId = id;
-            _wordVM.CurrentWord = _set.Words[0];
-
-            return View(_wordVM);
+            return View(_set.Words);
         }
 
         [HttpGet]
         public IActionResult SwitchWord(int index = 0)
         {
-            if (_set.Words!.Count != 0)
+            if (index < 0 || index >= _set.Words.Count)
             {
-                _wordVM.Index = index;
-                _wordVM.CurrentWord = _set.Words![_wordVM.Index];
+                return NotFound();
             }
-            return View("StudySelectedSet", _wordVM);
+            return Json(_set.Words[index]);
         }
 
         #region [ ADD/EDIT METHODS ]
