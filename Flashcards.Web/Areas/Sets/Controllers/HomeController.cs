@@ -81,7 +81,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                 if (set is null)
                     return NotFound();
 
-                return View(mapper.Map<SetViewModel>(set));
+                return PartialView(mapper.Map<SetViewModel>(set));
             }
         }
 

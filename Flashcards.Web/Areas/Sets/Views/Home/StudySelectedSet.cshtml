@@ -44,27 +44,6 @@
 </div>
 
 @section Scripts {
-    @* <script type="text/javascript">
-        const BtnPrev = document.getElementById('BtnPrev');
-        const BtnNext = document.getElementById('BtnNext');
-        if (@Model.Index == 0) {
-            BtnPrev.style.pointerEvents="none";
-            BtnPrev.style.cursor="default";
-        }
-        else {
-            BtnPrev.style.pointerEvents="auto";
-            BtnPrev.style.cursor="pointer";
-        }
-        if (@Model.Index == @Model.Count - 1){
-            BtnNext.style.pointerEvents="none";
-            BtnNext.style.cursor="default";
-        }
-        else {
-            BtnNext.style.pointerEvents="auto";
-            BtnNext.style.cursor="pointer";
-        }
-    </script> *@
-
     <script type="text/javascript">
         const tile = document.querySelector(".tile");
         tile.addEventListener("click", function () {

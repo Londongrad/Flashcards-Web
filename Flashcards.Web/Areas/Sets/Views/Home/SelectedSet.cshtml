@@ -2,24 +2,12 @@
 
 <input hidden asp-for="Id" />
 
-@if (@Model.Words?.Count == 1)
-{
-    <h2 class="text-light text-center my-5">
-        Name of the set is @Model.Name. This set has in total @Model.Words?.Count word.
-        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id }, Context.Request.Scheme)', 'Edit set')" class="btn sound-fav-btn" title="Edit">
-            <i class="bi bi-pencil-square"></i>
-        </a>
-    </h2>
-}
-else
-{
-    <h2 class="text-light text-center my-5">
-        Name of the set is @Model.Name. This set has in total @Model.Words?.Count words.
-        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id }, Context.Request.Scheme)', 'Edit set')" class="btn sound-fav-btn" title="Edit">
-            <i class="bi bi-pencil-square"></i>
-        </a>
-    </h2>
-}
+<h2 class="text-light text-center my-5">
+    Name of the set is @Model.Name. This set has in total @Model.Words?.Count @(Model.Words?.Count == 1 ? "word" : "words")
+    <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id }, Context.Request.Scheme)', 'Edit set')" class="btn sound-fav-btn" title="Edit">
+        <i class="bi bi-pencil-square"></i>
+    </a>
+</h2>
 
 <div>
 
@@ -69,7 +57,7 @@ else
                 <td class="table-data" style="width:18%">@word.Name</td>
                 <td class="table-data">@word.Definition</td>
                 <td style="width:18%">
-                    @if (!string.IsNullOrEmpty(@word.ImagePath) && @word.ImagePath != "null")
+                    @if (!string.IsNullOrEmpty(@word.ImagePath))
                     {
                         <img src="@word.ImagePath" class="zoom-img" asp-append-version="true" />
                     }
@@ -102,7 +90,7 @@ else
 @section Scripts {
     <script type="text/javascript">
         const Btn = document.getElementById('studyBtn');
-        if (@Model.Words?.Count == 0) {
+        if (@Model.Words?.Count === 0) {
             Btn.style.pointerEvents="none";
             Btn.style.cursor="default";
         }
