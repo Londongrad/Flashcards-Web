@@ -1,9 +1,10 @@
 ﻿@model SetViewModel
 
-<form asp-area="Sets" asp-controller="Home" asp-action="AddOrEditSet" method="post">
+<form id="modal" asp-area="Sets" asp-controller="Home" asp-action="AddOrEditSet" method="post">
 
     <input asp-for="UserId" hidden />
     <input asp-for="Id" hidden />
+    <input asp-for="OldName" hidden />
 
     <div class="border p-3 mt-4">
 
@@ -20,3 +21,27 @@
         </div>
     </div>
 </form>
+
+<script>
+    $(function() {
+        $("#modal").submit(function(e) {
+            e.preventDefault();
+
+            var form = $(this);
+            $.ajax({
+                url: form.attr("action"),
+                type: form.attr("method"),
+                data: form.serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        $("#form-modal").modal('hide');
+                        location.reload();
+                    } else {
+                        $("#form-modal .modal-body").html(response);
+                        $.validator.unobtrusive.parse(document);
+                    }
+                }
+            });
+        });
+    });
+</script>

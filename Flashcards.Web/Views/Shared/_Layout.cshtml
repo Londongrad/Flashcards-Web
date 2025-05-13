@@ -13,8 +13,8 @@
         <partial name="_NotificationPartial" />
         @RenderBody()
     </div>
-
     <partial name="_ScriptsPartial" />
     @await RenderSectionAsync("Scripts", required: false)
+    <partial name="_ModalWindowPartial" />
 </body>
 </html>

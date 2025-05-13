@@ -1,7 +1,7 @@
 ﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
-
 // Write your JavaScript code.
+
 
 showInPopup = (url, title) => {
     $.ajax({
@@ -12,5 +12,5 @@ showInPopup = (url, title) => {
             $("#form-modal .modal-title").html(title);
             $("#form-modal").modal('show');
         }
-    })
-}
+    });
+};

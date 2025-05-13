@@ -61,6 +61,8 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
         #region [ ADD/EDIT METHODS ]
 
+        #region [ SETS ]
+
         [HttpGet]
         public async Task<IActionResult> AddOrEditSet(int id = 0)
         {
@@ -72,7 +74,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                     return BadRequest();
 
                 var set = new SetViewModel { UserId = user.Id };
-                return View(set);
+                return PartialView(set);
             }
             else
             {
@@ -89,7 +91,13 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         public async Task<IActionResult> AddOrEditSet(SetViewModel set)
         {
             if (!ModelState.IsValid)
-                return View(set);
+                return PartialView(set);
+
+            if (string.Equals(set.OldName, set.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["error"] = "The same name for the set";
+                return PartialView(set);
+            }
 
             if (set.Id == 0)
             {
@@ -100,20 +108,16 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             }
             else
             {
-                try
-                {
-                    await dataManager.SetRepository.UpdateAsync(mapper.Map<Set>(set));
-                }
-                catch (Exception)
-                {
-                    TempData["error"] = "Set with this name is already exists";
-                    return View(set);
-                }
+                await dataManager.SetRepository.UpdateAsync(mapper.Map<Set>(set));
 
                 TempData["success"] = "The set has been successfully edited";
                 return RedirectToAction("SelectedSet", new { id = set.Id });
             }
         }
+
+        #endregion [ SETS ]
+
+        #region [ WORDS ]
 
         [HttpGet]
         public async Task<IActionResult> AddOrEditWord(int setId, int id = 0)
@@ -157,24 +161,20 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (word.Id == 0)
             {
                 await dataManager.WordRepository.AddAsync(mapper.Map<Word>(word));
+
                 TempData["success"] = "The new word has been successfully added";
                 return RedirectToAction("SelectedSet", new { id = word.SetId });
             }
             else
             {
-                try
-                {
-                    await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
-                }
-                catch (Exception)
-                {
-                    TempData["error"] = "Word with this name is already exists";
-                    return View(word);
-                }
+                await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
+
                 TempData["success"] = "The word has been successfully edited";
                 return RedirectToAction("SelectedSet", new { id = word.SetId });
             }
         }
+
+        #endregion [ WORDS ]
 
         #endregion [ ADD/EDIT METHODS ]
 

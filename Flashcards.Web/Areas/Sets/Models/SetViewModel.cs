@@ -7,10 +7,12 @@ namespace Flashcards.Web.Areas.Sets.Models
     {
         public int Id { get; set; }
 
+        public string OldName { get; set; } = null!;
+
         [Required(ErrorMessage = "Name is required.")]
         [Display(Name = "Name of the set")]
         [MaxLength(2, ErrorMessage = "The name of the set must be with a maximum length of 2 characters")]
-        [Remote(action: "CheckSet", controller: "Home", areaName: "Sets", HttpMethod = "POST", AdditionalFields = "Id", ErrorMessage = "Set with this name is already exist")]
+        [Remote(action: "CheckSet", controller: "Home", areaName: "Sets", HttpMethod = "POST", AdditionalFields = "Id", ErrorMessage = "Set with this name already exists")]
         public string Name { get; set; } = null!;
 
         public List<WordViewModel> Words { get; set; } = [];
