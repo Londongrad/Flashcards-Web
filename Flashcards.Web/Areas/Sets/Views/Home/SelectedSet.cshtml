@@ -4,10 +4,43 @@
 
 <h2 class="text-light text-center my-5">
     Name of the set is @Model.Name. This set has in total @Model.Words?.Count @(Model.Words?.Count == 1 ? "word" : "words")
-    <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id }, Context.Request.Scheme)', 'Edit set')" class="btn sound-fav-btn" title="Edit">
+    <a class="btn sound-fav-btn" title="Edit" data-bs-toggle="modal" data-bs-target="#set">
         <i class="bi bi-pencil-square"></i>
     </a>
 </h2>
+
+<!-- Modal for edit set action -->
+<form asp-area="Sets" asp-controller="Home" asp-action="EditSet" method="post">
+
+    <input hidden asp-for="UserId" />
+    <input hidden asp-for="Id" />
+
+    <div class="modal fade" id="set" tabindex="-1" aria-labelledby="lableIMG" aria-hidden="true" data-bs-theme="dark">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-light" id="lableIMG">New set</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group row m-0 p-0">
+                        <label asp-for="@Model.Name" class="input-group-text bg-dark text-light"></label>
+                        <input asp-for="@Model.Name" class="form-control bg-dark text-light">
+                        <span asp-validation-for="@Model.Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Update set
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 <div>
 
@@ -38,6 +71,39 @@
         </a>
     </div>
 
+    <!-- Modal for add new word action -->
+    <form asp-area="Sets" asp-controller="Home" asp-action="AddWord" method="post">
+
+        <input hidden asp-for="UserId" />
+        <input hidden asp-for="Id" />
+
+        <div class="modal fade" id="set" tabindex="-1" aria-labelledby="lableIMG" aria-hidden="true" data-bs-theme="dark">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-light" id="lableIMG">New set</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group row m-0 p-0">
+                            <label asp-for="@Model.Name" class="input-group-text bg-dark text-light"></label>
+                            <input asp-for="@Model.Name" class="form-control bg-dark text-light">
+                            <span asp-validation-for="@Model.Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+
+                        <button type="submit" class="btn btn-primary">
+                            Update set
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
 </div>
 
 <table class="table table-bordered table-striped" cellpadding="0">
@@ -57,14 +123,7 @@
                 <td class="table-data" style="width:18%">@word.Name</td>
                 <td class="table-data">@word.Definition</td>
                 <td style="width:18%">
-                    @if (!string.IsNullOrEmpty(@word.ImagePath))
-                    {
-                        <img src="@word.ImagePath" class="zoom-img" asp-append-version="true" />
-                    }
-                    else
-                    {
-                        <p>No image</p>
-                    }
+                    @(!string.IsNullOrEmpty(@word.ImagePath)) ? <img src="@word.ImagePath" class="zoom-img" asp-append-version="true" /> : <p>No image</p>
                 </td>
                 <td style="width:10%">
                     <div class="btn-group-vertical" role="group">

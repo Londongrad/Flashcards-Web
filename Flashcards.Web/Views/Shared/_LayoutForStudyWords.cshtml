@@ -11,5 +11,7 @@
     <div class="container">
         @RenderBody()
     </div>
+    <partial name="_ScriptsPartial" />
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

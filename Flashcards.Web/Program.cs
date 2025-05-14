@@ -9,7 +9,6 @@ namespace Flashcards.Web
 {
     public class Program
     {
-        //TODO: Использование Ajax & Jquery.
         //TODO: Реализовать систему отслеживания прогресса по обучению
         //TODO: Реализовать систему сохранения избранных слов
         public static void Main(string[] args)

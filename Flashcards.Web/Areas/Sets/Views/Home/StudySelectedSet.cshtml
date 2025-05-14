@@ -1,16 +1,14 @@
-﻿@model List<WordViewModel>
-
+﻿@model CurrentWordViewModel
 @{
     Layout = "_LayoutForStudyWords";
-    var index = 0;
 }
 
 <div class="row text-center align-items-center mx-0">
-    <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model[0].SetId" type="button" class="btn btn-primary text-bg-dark col-2">
+    <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.SetId" type="button" class="btn btn-primary text-bg-dark col-2">
         <i class="bi bi-arrow-down-left-circle"></i> Back to the set
     </a>
 
-    <h3 id="counter" class="text-white col-8 m-0">@(index + 1)/@Model.Count</h3>
+    <h3 id="counter" class="text-white col-8 m-0">@(Model.Index + 1)/@Model.Count</h3>
 
     <div class="col-2 text-white">
         <a class="btn sound-fav-btn" id="soundBtn" title="Sound"><i class="bi bi-volume-up"></i></a>
@@ -18,93 +16,58 @@
     </div>
 </div>
 
-<div class="tile">
-    <div class="text-center tile__face tile__face--front">
-        <h2 class="text-white text-to-learn" id="wordName">@Model[index].Name</h2>
+<div class="d-flex justify-content-center align-items-center">
+    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index - 1)" id="BtnPrev" class="btn btn-primary bg-black mx-2" type="button" style="width: 20px; height: 90px">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+
+    <div class="tile">
+        <div class="text-center tile__face">
+            <p class="text-white text-to-learn" id="wordName">@Model.CurrentWord.Name</p>
+        </div>
+
+        <div class="text-center tile__face tile__face--back">
+            <img id="wordImage" src="@Model.CurrentWord.ImagePath" style="height: 400px; width: auto; margin-top: 10px;" />
+        </div>
+
+        <div class="text-center text-white text-to-learn tile__face tile__face--back">
+            <p id="wordDefinition">@Model.CurrentWord.Definition</p>
+        </div>
     </div>
 
-    <div class="text-center tile__face tile__face--back">
-        <img id="wordImage" src="@Model[index].ImagePath" style="height: 400px; width: auto; margin-top: 10px;" />
-    </div>
+    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index + 1)" id="BtnNext" class="btn btn-primary text-bg-dark-subtle mx-2" type="button" style="width: 20px; height: 90px">
+        <i class="bi bi-chevron-right"></i>
+    </a>
 
-    <div class="text-center text-white text-to-learn tile__face tile__face--back">
-        <p id="wordDefinition">@Model[index].Definition</p>
-    </div>
-
-</div>
-
-<div class="text-center mt-3">
-    <button disabled id="BtnPrev" class="btn btn-primary bg-black w-25">
-        <i class="bi bi-chevron-left"></i> Previous
-    </button>
-
-    <button id="BtnNext" class="btn btn-primary text-bg-dark-subtle w-25">
-        Next <i class="bi bi-chevron-right"></i>
-    </button>
 </div>
 
 @section Scripts {
     <script type="text/javascript">
+        const BtnPrev = document.getElementById('BtnPrev');
+        const BtnNext = document.getElementById('BtnNext');
+        if (@Model.Index === 0) {
+            BtnPrev.style.pointerEvents="none";
+            BtnPrev.style.cursor="default";
+        }
+        else {
+            BtnPrev.style.pointerEvents="auto";
+            BtnPrev.style.cursor="pointer";
+        }
+        if (@Model.Index === @Model.Count - 1){
+            BtnNext.style.pointerEvents="none";
+            BtnNext.style.cursor="default";
+        }
+        else {
+            BtnNext.style.pointerEvents="auto";
+            BtnNext.style.cursor="pointer";
+        }
+    </script>
+
+    @* Flip the card *@
+    <script type="text/javascript">
         const tile = document.querySelector(".tile");
         tile.addEventListener("click", function () {
           tile.classList.toggle("is-flipped");
-        });
-    </script>
-
-    <script type="text/javascript">
-        const textEl = document.getElementById('wordName');
-        const soundBtn = document.getElementById('soundBtn');
-
-        soundBtn.addEventListener('click', speakText);
-
-        function speakText() {
-            window.speechSynthesis.cancel();
-            const text = textEl.innerText;
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.pitch = 0.7;
-            utterance.rate = 0.7;
-            utterance.volume = 0.5;
-            window.speechSynthesis.speak(utterance);
-        }
-    </script>
-
-    <script type="text/javascript">
-        var currentIndex = 0;
-        var totalCount = @Model.Count;
-
-        function loadWord(index) {
-            $.ajax({
-                url: '@Url.Action("SwitchWord", "Home")',
-                type: 'GET',
-                data: { index: index },
-                success: function (data) {
-                    $("#counter").text((index + 1) + "/" + totalCount);
-                    $("#wordName").text(data.name);
-                    $("#wordDefinition").text(data.definition);
-                    $("#wordImage").attr("src", data.imagePath);
-
-                    // Enable/Disable buttons based on index
-                    $("#BtnPrev").prop("disabled", index === 0);
-                    $("#BtnNext").prop("disabled", index === totalCount - 1);
-
-                    currentIndex = index;
-                },
-                error: function () {
-                    alert("No more items.");
-                }
-            });
-        }
-
-        $("#BtnNext").click(function () {
-            if (currentIndex < totalCount - 1) {
-                loadWord(currentIndex + 1);
-            }
-        });
-
-        $("#BtnPrev").click(function () {
-            if (currentIndex > 0) {
-                loadWord(currentIndex - 1);
-            }
-        });
+        }); 
     </script>
 }
