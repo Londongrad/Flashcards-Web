@@ -1,0 +1,44 @@
+﻿@* @model WordViewModel
+
+@{
+    Layout = null;
+}
+
+<form asp-area="Sets" asp-controller="Home" asp-action="AddOrEditWord" method="post">
+
+    <input hidden asp-for="SetId" />
+    <input hidden asp-for="Id" />
+
+    <div class="border p-3 mt-4">
+
+        <div class="input-group mb-3 row">
+            <label asp-for="Name" class="input-group-text text-light bg-dark"></label>
+            <input asp-for="Name" class="form-control text-light bg-dark">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="input-group mb-3 row">
+            <label asp-for="Definition" class="input-group-text text-light bg-dark"></label>
+            <input asp-for="Definition" class="form-control text-light bg-dark">
+            <span asp-validation-for="Definition" class="text-danger"></span>
+        </div>
+
+        <div class="input-group mb-3 row">
+            <label asp-for="ImagePath" class="input-group-text text-light bg-dark"></label>
+            <input asp-for="ImagePath" class="form-control text-light bg-dark">
+        </div>
+
+        <div class="row">
+            <div class="col-6 m-auto">
+                @if (Model.Id == 0)
+                {
+                    <button type="submit" class="m-auto btn btn-primary form-control border-black border-1 text-white">Add word</button>
+                }
+                else
+                {
+                    <button type="submit" class="m-auto btn btn-primary form-control border-black border-1 text-white">Update word</button>
+                }
+            </div>
+        </div>
+    </div>
+</form> *@

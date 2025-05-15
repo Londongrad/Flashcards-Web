@@ -38,6 +38,7 @@ namespace Flashcards.Infrastructure.Repositories
 
         public async Task AddAsync(Set set)
         {
+            set.UserId = _userId;
             await _dbContext.Sets.AddAsync(set);
             await _dbContext.SaveChangesAsync();
         }

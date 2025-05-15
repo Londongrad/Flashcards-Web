@@ -23,8 +23,8 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             this.dataManager = dataManager;
             this.mapper = mapper;
             speechSynthesizer = new SpeechSynthesizer();
-            speechSynthesizer.SelectVoice("Microsoft Hazel Desktop");
-
+            try { speechSynthesizer.SelectVoice("Microsoft Hazel Desktop"); }
+            catch (Exception) { }
         }
 
         [HttpGet]
@@ -34,7 +34,6 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             {
                 Sets = mapper.Map<List<SetViewModel>>(await dataManager.SetRepository.GetAllAsync()),
             };
-            vm.NewSet.UserId = vm.Sets.First().UserId;
             return View(vm);
         }
 
@@ -133,6 +132,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSet(IndexViewModel vm)
         {
+            //if (await IsSetUnique(vm.NewSet.Name, 0)) { return PartialView("_AddOrEditSetPartial", vm.NewSet); }
             await dataManager.SetRepository.AddAsync(mapper.Map<Set>(vm.NewSet));
 
             TempData["success"] = "The new set has been successfully added";
@@ -207,30 +207,30 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
         #region [ CHECK IF EXISTS ]
 
-        [HttpPost]
-        public async Task<IActionResult> CheckSet(string NewSet_Name, int id)
-        {
-            return Json(!await IsSetUnique(NewSet_Name, id));
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> CheckSet(string NewSet_Name, int id)
+        //{
+        //    return Json(!await IsSetUnique(NewSet_Name, id));
+        //}
 
         private async Task<bool> IsSetUnique(string name, int id)
         {
             var sets = await dataManager.SetRepository.GetAllAsync();
             if (id == 0)
             {
-                return sets.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
+                return !sets.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
             }
             else
             {
-                return sets.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase) && s.Id != id);
+                return !sets.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase) && s.Id != id);
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CheckWord(string name, int id)
-        {
-            return Json(await IsWordUnique(name, id));
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> CheckWord(string name, int id)
+        //{
+        //    return Json(await IsWordUnique(name, id));
+        //}
 
         private async Task<bool> IsWordUnique(string name, int id)
         {

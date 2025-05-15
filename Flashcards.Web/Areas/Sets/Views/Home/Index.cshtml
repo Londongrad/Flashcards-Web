@@ -18,8 +18,6 @@
     <!-- Modal for add set action -->
     <form asp-area="Sets" asp-controller="Home" asp-action="AddSet" method="post">
 
-        <input hidden asp-for="NewSet.UserId" />
-
         <div class="modal fade" id="newset" tabindex="-1" aria-labelledby="lableIMG" aria-hidden="true" data-bs-theme="dark">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -59,7 +57,7 @@
     }
     else
     {
-        @foreach (var set in Model.Sets.OrderByDescending(x => x.Id))
+        foreach (var set in Model.Sets.OrderByDescending(x => x.Id))
         {
             <form>
                 <div class="card border-0" style="background-color: transparent;">
