@@ -4,15 +4,28 @@ using Flashcards.Infrastructure.Data;
 using Flashcards.Web.Areas.Sets.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Speech.Synthesis;
 
 namespace Flashcards.Web.Areas.Sets.Controllers
 {
     [Authorize]
     [Area("Sets")]
-    public class HomeController(DataManager dataManager, IMapper mapper) : Controller
+    public class HomeController : Controller
     {
         private static SetViewModel _set = new();
         private static readonly CurrentWordViewModel _wordVM = new();
+        private readonly SpeechSynthesizer speechSynthesizer;
+        private readonly DataManager dataManager;
+        private readonly IMapper mapper;
+
+        public HomeController(DataManager dataManager, IMapper mapper)
+        {
+            this.dataManager = dataManager;
+            this.mapper = mapper;
+            speechSynthesizer = new SpeechSynthesizer();
+            speechSynthesizer.SelectVoice("Microsoft Hazel Desktop");
+
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -54,7 +67,8 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             _wordVM.Count = _set.Words!.Count;
             _wordVM.SetId = id;
             _wordVM.CurrentWord = _set.Words[0];
-
+            speechSynthesizer.SpeakAsyncCancelAll();
+            speechSynthesizer.SpeakAsync(_wordVM.CurrentWord.Name);
             return View(_wordVM);
         }
 
@@ -65,9 +79,52 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             {
                 _wordVM.Index = index;
                 _wordVM.CurrentWord = _set.Words![_wordVM.Index];
+                speechSynthesizer.SpeakAsyncCancelAll();
+                speechSynthesizer.SpeakAsync(_wordVM.CurrentWord.Name);
+            }
+
+            return View("StudySelectedSet", _wordVM);
+        }
+
+        #region [ FAVORITE ]
+
+        [HttpPost]
+        public async Task<IActionResult> Favorite(int id)
+        {
+            var word = await dataManager.WordRepository.GetAsync(id);
+            if (word is not null)
+            {
+                if (word.IsFavorite)
+                    word.IsFavorite = false;
+                else
+                    word.IsFavorite = true;
+                await dataManager.WordRepository.UpdateAsync(word);
             }
             return View("StudySelectedSet", _wordVM);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> StudyFavorite(int id)
+        {
+            if (id is 0)
+                return BadRequest();
+
+            var set = mapper.Map<SetViewModel>(await dataManager.SetRepository.GetAsync(id));
+
+            if (_set is null)
+                return NotFound();
+
+            _set.Words = set.Words.Where(w => w.IsFavorite == true).ToList();
+
+            _wordVM.Index = 0;
+            _wordVM.Count = _set.Words!.Count;
+            _wordVM.SetId = id;
+            _wordVM.CurrentWord = _set.Words[0];
+
+            return View("StudySelectedSet", _wordVM);
+        }
+
+        #endregion [ FAVORITE ]
 
         #region [ ADD/EDIT METHODS ]
 
@@ -151,9 +208,9 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         #region [ CHECK IF EXISTS ]
 
         [HttpPost]
-        public async Task<IActionResult> CheckSet(string name, int id)
+        public async Task<IActionResult> CheckSet(string NewSet_Name, int id)
         {
-            return Json(!await IsSetUnique(name, id));
+            return Json(!await IsSetUnique(NewSet_Name, id));
         }
 
         private async Task<bool> IsSetUnique(string name, int id)
@@ -203,6 +260,5 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         }
 
         #endregion [ CHECK IF EXISTS ]
-
     }
 }

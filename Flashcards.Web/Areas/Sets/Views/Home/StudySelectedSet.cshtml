@@ -1,6 +1,7 @@
 ﻿@model CurrentWordViewModel
 @{
     Layout = "_LayoutForStudyWords";
+    var id = Model.CurrentWord.Id;
 }
 
 <div class="row text-center align-items-center mx-0">
@@ -10,14 +11,14 @@
 
     <h3 id="counter" class="text-white col-8 m-0">@(Model.Index + 1)/@Model.Count</h3>
 
-    <div class="col-2 text-white">
-        <a class="btn sound-fav-btn" id="soundBtn" title="Sound"><i class="bi bi-volume-up"></i></a>
-        <a class="btn sound-fav-btn" title="Favorite"><i class="bi bi-star-fill"></i></a>
-    </div>
+    <form asp-area="Sets" asp-controller="Home" asp-action="Favorite" asp-route-id="@id" method="post" class="col-2 text-white">
+
+        <button type="submit" class="btn sound-fav-btn" title="Favorite"><i class="bi bi-star-fill"></i></button>
+    </form>
 </div>
 
 <div class="d-flex justify-content-center align-items-center">
-    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index - 1)" id="BtnPrev" class="btn btn-primary bg-black mx-2" type="button" style="width: 20px; height: 90px">
+    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index - 1)" id="BtnPrev" class="btn btn-primary bg-black mx-2 align-content-center" type="button" style="width: 20px; height: 90px">
         <i class="bi bi-chevron-left"></i>
     </a>
 
@@ -35,7 +36,7 @@
         </div>
     </div>
 
-    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index + 1)" id="BtnNext" class="btn btn-primary text-bg-dark-subtle mx-2" type="button" style="width: 20px; height: 90px">
+    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index + 1)" id="BtnNext" class="btn btn-primary text-bg-dark-subtle mx-2 align-content-center" type="button" style="width: 20px; height: 90px">
         <i class="bi bi-chevron-right"></i>
     </a>
 
@@ -68,6 +69,6 @@
         const tile = document.querySelector(".tile");
         tile.addEventListener("click", function () {
           tile.classList.toggle("is-flipped");
-        }); 
+        });
     </script>
 }

@@ -58,6 +58,10 @@ button.accept-policy {
     font-size: 20px;
 }
 
+.text-large {
+    font-size: 38px;
+}
+
 .text-to-learn {
     font-size: 40px;
     color: wheat;

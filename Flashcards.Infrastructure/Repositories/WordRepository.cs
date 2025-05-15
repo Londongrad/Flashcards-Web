@@ -26,6 +26,7 @@ namespace Flashcards.Infrastructure.Repositories
                    .SetProperty(c => c.Name, word.Name)
                    .SetProperty(c => c.Definition, word.Definition)
                    .SetProperty(c => c.ImagePath, word.ImagePath)
+                   .SetProperty(c => c.IsFavorite, word.IsFavorite)
                 );
         }
 
