@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace Flashcards.Infrastructure.Repositories
 {
-    public class SetRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : ISetRepository
+    public class SetRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : IRepository<Set>
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
         private readonly string _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
@@ -42,5 +42,13 @@ namespace Flashcards.Infrastructure.Repositories
             await _dbContext.Sets.AddAsync(set);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<bool> IsNotUnique(string name, int id) => await Task.Run(() =>
+        {
+            if (id == 0)
+                return _dbContext.Set<Set>().Any(s => s.Name == name);
+            else
+                return _dbContext.Set<Set>().Any(s => s.Name == name && s.Id != id);
+        });
     }
 }

@@ -1,4 +1,4 @@
-﻿@model IndexViewModel
+﻿@model List<SetViewModel>
 @{
     ViewData["Title"] = "Flashcards";
 }
@@ -10,42 +10,12 @@
     </h2>
 
     <div class="col-6 text-end">
-        <a class="btn btn-primary border-1 border-dark-subtle text-bg-dark" title="Create new set" data-bs-toggle="modal" data-bs-target="#newset">
+        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", null, Context.Request.Scheme)', 'New set')" title="Create new set" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
             <i class="bi bi-plus-lg"></i> Add new set
         </a>
     </div>
 
-    <!-- Modal for add set action -->
-    <form asp-area="Sets" asp-controller="Home" asp-action="AddSet" method="post">
-
-        <div class="modal fade" id="newset" tabindex="-1" aria-labelledby="lableIMG" aria-hidden="true" data-bs-theme="dark">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-light" id="lableIMG">New set</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="input-group row m-0 p-0">
-                            <label asp-for="@Model.NewSet.Name" class="input-group-text bg-dark text-light"></label>
-                            <input asp-for="@Model.NewSet.Name" class="form-control bg-dark text-light">
-                            <span asp-validation-for="@Model.NewSet.Name" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-
-                        <button type="submit" class="btn btn-primary">
-                            Create new set
-                        </button>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-
-    @if (!Model.Sets.Any())
+    @if (!Model.Any())
     {
         <div class="row m-5">
             <img src="~/images/empty.png" style="width: 70px; height: 60px;" class="col-2 mx-1 p-0" />
@@ -57,7 +27,7 @@
     }
     else
     {
-        foreach (var set in Model.Sets.OrderByDescending(x => x.Id))
+        foreach (var set in Model.OrderByDescending(x => x.Id))
         {
             <form>
                 <div class="card border-0" style="background-color: transparent;">

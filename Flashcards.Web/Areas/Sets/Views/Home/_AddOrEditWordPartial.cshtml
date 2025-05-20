@@ -1,10 +1,12 @@
-﻿@* @model WordViewModel
+﻿@model WordViewModel
 
 @{
     Layout = null;
 }
 
-<form asp-area="Sets" asp-controller="Home" asp-action="AddOrEditWord" method="post">
+<form id="form-word" asp-area="Sets" asp-controller="Home" asp-action="AddOrEditWord" method="post">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <input hidden asp-for="SetId" />
     <input hidden asp-for="Id" />
@@ -30,15 +32,32 @@
 
         <div class="row">
             <div class="col-6 m-auto">
-                @if (Model.Id == 0)
-                {
-                    <button type="submit" class="m-auto btn btn-primary form-control border-black border-1 text-white">Add word</button>
-                }
-                else
-                {
-                    <button type="submit" class="m-auto btn btn-primary form-control border-black border-1 text-white">Update word</button>
-                }
+                <button type="submit" class="m-auto btn btn-primary form-control border-black border-1 text-white">@(Model.Id == 0 ? "Add word" : "Update word")</button>
             </div>
         </div>
     </div>
-</form> *@
+</form>
+
+<script>
+    $(function() {
+        $("#form-word").submit(function(e) {
+            e.preventDefault();
+
+            var form = $(this);
+            $.ajax({
+                url: form.attr("action"),
+                type: form.attr("method"),
+                data: form.serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        $("#form-modal").modal('hide');
+                        location.reload();
+                    } else {
+                        $("#form-modal .modal-body").html(response);
+                        $.validator.unobtrusive.parse(document);
+                    }
+                }
+            });
+        });
+    });
+</script>

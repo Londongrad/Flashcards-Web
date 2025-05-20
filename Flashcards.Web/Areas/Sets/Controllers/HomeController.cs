@@ -30,11 +30,8 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var vm = new IndexViewModel
-            {
-                Sets = mapper.Map<List<SetViewModel>>(await dataManager.SetRepository.GetAllAsync()),
-            };
-            return View(vm);
+            var sets = mapper.Map<List<SetViewModel>>(await dataManager.SetRepository.GetAllAsync());
+            return View(sets);
         }
 
         [HttpGet]
@@ -129,45 +126,121 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
         #region [ SETS ]
 
-        [HttpPost]
-        public async Task<IActionResult> AddSet(IndexViewModel vm)
+        [HttpGet]
+        public async Task<IActionResult> AddOrEditSet(int id = 0)
         {
-            //if (await IsSetUnique(vm.NewSet.Name, 0)) { return PartialView("_AddOrEditSetPartial", vm.NewSet); }
-            await dataManager.SetRepository.AddAsync(mapper.Map<Set>(vm.NewSet));
+            if (id is 0)
+            {
+                var set = new SetViewModel();
+                return PartialView("_AddOrEditSetPartial", set);
+            }
+            else
+            {
+                var set = await dataManager.SetRepository.GetAsync(id);
 
-            TempData["success"] = "The new set has been successfully added";
-            return RedirectToAction("Index");
+                if (set is null)
+                    return NotFound();
+
+                return PartialView("_AddOrEditSetPartial", mapper.Map<SetViewModel>(set));
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditSet(SetViewModel set)
+        public async Task<IActionResult> AddOrEditSet(SetViewModel set)
         {
-            await dataManager.SetRepository.UpdateAsync(mapper.Map<Set>(set));
+            if (!ModelState.IsValid)
+                return PartialView("_AddOrEditSetPartial", set);
 
-            TempData["success"] = "The set has been successfully edited";
-            return RedirectToAction("SelectedSet", new { id = set.Id });
+            if (string.Equals(set.OldName, set.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError("", "The same name for the set");
+                return PartialView("_AddOrEditSetPartial", set);
+            }
+
+            if (await dataManager.SetRepository.IsNotUnique(set.Name, set.Id))
+            {
+                ModelState.AddModelError("", "Set with this name already exists");
+                return PartialView("_AddOrEditSetPartial", set);
+            }
+
+            if (set.Id == 0)
+            {
+                await dataManager.SetRepository.AddAsync(mapper.Map<Set>(set));
+
+                TempData["success"] = "The new set has been successfully added";
+                //return RedirectToAction("Index");
+                return Json(new { success = true });
+            }
+            else
+            {
+                await dataManager.SetRepository.UpdateAsync(mapper.Map<Set>(set));
+
+                TempData["success"] = "The set has been successfully edited";
+                //return RedirectToAction("SelectedSet", new { id = set.Id });
+                return Json(new { success = true });
+            }
         }
 
         #endregion [ SETS ]
 
         #region [ WORDS ]
 
-        [HttpPost]
-        public async Task<IActionResult> AddWord(WordViewModel word)
+        [HttpGet]
+        public async Task<IActionResult> AddOrEditWord(int setId, int id = 0)
         {
-            await dataManager.WordRepository.AddAsync(mapper.Map<Word>(word));
+            if (setId is 0)
+                return BadRequest();
 
-            TempData["success"] = "The new word has been successfully added";
-            return RedirectToAction("SelectedSet", new { id = word.SetId });
+            if (id == 0)
+            {
+                var wordVM = new WordViewModel { SetId = setId };
+
+                return PartialView("_AddOrEditWordPartial", wordVM);
+            }
+            else
+            {
+                var set = await dataManager.SetRepository.GetAsync(setId);
+
+                if (set is null)
+                    return NotFound();
+
+                var word = set.Words!.FirstOrDefault(x => x.Id == id);
+
+                if (word is null)
+                    return NotFound();
+
+                return PartialView("_AddOrEditWordPartial", mapper.Map<WordViewModel>(word));
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditWord(WordViewModel word)
+        public async Task<IActionResult> AddOrEditWord(WordViewModel word)
         {
-            await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
+            if (!ModelState.IsValid)
+                return PartialView("_AddOrEditWordPartial", word);
 
-            TempData["success"] = "The word has been successfully edited";
-            return RedirectToAction("SelectedSet", new { id = word.SetId });
+            if (await dataManager.WordRepository.IsNotUnique(word.Name, word.Id))
+            {
+                ModelState.AddModelError("", "Word with this name already exists");
+                return PartialView("_AddOrEditWordPartial", word);
+            }
+
+            if (word.Id == 0)
+            {
+                await dataManager.WordRepository.AddAsync(mapper.Map<Word>(word));
+
+                TempData["success"] = "The new word has been successfully added";
+                //return RedirectToAction("SelectedSet", new { id = word.SetId });
+                return Json(new { success = true });
+            }
+            else
+            {
+                await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
+
+                TempData["success"] = "The word has been successfully edited";
+                //return RedirectToAction("SelectedSet", new { id = word.SetId });
+                return Json(new { success = true });
+            }
         }
 
         #endregion [ WORDS ]
@@ -207,24 +280,24 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
         #region [ CHECK IF EXISTS ]
 
-        //[HttpPost]
-        //public async Task<IActionResult> CheckSet(string NewSet_Name, int id)
+        //[AcceptVerbs("GET", "POST")]
+        //public async Task<IActionResult> CheckSet(string name, int id)
         //{
-        //    return Json(!await IsSetUnique(NewSet_Name, id));
+        //    return Json(!await IsSetUnique(name, id));
         //}
 
-        private async Task<bool> IsSetUnique(string name, int id)
-        {
-            var sets = await dataManager.SetRepository.GetAllAsync();
-            if (id == 0)
-            {
-                return !sets.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
-            }
-            else
-            {
-                return !sets.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase) && s.Id != id);
-            }
-        }
+        //private async Task<bool> IsSetUnique(string name, int id)
+        //{
+        //    var sets = await dataManager.SetRepository.GetAllAsync();
+        //    if (id == 0)
+        //    {
+        //        return sets.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
+        //    }
+        //    else
+        //    {
+        //        return sets.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase) && s.Id != id);
+        //    }
+        //}
 
         //[HttpPost]
         //public async Task<IActionResult> CheckWord(string name, int id)
@@ -232,32 +305,32 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         //    return Json(await IsWordUnique(name, id));
         //}
 
-        private async Task<bool> IsWordUnique(string name, int id)
-        {
-            var sets = await dataManager.SetRepository.GetAllAsync();
-            if (id == 0)
-            {
-                foreach (var word in sets.SelectMany(s => s.Words))
-                {
-                    if (string.Equals(word.Name, name, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            else
-            {
-                foreach (var word in sets.SelectMany(s => s.Words))
-                {
-                    if (string.Equals(word.Name, name, StringComparison.OrdinalIgnoreCase) && word.Id != id)
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
+        //private async Task<bool> IsWordUnique(string name, int id)
+        //{
+        //    var sets = await dataManager.SetRepository.GetAllAsync();
+        //    if (id == 0)
+        //    {
+        //        foreach (var word in sets.SelectMany(s => s.Words))
+        //        {
+        //            if (string.Equals(word.Name, name, StringComparison.OrdinalIgnoreCase))
+        //            {
+        //                return false;
+        //            }
+        //        }
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        foreach (var word in sets.SelectMany(s => s.Words))
+        //        {
+        //            if (string.Equals(word.Name, name, StringComparison.OrdinalIgnoreCase) && word.Id != id)
+        //            {
+        //                return false;
+        //            }
+        //        }
+        //        return true;
+        //    }
+        //}
 
         #endregion [ CHECK IF EXISTS ]
     }
