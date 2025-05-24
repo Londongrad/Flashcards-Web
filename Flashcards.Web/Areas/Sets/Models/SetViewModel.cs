@@ -13,7 +13,7 @@ namespace Flashcards.Web.Areas.Sets.Models
         public string Name { get; set; } = null!;
 
         /// <summary>This property exists in order to avoid unnecessary calls to DB, when trying to rename set with the same value</summary>
-        public string OldName { get; set; } = null!;
+        public string? OldName { get; set; }
 
         public List<WordViewModel> Words { get; set; } = [];
 

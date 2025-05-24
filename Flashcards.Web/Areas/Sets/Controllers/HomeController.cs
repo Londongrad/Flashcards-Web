@@ -12,6 +12,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
     [Area("Sets")]
     public class HomeController : Controller
     {
+#pragma warning disable CA1416 // Проверка совместимости платформы
         private static SetViewModel _set = new();
         private static readonly CurrentWordViewModel _wordVM = new();
         private readonly SpeechSynthesizer speechSynthesizer;
@@ -63,20 +64,18 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             _wordVM.Count = _set.Words!.Count;
             _wordVM.SetId = id;
             _wordVM.CurrentWord = _set.Words[0];
-            speechSynthesizer.SpeakAsyncCancelAll();
-            speechSynthesizer.SpeakAsync(_wordVM.CurrentWord.Name);
+            await Speak(_wordVM.CurrentWord.Name);
             return View(_wordVM);
         }
 
         [HttpGet]
-        public IActionResult SwitchWord(int index = 0)
+        public async Task<IActionResult> SwitchWord(int index = 0)
         {
             if (_set.Words!.Count != 0)
             {
                 _wordVM.Index = index;
                 _wordVM.CurrentWord = _set.Words![_wordVM.Index];
-                speechSynthesizer.SpeakAsyncCancelAll();
-                speechSynthesizer.SpeakAsync(_wordVM.CurrentWord.Name);
+                await Speak(_wordVM.CurrentWord.Name);
             }
 
             return View("StudySelectedSet", _wordVM);
@@ -116,11 +115,22 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             _wordVM.Count = _set.Words!.Count;
             _wordVM.SetId = id;
             _wordVM.CurrentWord = _set.Words[0];
+            await Speak(_wordVM.CurrentWord.Name);
 
             return View("StudySelectedSet", _wordVM);
         }
 
         #endregion [ FAVORITE ]
+
+        #region [ TTS Method ]
+
+        private async Task Speak(string name) => await Task.Run(() =>
+        {
+            speechSynthesizer.SpeakAsyncCancelAll();
+            speechSynthesizer.SpeakAsync(name);
+        });
+
+        #endregion [ TTS Method ]
 
         #region [ ADD/EDIT METHODS ]
 
@@ -334,4 +344,5 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
         #endregion [ CHECK IF EXISTS ]
     }
+#pragma warning restore CA1416 // Проверка совместимости платформы
 }

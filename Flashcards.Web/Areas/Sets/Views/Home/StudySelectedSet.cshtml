@@ -1,7 +1,7 @@
 ﻿@model CurrentWordViewModel
+
 @{
     Layout = "_LayoutForStudyWords";
-    var id = Model.CurrentWord.Id;
 }
 
 <div class="row text-center align-items-center mx-0">
@@ -11,9 +11,8 @@
 
     <h3 id="counter" class="text-white col-8 m-0">@(Model.Index + 1)/@Model.Count</h3>
 
-    <form asp-area="Sets" asp-controller="Home" asp-action="Favorite" asp-route-id="@id" method="post" class="col-2 text-white">
-
-        <button type="submit" class="btn sound-fav-btn" title="Favorite"><i class="bi bi-star-fill"></i></button>
+    <form asp-area="Sets" asp-controller="Home" asp-action="Favorite" asp-route-id="@Model.CurrentWord.Id" method="post" class="col-2 text-white">
+        <button id="BtnFav" type="submit" class="btn sound-fav-btn" title="Favorite"><i class="bi bi-star-fill"></i></button>
     </form>
 </div>
 
@@ -43,6 +42,7 @@
 </div>
 
 @section Scripts {
+    @*Disable next/prev buttons*@
     <script type="text/javascript">
         const BtnPrev = document.getElementById('BtnPrev');
         const BtnNext = document.getElementById('BtnNext');
@@ -63,6 +63,19 @@
             BtnNext.style.cursor="pointer";
         }
     </script>
+
+    @* <script type="text/javascript">
+        const BtnFav = document.getElementById('BtnFav');
+        alert('1');
+        if (@IsFavorite) {
+            alert('2');
+            BtnFav.style.backgroundColor = "yellow";
+        }
+        else {
+            alert('3');
+            BtnFav.style.backgroundColor = "transparent";
+        }
+    </script> *@
 
     @* Flip the card *@
     <script type="text/javascript">
