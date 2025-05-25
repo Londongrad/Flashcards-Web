@@ -64,18 +64,15 @@
         }
     </script>
 
-    @* <script type="text/javascript">
+    <script type="text/javascript">
         const BtnFav = document.getElementById('BtnFav');
-        alert('1');
-        if (@IsFavorite) {
-            alert('2');
+        if ("@{@Model.CurrentWord.IsFavorite}" == "True") {;
             BtnFav.style.backgroundColor = "yellow";
         }
         else {
-            alert('3');
             BtnFav.style.backgroundColor = "transparent";
         }
-    </script> *@
+    </script>
 
     @* Flip the card *@
     <script type="text/javascript">

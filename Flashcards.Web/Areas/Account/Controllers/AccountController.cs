@@ -266,7 +266,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
                         TempData["success"] = "Email has been successfully updated";
                         return RedirectToAction("Settings");
                     }
-                    TempData["error"] = "An error occured during this process. Most likely user with this email is already exists";
+                    TempData["error"] = "An error occured during this process. Most likely user with this email already exists";
                     return RedirectToAction("Settings");
                 }
                 else
