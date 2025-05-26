@@ -94,8 +94,10 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                 else
                     word.IsFavorite = true;
                 await dataManager.WordRepository.UpdateAsync(word);
+                return Json(new { success = true, isFavorite = word.IsFavorite });
             }
-            return View("StudySelectedSet", _wordVM);
+            //return View("StudySelectedSet", _wordVM);
+            return Json(new { success = false });
         }
 
         [HttpGet]

@@ -13,3 +13,22 @@ showInPopup = (url, title) => {
         }
     })
 }
+
+addToFav = (url) => {
+    $.ajax({
+        type: "POST",
+        url: url,
+        success: function (res) {
+            if (res.isFavorite) {
+                $("#BtnFav").on("click", function () {
+                    $(this).css("background-color", "yellow");
+                });
+            }
+            else {
+                $("#BtnFav").on("click", function () {
+                    $(this).css("background-color", "transparent");
+                });
+            }
+        }
+    })
+}

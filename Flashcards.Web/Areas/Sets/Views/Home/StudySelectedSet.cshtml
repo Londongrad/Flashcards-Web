@@ -11,9 +11,13 @@
 
     <h3 id="counter" class="text-white col-8 m-0">@(Model.Index + 1)/@Model.Count</h3>
 
-    <form asp-area="Sets" asp-controller="Home" asp-action="Favorite" asp-route-id="@Model.CurrentWord.Id" method="post" class="col-2 text-white">
+    @*  <form asp-area="Sets" asp-controller="Home" asp-action="Favorite" asp-route-id="@Model.CurrentWord.Id" method="post" class="col-2 text-white">
         <button id="BtnFav" type="submit" class="btn sound-fav-btn" title="Favorite"><i class="bi bi-star-fill"></i></button>
-    </form>
+    </form> *@
+
+    <a id="BtnFav" onclick="addToFav('@Url.Action("Favorite", "Home" , new { Model.CurrentWord.Id }, Context.Request.Scheme)')" class="btn sound-fav-btn" title="Favorite">
+        <i class="bi bi-star-fill"></i>
+    </a>
 </div>
 
 <div class="d-flex justify-content-center align-items-center">
@@ -64,15 +68,17 @@
         }
     </script>
 
-    <script type="text/javascript">
+    @* <script type="text/javascript">
         const BtnFav = document.getElementById('BtnFav');
-        if ("@{@Model.CurrentWord.IsFavorite}" == "True") {;
+        if ("@{
+                @Model.CurrentWord.IsFavorite
+            }" == "True") {;
             BtnFav.style.backgroundColor = "yellow";
         }
         else {
             BtnFav.style.backgroundColor = "transparent";
         }
-    </script>
+    </script> *@
 
     @* Flip the card *@
     <script type="text/javascript">

@@ -106,7 +106,7 @@
 
     <script type="text/javascript">
         const BtnFav = document.getElementById('studyFavBtn');
-        if (@Model.Words?.Where(w => w.IsFavorite == true).Count() == 0) {
+        if (@Model.Words?.Where(w => w.IsFavorite == true).Count() === 0) {
             BtnFav.style.pointerEvents="none";
             BtnFav.style.cursor="default";
         }
