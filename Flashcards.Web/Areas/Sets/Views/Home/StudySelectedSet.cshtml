@@ -1,82 +1,68 @@
-﻿@model CurrentWordViewModel
+﻿@model List<WordViewModel>
 
 @{
     Layout = "_LayoutForStudyWords";
 }
 
-<div class="row text-center align-items-center mx-0">
-    <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.SetId" type="button" class="btn btn-primary text-bg-dark col-2">
-        <i class="bi bi-arrow-down-left-circle"></i> Back to the set
-    </a>
+<div style="margin-top: 60px;">
+    <div class="d-flex justify-content-center align-items-center mx-0">
+        <button disabled id="BtnPrev" class="btn btn-primary bg-black mx-2 align-content-center" style="width: 20px; height: 90px">
+            <i class="bi bi-chevron-left"></i>
+        </button>
 
-    <h3 id="counter" class="text-white col-8 m-0">@(Model.Index + 1)/@Model.Count</h3>
+        <div>
+            <div class="row text-center align-items-center mx-0">
+                <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model[0].SetId" type="button" class="btn btn-primary text-bg-dark col-3">
+                    <i class="bi bi-arrow-down-left-circle"></i> Back to the set
+                </a>
 
-    @*  <form asp-area="Sets" asp-controller="Home" asp-action="Favorite" asp-route-id="@Model.CurrentWord.Id" method="post" class="col-2 text-white">
-        <button id="BtnFav" type="submit" class="btn sound-fav-btn" title="Favorite"><i class="bi bi-star-fill"></i></button>
-    </form> *@
+                <h3 id="counter" class="text-white col-6 m-0">1/@Model.Count</h3>
 
-    <a id="BtnFav" onclick="addToFav('@Url.Action("Favorite", "Home" , new { Model.CurrentWord.Id }, Context.Request.Scheme)')" class="btn sound-fav-btn" title="Favorite">
-        <i class="bi bi-star-fill"></i>
-    </a>
-</div>
+                <div class="col-3 text-end">
+                    <a id="BtnFav" class="btn sound-fav-btn" title="Favorite"
+                       style="background-color: @(!Model[0].IsFavorite ? "transparent" : "yellow")">
+                        <i class="bi bi-star-fill"></i>
+                    </a>
+                </div>
+            </div>
 
-<div class="d-flex justify-content-center align-items-center">
-    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index - 1)" id="BtnPrev" class="btn btn-primary bg-black mx-2 align-content-center" type="button" style="width: 20px; height: 90px">
-        <i class="bi bi-chevron-left"></i>
-    </a>
+            <div class="tile mt-2">
+                <div class="text-center tile__face">
+                    <p class="text-white text-to-learn" id="wordName">@Model[0].Name</p>
+                </div>
 
-    <div class="tile">
-        <div class="text-center tile__face">
-            <p class="text-white text-to-learn" id="wordName">@Model.CurrentWord.Name</p>
+                <div class="text-center tile__face tile__face--back">
+                    <img id="wordImage" src="@Model[0].ImagePath" style="height: 400px; width: auto; margin-top: 10px;" />
+                </div>
+
+                <div class="text-center text-white text-to-learn tile__face tile__face--back">
+                    <p id="wordDefinition">@Model[0].Definition</p>
+                </div>
+            </div>
         </div>
 
-        <div class="text-center tile__face tile__face--back">
-            <img id="wordImage" src="@Model.CurrentWord.ImagePath" style="height: 400px; width: auto; margin-top: 10px;" />
-        </div>
-
-        <div class="text-center text-white text-to-learn tile__face tile__face--back">
-            <p id="wordDefinition">@Model.CurrentWord.Definition</p>
-        </div>
+        <button id="BtnNext" class="btn btn-primary text-bg-dark-subtle mx-2 align-content-center" style="width: 20px; height: 90px">
+            <i class="bi bi-chevron-right"></i>
+        </button>
     </div>
-
-    <a asp-area="Sets" asp-controller="Home" asp-action="SwitchWord" asp-route-index="@(Model.Index + 1)" id="BtnNext" class="btn btn-primary text-bg-dark-subtle mx-2 align-content-center" type="button" style="width: 20px; height: 90px">
-        <i class="bi bi-chevron-right"></i>
-    </a>
-
 </div>
 
 @section Scripts {
-    @*Disable next/prev buttons*@
-    <script type="text/javascript">
-        const BtnPrev = document.getElementById('BtnPrev');
-        const BtnNext = document.getElementById('BtnNext');
-        if (@Model.Index === 0) {
-            BtnPrev.style.pointerEvents="none";
-            BtnPrev.style.cursor="default";
-        }
-        else {
-            BtnPrev.style.pointerEvents="auto";
-            BtnPrev.style.cursor="pointer";
-        }
-        if (@Model.Index === @Model.Count - 1){
-            BtnNext.style.pointerEvents="none";
-            BtnNext.style.cursor="default";
-        }
-        else {
-            BtnNext.style.pointerEvents="auto";
-            BtnNext.style.cursor="pointer";
-        }
-    </script>
-
+    @* TTS process*@
     @* <script type="text/javascript">
-        const BtnFav = document.getElementById('BtnFav');
-        if ("@{
-                @Model.CurrentWord.IsFavorite
-            }" == "True") {;
-            BtnFav.style.backgroundColor = "yellow";
-        }
-        else {
-            BtnFav.style.backgroundColor = "transparent";
+        const textEl = document.getElementById('wordName');
+        const soundBtn = document.getElementById('soundBtn');
+
+        soundBtn.addEventListener('click', speakText);
+
+        function speakText() {
+            window.speechSynthesis.cancel();
+            const text = textEl.innerText;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.pitch = 0.7;
+            utterance.rate = 0.7;
+            utterance.volume = 0.5;
+            window.speechSynthesis.speak(utterance);
         }
     </script> *@
 
@@ -85,6 +71,64 @@
         const tile = document.querySelector(".tile");
         tile.addEventListener("click", function () {
           tile.classList.toggle("is-flipped");
+        });
+    </script>
+
+    <script type="text/javascript">
+        var currentIndex = 0;
+        var totalCount = @Model.Count;
+
+        function loadWord(index) {
+            $.ajax({
+                url: '@Url.Action("SwitchWord", "Home")',
+                type: 'GET',
+                data: { index: index },
+                success: function (data) {
+                    $("#BtnFav").css("background-color", data.isFavorite ? "yellow" : "transparent");
+
+                    $("#counter").text((index + 1) + "/" + totalCount);
+                    $("#wordName").text(data.name);
+                    $("#wordDefinition").text(data.definition);
+                    $("#wordImage").attr("src", data.imagePath);
+
+                    // Enable/Disable buttons based on index
+                    $("#BtnPrev").prop("disabled", index === 0);
+                    $("#BtnNext").prop("disabled", index === totalCount - 1);
+
+                    currentIndex = index;
+                },
+                error: function () {
+                    alert("No more items.");
+                }
+            });
+        }
+
+        $("#BtnNext").on("click", function () {
+            if (currentIndex < totalCount - 1) {
+                loadWord(currentIndex + 1);
+            }
+        });
+
+        $("#BtnPrev").on("click", function () {
+            if (currentIndex > 0) {
+                loadWord(currentIndex - 1);
+            }
+        });
+
+        $("#BtnFav").on("click", function () {
+            $.ajax({
+                type: "POST",
+                url:  '@Url.Action("Favorite", "Home")',
+                data: { id: 0 },
+                success: function (res) {
+                    if (res.isFavorite) {
+                        $(this).css("background-color", "yellow");
+                    }
+                    else {
+                        $(this).css("background-color", "transparent");
+                    }
+                }
+            })
         });
     </script>
 }

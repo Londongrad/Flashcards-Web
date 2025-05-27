@@ -14,7 +14,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
     {
 #pragma warning disable CA1416 // Проверка совместимости платформы
         private static SetViewModel _set = new();
-        private static readonly CurrentWordViewModel _wordVM = new();
+        //private static readonly CurrentWordViewModel _wordVM = new();
         private readonly SpeechSynthesizer speechSynthesizer;
         private readonly DataManager dataManager;
         private readonly IMapper mapper;
@@ -60,25 +60,22 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (_set is null)
                 return NotFound();
 
-            _wordVM.Index = 0;
-            _wordVM.Count = _set.Words!.Count;
-            _wordVM.SetId = id;
-            _wordVM.CurrentWord = _set.Words[0];
-            await Speak(_wordVM.CurrentWord.Name);
-            return View(_wordVM);
+            //_wordVM.Index = 0;
+            //_wordVM.Count = _set.Words!.Count;
+            //_wordVM.SetId = id;
+            //_wordVM.CurrentWord = _set.Words[0];
+            await Speak(_set.Words[0].Name);
+            return View(_set.Words);
         }
 
         [HttpGet]
-        public async Task<IActionResult> SwitchWord(int index = 0)
+        public IActionResult SwitchWord(int index = 0)
         {
-            if (_set.Words!.Count != 0)
+            if (index < 0 || index >= _set.Words.Count)
             {
-                _wordVM.Index = index;
-                _wordVM.CurrentWord = _set.Words![_wordVM.Index];
-                await Speak(_wordVM.CurrentWord.Name);
+                return NotFound();
             }
-
-            return View("StudySelectedSet", _wordVM);
+            return Json(_set.Words[index]);
         }
 
         #region [ FAVORITE ]
@@ -113,13 +110,14 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
             _set.Words = set.Words.Where(w => w.IsFavorite == true).ToList();
 
-            _wordVM.Index = 0;
-            _wordVM.Count = _set.Words!.Count;
-            _wordVM.SetId = id;
-            _wordVM.CurrentWord = _set.Words[0];
-            await Speak(_wordVM.CurrentWord.Name);
+            //_wordVM.Index = 0;
+            //_wordVM.Count = _set.Words!.Count;
+            //_wordVM.SetId = id;
+            //_wordVM.CurrentWord = _set.Words[0];
 
-            return View("StudySelectedSet", _wordVM);
+            await Speak(_set.Words[0].Name);
+
+            return View("StudySelectedSet", _set.Words);
         }
 
         #endregion [ FAVORITE ]
@@ -262,14 +260,13 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         #region [ DELETE ACTIONS ]
 
         [HttpPost]
-        public async Task<IActionResult> DeleteWord(int wordId, int setId)
+        public async Task<IActionResult> DeleteWord(int id)
         {
-            if (setId is 0 || wordId is 0)
+            if (id is 0)
                 return BadRequest();
 
-            await dataManager.WordRepository.DeleteAsync(wordId);
-            TempData["success"] = "The word has been successfully deleted";
-            return RedirectToAction("SelectedSet", new { id = setId });
+            await dataManager.WordRepository.DeleteAsync(id);
+            return Json(new { message = "The word has been successfully deleted" });
         }
 
         [HttpPost]
