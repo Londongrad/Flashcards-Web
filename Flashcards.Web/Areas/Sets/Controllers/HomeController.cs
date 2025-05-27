@@ -4,29 +4,16 @@ using Flashcards.Infrastructure.Data;
 using Flashcards.Web.Areas.Sets.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Speech.Synthesis;
 
 namespace Flashcards.Web.Areas.Sets.Controllers
 {
     [Authorize]
     [Area("Sets")]
-    public class HomeController : Controller
+    public class HomeController(DataManager dataManager, IMapper mapper) : Controller
     {
-#pragma warning disable CA1416 // Проверка совместимости платформы
         private static SetViewModel _set = new();
-        //private static readonly CurrentWordViewModel _wordVM = new();
-        private readonly SpeechSynthesizer speechSynthesizer;
-        private readonly DataManager dataManager;
-        private readonly IMapper mapper;
-
-        public HomeController(DataManager dataManager, IMapper mapper)
-        {
-            this.dataManager = dataManager;
-            this.mapper = mapper;
-            speechSynthesizer = new SpeechSynthesizer();
-            try { speechSynthesizer.SelectVoice("Microsoft Hazel Desktop"); }
-            catch (Exception) { }
-        }
+        private readonly DataManager dataManager = dataManager;
+        private readonly IMapper mapper = mapper;
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -60,11 +47,6 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (_set is null)
                 return NotFound();
 
-            //_wordVM.Index = 0;
-            //_wordVM.Count = _set.Words!.Count;
-            //_wordVM.SetId = id;
-            //_wordVM.CurrentWord = _set.Words[0];
-            await Speak(_set.Words[0].Name);
             return View(_set.Words);
         }
 
@@ -93,7 +75,6 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                 await dataManager.WordRepository.UpdateAsync(word);
                 return Json(new { success = true, isFavorite = word.IsFavorite });
             }
-            //return View("StudySelectedSet", _wordVM);
             return Json(new { success = false });
         }
 
@@ -110,27 +91,10 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
             _set.Words = set.Words.Where(w => w.IsFavorite == true).ToList();
 
-            //_wordVM.Index = 0;
-            //_wordVM.Count = _set.Words!.Count;
-            //_wordVM.SetId = id;
-            //_wordVM.CurrentWord = _set.Words[0];
-
-            await Speak(_set.Words[0].Name);
-
             return View("StudySelectedSet", _set.Words);
         }
 
         #endregion [ FAVORITE ]
-
-        #region [ TTS Method ]
-
-        private async Task Speak(string name) => await Task.Run(() =>
-        {
-            speechSynthesizer.SpeakAsyncCancelAll();
-            speechSynthesizer.SpeakAsync(name);
-        });
-
-        #endregion [ TTS Method ]
 
         #region [ ADD/EDIT METHODS ]
 
@@ -177,17 +141,13 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             {
                 await dataManager.SetRepository.AddAsync(mapper.Map<Set>(set));
 
-                TempData["success"] = "The new set has been successfully added";
-                //return RedirectToAction("Index");
-                return Json(new { success = true });
+                return Json(new { success = true, isNew = true });
             }
             else
             {
                 await dataManager.SetRepository.UpdateAsync(mapper.Map<Set>(set));
 
-                TempData["success"] = "The set has been successfully edited";
-                //return RedirectToAction("SelectedSet", new { id = set.Id });
-                return Json(new { success = true });
+                return Json(new { success = true, name = set.Name, isNew = false });
             }
         }
 
@@ -239,16 +199,12 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             {
                 await dataManager.WordRepository.AddAsync(mapper.Map<Word>(word));
 
-                TempData["success"] = "The new word has been successfully added";
-                //return RedirectToAction("SelectedSet", new { id = word.SetId });
                 return Json(new { success = true });
             }
             else
             {
                 await dataManager.WordRepository.UpdateAsync(mapper.Map<Word>(word));
 
-                TempData["success"] = "The word has been successfully edited";
-                //return RedirectToAction("SelectedSet", new { id = word.SetId });
                 return Json(new { success = true });
             }
         }
@@ -281,11 +237,9 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                 return NotFound();
 
             await dataManager.SetRepository.DeleteAsync(id);
-            TempData["success"] = "The set has been successfully deleted";
             return RedirectToAction("Index");
         }
 
         #endregion [ DELETE ACTIONS ]
     }
-#pragma warning restore CA1416 // Проверка совместимости платформы
 }

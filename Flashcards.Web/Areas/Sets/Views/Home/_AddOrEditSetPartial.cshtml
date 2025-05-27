@@ -38,12 +38,19 @@
                 url: form.attr("action"),
                 type: form.attr("method"),
                 data: form.serialize(),
-                success: function(response) {
-                    if (response.success) {
+                success: function(res) {
+                    if (res.success) {
                         $("#form-modal").modal('hide');
-                        location.reload();
+                        if(res.isNew){
+                            location.reload();
+                            toastr.success("Set has been successfully added");
+                        }
+                        else{
+                            $("#setName").text(res.name);
+                            toastr.success("The name of the set has been successfully updated");
+                        }
                     } else {
-                        $("#form-modal .modal-body").html(response);
+                        $("#form-modal .modal-body").html(res);
                         $.validator.unobtrusive.parse(document);
                     }
                 }
