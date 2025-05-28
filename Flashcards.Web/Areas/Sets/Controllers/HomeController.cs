@@ -12,7 +12,6 @@ namespace Flashcards.Web.Areas.Sets.Controllers
     public class HomeController(DataManager dataManager, IMapper mapper) : Controller
     {
         private static SetViewModel _set = new();
-        private static CurrentWordViewModel _currentWord = new ();
         private readonly DataManager dataManager = dataManager;
         private readonly IMapper mapper = mapper;
 
@@ -43,15 +42,18 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (id is 0)
                 return BadRequest();
 
-            _set = mapper.Map<SetViewModel>(await dataManager.SetRepository.GetAsync(id));
+            var set = mapper.Map<SetViewModel>(await dataManager.SetRepository.GetAsync(id));
 
-            if (_set is null)
+            if (set is null)
                 return NotFound();
 
-            _currentWord.Count = _set.Words.Count;
-            _currentWord.CurrentWord = _set.Words[0];
+            var currentWord = new CurrentWordViewModel()
+            {
+                Count = set.Words.Count,
+                CurrentWord = set.Words[0]
+            };
 
-            return View(_currentWord);
+            return View(currentWord);
         }
 
         [HttpGet]
@@ -72,10 +74,12 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             var word = await dataManager.WordRepository.GetAsync(id);
             if (word is not null)
             {
+
                 if (word.IsFavorite)
                     word.IsFavorite = false;
                 else
                     word.IsFavorite = true;
+
                 await dataManager.WordRepository.UpdateAsync(word);
                 return Json(new { success = true, isFavorite = word.IsFavorite });
             }
@@ -90,12 +94,10 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
             var set = mapper.Map<SetViewModel>(await dataManager.SetRepository.GetAsync(id));
 
-            if (_set is null)
+            if (set is null)
                 return NotFound();
 
-            _set.Words = set.Words.Where(w => w.IsFavorite == true).ToList();
-
-            return View("StudySelectedSet", _set.Words);
+            return View("StudySelectedSet", set.Words.Where(w => w.IsFavorite == true).ToList());
         }
 
         #endregion [ FAVORITE ]

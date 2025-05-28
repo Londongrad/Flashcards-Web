@@ -11,7 +11,6 @@ namespace Flashcards.Web
     public class Program
     {
         //TODO: Реализовать систему отслеживания прогресса по обучению
-        //TODO: Реализовать систему сохранения избранных слов
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
