@@ -1,10 +1,10 @@
-﻿@model List<WordViewModel>
+﻿@model CurrentWordViewModel
 
 @{
     Layout = "_LayoutForStudyWords";
 }
 
-<div style="margin-top: 60px;">
+<div style="margin-top: 60px;" id="divToStudy">
     <div class="d-flex justify-content-center align-items-center mx-0">
         <button disabled id="BtnPrev" class="btn btn-primary bg-black mx-2 align-content-center" style="width: 20px; height: 90px">
             <i class="bi bi-chevron-left"></i>
@@ -12,7 +12,7 @@
 
         <div>
             <div class="row text-center align-items-center mx-0">
-                <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model[0].SetId" type="button" class="btn btn-primary text-bg-dark col-3">
+                <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.CurrentWord.SetId" type="button" class="btn btn-primary text-bg-dark col-3">
                     <i class="bi bi-arrow-down-left-circle"></i> Back to the set
                 </a>
 
@@ -20,7 +20,7 @@
 
                 <div class="col-3 text-end">
                     <a id="BtnFav" class="btn sound-fav-btn" title="Favorite"
-                       style="background-color: @(!Model[0].IsFavorite ? "transparent" : "yellow")">
+                       style="background-color: @(!Model.CurrentWord.IsFavorite ? "transparent" : "yellow")">
                         <i class="bi bi-star-fill"></i>
                     </a>
                 </div>
@@ -28,15 +28,15 @@
 
             <div class="tile mt-2">
                 <div class="text-center tile__face">
-                    <p class="text-white text-to-learn" id="wordName">@Model[0].Name</p>
+                    <p class="text-white text-to-learn" id="wordName">@Model.CurrentWord.Name</p>
                 </div>
 
                 <div class="text-center tile__face tile__face--back">
-                    <img id="wordImage" src="@Model[0].ImagePath" style="height: 400px; width: auto; margin-top: 10px;" />
+                    <img id="wordImage" src="@Model.CurrentWord.ImagePath" style="height: 400px; width: auto; margin-top: 10px;" />
                 </div>
 
                 <div class="text-center text-white text-to-learn tile__face tile__face--back">
-                    <p id="wordDefinition">@Model[0].Definition</p>
+                    <p id="wordDefinition">@Model.CurrentWord.Definition</p>
                 </div>
             </div>
         </div>
@@ -77,6 +77,7 @@
     <script type="text/javascript">
         var currentIndex = 0;
         var totalCount = @Model.Count;
+        var id = @Model.CurrentWord.Id;
 
         function loadWord(index) {
             $.ajax({
@@ -95,6 +96,7 @@
                     $("#BtnPrev").prop("disabled", index === 0);
                     $("#BtnNext").prop("disabled", index === totalCount - 1);
 
+                    id = data.id;
                     currentIndex = index;
                 },
                 error: function () {
@@ -119,13 +121,13 @@
             $.ajax({
                 type: "POST",
                 url:  '@Url.Action("Favorite", "Home")',
-                data: { id: 0 },
+                data: { id: id },
                 success: function (res) {
                     if (res.isFavorite) {
-                        $(this).css("background-color", "yellow");
+                        $("#BtnFav").css("background-color", "yellow");
                     }
                     else {
-                        $(this).css("background-color", "transparent");
+                        $("#BtnFav").css("background-color", "transparent");
                     }
                 }
             })

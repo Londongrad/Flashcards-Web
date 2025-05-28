@@ -43,7 +43,6 @@
                         $("#form-modal").modal('hide');
                         if(res.isNew){
                             location.reload();
-                            toastr.success("Set has been successfully added");
                         }
                         else{
                             $("#setName").text(res.name);

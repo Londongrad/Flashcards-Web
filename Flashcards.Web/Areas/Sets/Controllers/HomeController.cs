@@ -12,6 +12,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
     public class HomeController(DataManager dataManager, IMapper mapper) : Controller
     {
         private static SetViewModel _set = new();
+        private static CurrentWordViewModel _currentWord = new ();
         private readonly DataManager dataManager = dataManager;
         private readonly IMapper mapper = mapper;
 
@@ -47,7 +48,10 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (_set is null)
                 return NotFound();
 
-            return View(_set.Words);
+            _currentWord.Count = _set.Words.Count;
+            _currentWord.CurrentWord = _set.Words[0];
+
+            return View(_currentWord);
         }
 
         [HttpGet]
@@ -140,13 +144,12 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (set.Id == 0)
             {
                 await dataManager.SetRepository.AddAsync(mapper.Map<Set>(set));
-
+                TempData["success"] = "Set has been successfully created";
                 return Json(new { success = true, isNew = true });
             }
             else
             {
                 await dataManager.SetRepository.UpdateAsync(mapper.Map<Set>(set));
-
                 return Json(new { success = true, name = set.Name, isNew = false });
             }
         }
