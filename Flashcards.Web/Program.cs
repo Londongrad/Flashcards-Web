@@ -2,6 +2,7 @@ using Flashcards.Application.Common.Interfaces;
 using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
 using Flashcards.Infrastructure.Repositories;
+using Flashcards.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -33,7 +34,7 @@ namespace Flashcards.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Auth cookie
+            // Auth login cookie
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "myAppAuth";
@@ -42,12 +43,22 @@ namespace Flashcards.Web
                 options.SlidingExpiration = true;
             });
 
+            //// Sessions
+            //builder.Services.AddDistributedMemoryCache();
+            //builder.Services.AddSession(options =>
+            //{
+            //    options.IdleTimeout = TimeSpan.FromSeconds(100);
+            //    options.Cookie.HttpOnly = true;
+            //    options.Cookie.IsEssential = true;
+            //});
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IRepository<Set>, SetRepository>();
             builder.Services.AddScoped<IRepository<Word>, WordRepository>();
             builder.Services.AddScoped<DataManager>();
+            builder.Services.AddScoped<SetStorage>();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var app = builder.Build();
@@ -57,6 +68,7 @@ namespace Flashcards.Web
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            //app.UseSession();
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
