@@ -31,8 +31,11 @@
                     <p class="text-white text-to-learn" id="wordName">@Model.CurrentWord.Name</p>
                 </div>
 
-                <div class="text-center tile__face tile__face--back">
-                    <img id="wordImage" src="@Model.CurrentWord.ImagePath" style="height: 400px; width: auto; margin-top: 10px;" />
+                <div class="text-center tile__face tile__face--back" style="height: 400px; width: auto; margin-top: 10px;">
+                    @if (!string.IsNullOrEmpty(Model.CurrentWord.ImagePath))
+                    {
+                        <img id="wordImage" src="@Model.CurrentWord.ImagePath" />
+                    }
                 </div>
 
                 <div class="text-center text-white text-to-learn tile__face tile__face--back">
@@ -85,6 +88,9 @@
                 type: 'GET',
                 data: { index: index },
                 success: function (data) {
+                    if($('.tile').hasClass("is-flipped")){
+                        tile.classList.toggle("is-flipped");
+                    }
                     $("#BtnFav").css("background-color", data.isFavorite ? "yellow" : "transparent");
 
                     $("#counter").text((index + 1) + "/" + totalCount);
