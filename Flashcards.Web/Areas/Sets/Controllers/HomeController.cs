@@ -1,5 +1,4 @@
 using AutoMapper;
-using Flashcards.Application.Common.Interfaces;
 using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
 using Flashcards.Infrastructure.Services;
@@ -39,7 +38,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> StudySelectedSet(int id)
+        public async Task<IActionResult> StudySelectedSet(int id, bool flag)
         {
             if (id is 0)
                 return BadRequest();
@@ -48,6 +47,9 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
             if (set is null)
                 return NotFound();
+
+            if (flag)
+                set.Words = set.Words.Where(w => w.IsFavorite).ToList();
 
             _setStorage.Set(_mapper.Map<Set>(set));
 
@@ -95,20 +97,6 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                 return Json(new { success = true, isFavorite = word.IsFavorite });
             }
             return Json(new { success = false });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> StudyFavorite(int id)
-        {
-            if (id is 0)
-                return BadRequest();
-
-            var set = _mapper.Map<SetViewModel>(await _dataManager.SetRepository.GetAsync(id));
-
-            if (set is null)
-                return NotFound();
-
-            return View("StudySelectedSet", set.Words.Where(w => w.IsFavorite == true).ToList());
         }
 
         #endregion [ FAVORITE ]

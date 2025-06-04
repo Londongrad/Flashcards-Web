@@ -18,11 +18,11 @@
         </div>
 
         <div class="col-8 d-flex justify-content-center align-items-center text-center p-0">
-            <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { Model.Id }, Context.Request.Scheme)'" id="BtnStudy" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
+            <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { Model.Id, flag = false }, Context.Request.Scheme)'" id="BtnStudy" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
                 <i class="bi bi-yin-yang"></i> Study this set
             </button>
 
-            <button id="BtnStudyFav" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
+            <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { id = Model.Id, flag = true }, Context.Request.Scheme)'" id="BtnStudyFav" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
                 <i class="bi bi-yin-yang"></i> Study only favorite [@Model.Words?.Where(w => w.IsFavorite == true).Count() words]
             </button>
 
