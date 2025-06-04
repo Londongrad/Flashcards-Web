@@ -12,7 +12,7 @@ namespace Flashcards.Infrastructure.Services
 
         public void Set(Set set)
         {
-            _setStorage.Remove(_userId);
+            _setStorage.Remove(_userId, out Set? _);
             _setStorage.TryAdd(_userId, set);
         }
 
