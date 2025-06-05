@@ -145,7 +145,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (set.Id == 0)
             {
                 await _dataManager.SetRepository.AddAsync(_mapper.Map<Set>(set));
-                TempData["success"] = "Set has been successfully created";
+                TempData["success"] = "New set has been successfully created";
                 return Json(new { success = true, isNew = true });
             }
             else
@@ -202,13 +202,13 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (word.Id == 0)
             {
                 await _dataManager.WordRepository.AddAsync(_mapper.Map<Word>(word));
-
+                TempData["success"] = "New word has been successfully added";
                 return Json(new { success = true });
             }
             else
             {
                 await _dataManager.WordRepository.UpdateAsync(_mapper.Map<Word>(word));
-
+                TempData["success"] = "The word has been successfully updated";
                 return Json(new { success = true });
             }
         }
@@ -241,7 +241,10 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                 return NotFound();
 
             await _dataManager.SetRepository.DeleteAsync(id);
-            return RedirectToAction("Index");
+
+            TempData["success"] = "The set has been successfully deleted";
+
+            return Json(new { success = true });
         }
 
         #endregion [ DELETE ACTIONS ]

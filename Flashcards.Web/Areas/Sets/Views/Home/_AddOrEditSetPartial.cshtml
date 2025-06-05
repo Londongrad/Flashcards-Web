@@ -34,6 +34,7 @@
             e.preventDefault();
 
             var form = $(this);
+
             $.ajax({
                 url: form.attr("action"),
                 type: form.attr("method"),
@@ -43,8 +44,7 @@
                         $("#form-modal").modal('hide');
                         if(res.isNew){
                             location.reload();
-                        }
-                        else{
+                        } else{
                             $("#setName").text(res.name);
                             toastr.success("The name of the set has been successfully updated");
                         }

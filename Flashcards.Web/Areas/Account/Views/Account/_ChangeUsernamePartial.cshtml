@@ -1,0 +1,35 @@
+﻿@model UsernameViewModel
+
+@{
+    Layout = null;
+}
+
+<form id="formUsername" asp-area="Account" asp-controller="Account" asp-action="ChangeUsername" method="post">
+
+    <div class="border p-3 mt-4">
+
+        <div class="input-group row mb-3">
+            <label asp-for="@Model.Username" class="input-group-text bg-dark text-light"></label>
+            <input asp-for="@Model.Username" class="form-control bg-dark text-light">
+            <span asp-validation-for="@Model.Username" class="text-danger mt-2"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-5 m-auto">
+                <button type="submit" class="btn btn-primary">
+                    Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(function() {
+        $("#formUsername").submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            popupPost(form);
+        });
+    });
+</script>

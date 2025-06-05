@@ -44,20 +44,7 @@
             e.preventDefault();
 
             var form = $(this);
-            $.ajax({
-                url: form.attr("action"),
-                type: form.attr("method"),
-                data: form.serialize(),
-                success: function(response) {
-                    if (response.success) {
-                        $("#form-modal").modal('hide');
-                        location.reload();
-                    } else {
-                        $("#form-modal .modal-body").html(response);
-                        $.validator.unobtrusive.parse(document);
-                    }
-                }
-            });
+            popupPost(form);
         });
     });
 </script>

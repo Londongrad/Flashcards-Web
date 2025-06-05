@@ -3,12 +3,13 @@ using Flashcards.Web.Areas.Account.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Flashcards.Web.Areas.Account.Controllers
 {
     [Area("Account")]
     [Authorize]
-    public class AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager) : Controller
+    public class AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IPasswordHasher<ApplicationUser> passwordHasher) : Controller
     {
         #region [ Login ]
 
@@ -126,12 +127,12 @@ namespace Flashcards.Web.Areas.Account.Controllers
             {
                 return RedirectToAction("VerifyEmail");
             }
-            return View(new ChangePasswordViewModel() { Email = email });
+            return View(new PasswordViewModel() { Email = email });
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        public async Task<IActionResult> ChangePassword(PasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -187,11 +188,68 @@ namespace Flashcards.Web.Areas.Account.Controllers
             if (user is null)
                 return BadRequest();
 
-            return View(new UserViewModel() { Id = user.Id, ImageURL = user.ImageURL, Username = user.UserName, Email = user.Email });
+            return View(new ImageViewModel() { ImageURL = user.ImageURL });
+        }
+
+        #region [ Delete account ]
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user is null)
+                return BadRequest();
+
+            return PartialView("_DeleteAccountPartial", new DeleteAccViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateAvatar(UserViewModel vm)
+        public async Task<IActionResult> DeleteAccount(DeleteAccViewModel vm)
+        {
+            if (!ModelState.IsValid)
+                return PartialView("_DeleteAccountPartial", vm);
+
+            var user = await userManager.GetUserAsync(User);
+
+            if (user is null)
+                return Unauthorized();
+
+            if (string.Equals(user.Email, vm.Email) && string.Equals(user.UserName, vm.Username))
+            {
+                await signInManager.SignOutAsync();
+                await userManager.DeleteAsync(user);
+                return Json(new { success = true });
+            }
+            else
+            {
+                ModelState.AddModelError("", "An error occured during this process. Try again");
+                return PartialView("_DeleteAccountPartial", vm);
+            }
+        }
+
+        #endregion [ Delete account ]
+
+        #region [ Change avatar ]
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateAvatar()
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user is null)
+                return BadRequest();
+
+            var avatarVM = new ImageViewModel()
+            {
+                ImageURL = user.ImageURL
+            };
+
+            return PartialView("_ChangeAvatarPartial", avatarVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAvatar(ImageViewModel vm)
         {
             var user = await userManager.GetUserAsync(User);
 
@@ -199,112 +257,136 @@ namespace Flashcards.Web.Areas.Account.Controllers
                 return BadRequest();
 
             user.ImageURL = vm.ImageURL;
-            await userManager.UpdateAsync(user);
-            return RedirectToAction("Settings");
+            IdentityResult result = await userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                TempData["success"] = "User avatar has been successfully updated";
+                return Json(new { success = true });
+            }
+            ModelState.AddModelError("", "An error occured during this process.");
+            return Json(new { success = false });
+        }
+
+        #endregion [ Avatar ]
+
+        #region [ Change password in settings ]
+
+        [HttpGet]
+        public IActionResult ChangePasswordInSettings()
+        {
+            return PartialView("_ChangePasswordInSettingsPartial", new PasswordInSettingsViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteAccount(UserViewModel model)
+        public async Task<IActionResult> ChangePasswordInSettings(PasswordInSettingsViewModel model)
         {
-            var user = await userManager.FindByIdAsync(model.Id);
+            if (!ModelState.IsValid)
+                return PartialView("_ChangePasswordInSettingsPartial");
+
+            var user = await userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                IdentityResult result = await userManager.ChangePasswordAsync(user, model.OldPassword!, model.NewPassword!);
+                if (result.Succeeded)
+                {
+                    TempData["success"] = "Password has been successfully changed";
+                    return Json(new { success = true });
+                }
+                TempData["error"] = "An error occured during this process. Try again";
+                return Json(new { success = false });
+            }
+            else
+                return Unauthorized();
+        }
+
+        #endregion [ Change password in settings ]
+
+        #region [ Change email ]
+
+        [HttpGet]
+        public async Task<IActionResult> ChangeEmail()
+        {
+            var user = await userManager.GetUserAsync(User);
 
             if (user is null)
                 return BadRequest();
-            else
+
+            return PartialView("_ChangeEmailPartial", new EmailViewModel() { Email = user.Email });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeEmail(EmailViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return PartialView("_ChangeEmailPartial");
+
+            var user = await userManager.GetUserAsync(User);
+            if (user != null)
             {
-                await signInManager.SignOutAsync();
-                var result = await userManager.DeleteAsync(user);
+                if (string.Equals(model.Email, user.Email))
+                {
+                    ModelState.AddModelError("", "The same email");
+                    return PartialView("_ChangeEmailPartial");
+                }
+                var emailToken = await userManager.GenerateChangeEmailTokenAsync(user, model.Email!);
+                IdentityResult result = await userManager.ChangeEmailAsync(user, model.Email!, emailToken);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Login");
+                    TempData["success"] = "Email has been successfully updated";
+                    return Json(new { success = true });
                 }
+                ModelState.AddModelError("", "An error occured during this process. Most likely user with this email already exists");
+                return Json(new { success = false });
             }
-            return BadRequest();
+            else
+                return Unauthorized();
+        }
+
+        #endregion [ Change email ]
+
+        #region [ Change username ] 
+
+        [HttpGet]
+        public async Task<IActionResult> ChangeUsername()
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user is null)
+                return BadRequest();
+
+            return PartialView("_ChangeUsernamePartial", new UsernameViewModel() { Username = user.UserName });
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangePasswordInSettings(UserViewModel model)
+        public async Task<IActionResult> ChangeUsername(UsernameViewModel model)
         {
-            if (!(string.IsNullOrEmpty(model.OldPassword) && string.IsNullOrEmpty(model.NewPassword) && string.IsNullOrEmpty(model.Id)))
+            if (!ModelState.IsValid)
+                return PartialView("_ChangeUsernamePartial");
+
+            var user = await userManager.GetUserAsync(User);
+            if (user != null)
             {
-                var user = await userManager.FindByIdAsync(model.Id);
-                if (user != null)
+                if (string.Equals(model.Username, user!.UserName))
                 {
-                    IdentityResult result = await userManager.ChangePasswordAsync(user, model.OldPassword!, model.NewPassword!);
-                    if (result.Succeeded)
-                    {
-                        TempData["success"] = "Password has been successfully updated";
-                        return RedirectToAction("Settings");
-                    }
-                    TempData["error"] = "An error occured during this process. Try again";
-                    return RedirectToAction("Settings");
+                    ModelState.AddModelError("", "The same username");
+                    return PartialView("_ChangeUsernamePartial");
                 }
-                else
-                    return Unauthorized();
+                user.UserName = model.Username;
+                IdentityResult result = await userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    TempData["success"] = "Username has been successfully changed";
+                    return Json(new { success = true });
+                }
+                ModelState.AddModelError("", "An error occured during this process. Most likely user with this username is already exists");
+                return Json(new { success = false });
             }
-            TempData["error"] = "An error occured during this process";
-            return RedirectToAction("Settings");
+            else
+                return Unauthorized();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ChangeEmail(UserViewModel model)
-        {
-            if (!(string.IsNullOrEmpty(model.Id) && string.IsNullOrEmpty(model.Email)))
-            {
-                var user = await userManager.FindByIdAsync(model.Id);
-                if (user != null)
-                {
-                    if (string.Equals(model.Email, user!.Email))
-                    {
-                        TempData["error"] = "Same email";
-                        return RedirectToAction("Settings");
-                    }
-                    var emailToken = await userManager.GenerateChangeEmailTokenAsync(user, model.Email!);
-                    IdentityResult result = await userManager.ChangeEmailAsync(user, model.Email!, emailToken);
-                    if (result.Succeeded)
-                    {
-                        TempData["success"] = "Email has been successfully updated";
-                        return RedirectToAction("Settings");
-                    }
-                    TempData["error"] = "An error occured during this process. Most likely user with this email already exists";
-                    return RedirectToAction("Settings");
-                }
-                else
-                    return Unauthorized();
-            }
-            TempData["error"] = "An error occured during this process";
-            return RedirectToAction("Settings");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ChangeUsername(UserViewModel model)
-        {
-            if (!(string.IsNullOrEmpty(model.Id) && string.IsNullOrEmpty(model.Username)))
-            {
-                var user = await userManager.FindByIdAsync(model.Id);
-                if (user != null)
-                {
-                    if (string.Equals(model.Username, user!.UserName))
-                    {
-                        TempData["error"] = "Same username";
-                        return RedirectToAction("Settings");
-                    }
-                    user.UserName = model.Username;
-                    IdentityResult result = await userManager.UpdateAsync(user);
-                    if (result.Succeeded)
-                    {
-                        TempData["success"] = "Username has been successfully changed";
-                        return RedirectToAction("Settings");
-                    }
-                    TempData["error"] = "An error occured during this process. Most likely user with this username is already exists";
-                    return RedirectToAction("Settings");
-                }
-                else
-                    return Unauthorized();
-            }
-            TempData["error"] = "An error occured during this process";
-            return RedirectToAction("Settings");
-        }
+        #endregion [ Change username ] 
 
         #endregion [ UserActions ]
     }

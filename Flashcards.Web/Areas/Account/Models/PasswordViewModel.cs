@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Flashcards.Web.Areas.Account.Models
 {
-    public class ChangePasswordViewModel
+    public class PasswordViewModel
     {
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress]

@@ -13,3 +13,20 @@ showInPopup = (url, title) => {
         }
     })
 }
+
+popupPost = (form) => {
+    $.ajax({
+        url: form.attr("action"),
+        type: form.attr("method"),
+        data: form.serialize(),
+        success: function (res) {
+            if (res.success) {
+                $("#form-modal").modal('hide');
+                location.reload();
+            } else {
+                $("#form-modal .modal-body").html(res);
+                $.validator.unobtrusive.parse(document);
+            }
+        }
+    });
+}

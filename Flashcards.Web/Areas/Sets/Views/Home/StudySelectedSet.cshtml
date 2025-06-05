@@ -6,6 +6,7 @@
 
 <div style="margin-top: 60px;" id="divToStudy">
     <div class="d-flex justify-content-center align-items-center mx-0">
+
         <button disabled id="BtnPrev" class="btn btn-primary bg-black mx-2 align-content-center" style="width: 20px; height: 90px">
             <i class="bi bi-chevron-left"></i>
         </button>
@@ -78,65 +79,69 @@
     </script>
 
     <script type="text/javascript">
-        var currentIndex = 0;
-        var totalCount = @Model.Count;
-        var id = @Model.CurrentWord.Id;
+        $(document).ready(function() {
+            var currentIndex = 0;
+            var totalCount = @Model.Count;
+            var id = @Model.CurrentWord.Id;
 
-        function loadWord(index) {
-            $.ajax({
-                url: '@Url.Action("SwitchWord", "Home")',
-                type: 'GET',
-                data: { index: index },
-                success: function (data) {
-                    if($('.tile').hasClass("is-flipped")){
-                        tile.classList.toggle("is-flipped");
+            $("#BtnNext").prop("disabled", currentIndex === totalCount - 1);
+
+            function loadWord(index) {
+                $.ajax({
+                    url: '@Url.Action("SwitchWord", "Home")',
+                    type: 'GET',
+                    data: { index: index },
+                    success: function (data) {
+                        if($('.tile').hasClass("is-flipped")){
+                            tile.classList.toggle("is-flipped");
+                        }
+                        $("#BtnFav").css("background-color", data.isFavorite ? "yellow" : "transparent");
+
+                        $("#counter").text((index + 1) + "/" + totalCount);
+                        $("#wordName").text(data.name);
+                        $("#wordDefinition").text(data.definition);
+                        $("#wordImage").attr("src", data.imagePath);
+
+                        // Enable/Disable buttons based on index
+                        $("#BtnPrev").prop("disabled", index === 0);
+                        $("#BtnNext").prop("disabled", index === totalCount - 1);
+
+                        id = data.id;
+                        currentIndex = index;
+                    },
+                    error: function () {
+                        alert("No more items.");
                     }
-                    $("#BtnFav").css("background-color", data.isFavorite ? "yellow" : "transparent");
+                });
+            }
 
-                    $("#counter").text((index + 1) + "/" + totalCount);
-                    $("#wordName").text(data.name);
-                    $("#wordDefinition").text(data.definition);
-                    $("#wordImage").attr("src", data.imagePath);
-
-                    // Enable/Disable buttons based on index
-                    $("#BtnPrev").prop("disabled", index === 0);
-                    $("#BtnNext").prop("disabled", index === totalCount - 1);
-
-                    id = data.id;
-                    currentIndex = index;
-                },
-                error: function () {
-                    alert("No more items.");
+            $("#BtnNext").on("click", function () {
+                if (currentIndex < totalCount - 1) {
+                    loadWord(currentIndex + 1);
                 }
             });
-        }
 
-        $("#BtnNext").on("click", function () {
-            if (currentIndex < totalCount - 1) {
-                loadWord(currentIndex + 1);
-            }
-        });
-
-        $("#BtnPrev").on("click", function () {
-            if (currentIndex > 0) {
-                loadWord(currentIndex - 1);
-            }
-        });
-
-        $("#BtnFav").on("click", function () {
-            $.ajax({
-                type: "POST",
-                url:  '@Url.Action("Favorite", "Home")',
-                data: { id: id },
-                success: function (res) {
-                    if (res.isFavorite) {
-                        $("#BtnFav").css("background-color", "yellow");
-                    }
-                    else {
-                        $("#BtnFav").css("background-color", "transparent");
-                    }
+            $("#BtnPrev").on("click", function () {
+                if (currentIndex > 0) {
+                    loadWord(currentIndex - 1);
                 }
-            })
+            });
+
+            $("#BtnFav").on("click", function () {
+                $.ajax({
+                    type: "POST",
+                    url:  '@Url.Action("Favorite", "Home")',
+                    data: { id: id },
+                    success: function (res) {
+                        if (res.isFavorite) {
+                            $("#BtnFav").css("background-color", "yellow");
+                        }
+                        else {
+                            $("#BtnFav").css("background-color", "transparent");
+                        }
+                    }
+                })
+            });
         });
     </script>
 }
