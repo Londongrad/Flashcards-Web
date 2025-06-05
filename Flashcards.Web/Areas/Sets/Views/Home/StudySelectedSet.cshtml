@@ -52,34 +52,74 @@
 </div>
 
 @section Scripts {
-    @* TTS process*@
-    @* <script type="text/javascript">
-        const textEl = document.getElementById('wordName');
-        const soundBtn = document.getElementById('soundBtn');
-
-        soundBtn.addEventListener('click', speakText);
-
-        function speakText() {
-            window.speechSynthesis.cancel();
-            const text = textEl.innerText;
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.pitch = 0.7;
-            utterance.rate = 0.7;
-            utterance.volume = 0.5;
-            window.speechSynthesis.speak(utterance);
-        }
-    </script> *@
-
     @* Flip the card *@
     <script type="text/javascript">
         const tile = document.querySelector(".tile");
         tile.addEventListener("click", function () {
-          tile.classList.toggle("is-flipped");
+            tile.classList.toggle("is-flipped");
         });
     </script>
 
     <script type="text/javascript">
         $(document).ready(function() {
+
+            var firstText = "Starch";
+
+            var defaultVoiceName = "Microsoft Hazel - English (United Kingdom)";
+
+            if (speechSynthesis) {
+            } else {
+                alert("Bad news! Your browser doesn't have the Speech Synthesis API this project requires. Try opening this webpage using the newest version of Google Chrome.");
+            }
+
+            // Create a new instance of SpeechSynthesisUtterance.
+            var msg = new SpeechSynthesisUtterance();
+
+            // Fetch the list of voices and populate the voice options.
+            function loadVoices() {
+                // Fetch the available voices.
+                var voices = speechSynthesis.getVoices();
+
+                // Loop through each of the voices.
+                voices.forEach(function(voice, i) {
+                // Create a new option element.
+                    var option = document.createElement('option');
+
+                // Set the options value and text.
+                    option.value = voice.name;
+                    option.innerHTML = voice.name;
+
+                // Add the option to the voice selector.
+                    voiceSelect.appendChild(option);
+                });
+            }
+
+            // Execute loadVoices.
+            loadVoices();
+
+            // Chrome loads voices asynchronously.
+            window.speechSynthesis.onvoiceschanged = function(e) {
+                loadVoices();
+            };
+
+            // Set voice
+            msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == defaultVoiceName })[0];
+
+            // Create a new utterance for the specified text and add it to
+            // the queue.
+            function speak(text) {
+                // Stop tts
+                window.speechSynthesis.cancel();
+
+                // Set the text.
+                msg.text = text;
+
+                // Queue this utterance.
+                window.speechSynthesis.speak(msg);
+            }
+
+            speak(firstText);
+
             var currentIndex = 0;
             var totalCount = @Model.Count;
             var id = @Model.CurrentWord.Id;
@@ -105,6 +145,8 @@
                         // Enable/Disable buttons based on index
                         $("#BtnPrev").prop("disabled", index === 0);
                         $("#BtnNext").prop("disabled", index === totalCount - 1);
+
+                        speak(data.name);
 
                         id = data.id;
                         currentIndex = index;

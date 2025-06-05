@@ -3,7 +3,6 @@ using Flashcards.Web.Areas.Account.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace Flashcards.Web.Areas.Account.Controllers
 {
