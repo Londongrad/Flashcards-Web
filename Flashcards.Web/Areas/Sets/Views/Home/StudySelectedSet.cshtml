@@ -49,6 +49,10 @@
             <i class="bi bi-chevron-right"></i>
         </button>
     </div>
+
+    <div class="option">
+        <select name="voice" id="voice"></select>
+    </div>
 </div>
 
 @section Scripts {
@@ -63,6 +67,10 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
+            //var firstText = @Model.CurrentWord.Name;
+
+            var voiceSelect = document.getElementById('voice');
+
             var firstText = "Starch";
 
             var defaultVoiceName = "Microsoft Hazel - English (United Kingdom)";
@@ -76,49 +84,60 @@
             var msg = new SpeechSynthesisUtterance();
 
             // Fetch the list of voices and populate the voice options.
-            function loadVoices() {
-                // Fetch the available voices.
-                var voices = speechSynthesis.getVoices();
+            // function loadVoices() {
+            //     // Fetch the available voices.
+            //     var voices = speechSynthesis.getVoices();
 
-                // Loop through each of the voices.
-                voices.forEach(function(voice, i) {
-                // Create a new option element.
-                    var option = document.createElement('option');
+            //     // Loop through each of the voices.
+            //     voices.forEach(function(voice, i) {
+            //     // Create a new option element.
+            //         var option = document.createElement('option');
 
-                // Set the options value and text.
-                    option.value = voice.name;
-                    option.innerHTML = voice.name;
+            //     // Set the options value and text.
+            //         option.value = voice.name;
+            //         option.innerHTML = voice.name;
 
-                // Add the option to the voice selector.
-                    voiceSelect.appendChild(option);
-                });
-            }
+            //     // Add the option to the voice selector.
+            //         voiceSelect.appendChild(option);
+            //     });
+            // }
 
             // Execute loadVoices.
-            loadVoices();
+            //loadVoices();
 
             // Chrome loads voices asynchronously.
-            window.speechSynthesis.onvoiceschanged = function(e) {
-                loadVoices();
-            };
+            // window.speechSynthesis.onvoiceschanged = function(e) {
+            //     //loadVoices();
+            //     msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == defaultVoiceName })[0];
+            //     speak(firstText);
+            // };
 
-            // Set voice
-            msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == defaultVoiceName })[0];
+            speechSynthesis.addEventListener('voiceschanged', function() {
+                // Set voice
+                msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == defaultVoiceName })[0];
+                speak(firstText);
+            });
+
+            
 
             // Create a new utterance for the specified text and add it to
             // the queue.
             function speak(text) {
-                // Stop tts
+                // Stop the previous tts
                 window.speechSynthesis.cancel();
 
                 // Set the text.
                 msg.text = text;
 
+                if (voiceSelect.value) {
+                    msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == voiceSelect.value; })[0];
+                }
+
                 // Queue this utterance.
                 window.speechSynthesis.speak(msg);
             }
 
-            speak(firstText);
+            //speak(firstText);
 
             var currentIndex = 0;
             var totalCount = @Model.Count;
