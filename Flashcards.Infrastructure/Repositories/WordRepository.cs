@@ -47,5 +47,7 @@ namespace Flashcards.Infrastructure.Repositories
             else
                 return dbContext.Set<Word>().Any(w => w.Name == name && w.Id != id);
         });
+
+        public Task DeleteAllAsync() => throw new NotImplementedException();
     }
 }

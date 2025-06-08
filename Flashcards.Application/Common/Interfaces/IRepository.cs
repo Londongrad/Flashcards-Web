@@ -15,5 +15,7 @@ namespace Flashcards.Application.Common.Interfaces
         Task AddAsync(T entity);
 
         Task<bool> IsNotUnique(string name, int id);
+
+        Task DeleteAllAsync();
     }
 }

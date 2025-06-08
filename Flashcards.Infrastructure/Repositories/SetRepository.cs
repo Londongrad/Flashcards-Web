@@ -10,11 +10,11 @@ namespace Flashcards.Infrastructure.Repositories
     public class SetRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : IRepository<Set>
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
-        private readonly string _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        private readonly string _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
 
         public async Task DeleteAsync(int id)
         {
-            await _dbContext.Sets.Where(s => s.Id == id)
+            await _dbContext.Sets.Where(s => s.Id == id && _userId == s.UserId)
                 .ExecuteDeleteAsync();
         }
 
@@ -30,7 +30,7 @@ namespace Flashcards.Infrastructure.Repositories
 
         public async Task UpdateAsync(Set set)
         {
-            await _dbContext.Sets.Where(s => s.Id == set.Id)
+            await _dbContext.Sets.Where(s => s.Id == set.Id && _userId == s.UserId)
                 .ExecuteUpdateAsync(sp => sp
                 .SetProperty(s => s.Name, set.Name)
                 );
@@ -50,5 +50,11 @@ namespace Flashcards.Infrastructure.Repositories
             else
                 return _dbContext.Set<Set>().Any(s => s.Name == name && s.Id != id);
         });
+
+        public async Task DeleteAllAsync()
+        {
+            await _dbContext.Sets.Where(s => _userId == s.UserId)
+                .ExecuteDeleteAsync();
+        }
     }
 }

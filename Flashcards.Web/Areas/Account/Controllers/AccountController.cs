@@ -8,7 +8,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
 {
     [Area("Account")]
     [Authorize]
-    public class AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IPasswordHasher<ApplicationUser> passwordHasher) : Controller
+    public class AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, DataManager dataManager) : Controller
     {
         #region [ Login ]
 
@@ -218,6 +218,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
             {
                 await signInManager.SignOutAsync();
                 await userManager.DeleteAsync(user);
+                await dataManager.SetRepository.DeleteAllAsync();
                 return Json(new { success = true });
             }
             else
