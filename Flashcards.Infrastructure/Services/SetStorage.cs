@@ -8,7 +8,7 @@ namespace Flashcards.Infrastructure.Services
     public class SetStorage(IHttpContextAccessor httpContextAccessor)
     {
         private static readonly ConcurrentDictionary<string, Set> _setStorage = [];
-        private readonly string _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        private readonly string _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
 
         public void Set(Set set)
         {
