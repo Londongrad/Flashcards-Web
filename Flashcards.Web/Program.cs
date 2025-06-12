@@ -3,6 +3,7 @@ using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
 using Flashcards.Infrastructure.Repositories;
 using Flashcards.Infrastructure.Services;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -11,7 +12,6 @@ namespace Flashcards.Web
 {
     public class Program
     {
-        //TODO: Реализовать систему отслеживания прогресса по обучению
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -43,15 +43,6 @@ namespace Flashcards.Web
                 options.SlidingExpiration = true;
             });
 
-            //// Sessions
-            //builder.Services.AddDistributedMemoryCache();
-            //builder.Services.AddSession(options =>
-            //{
-            //    options.IdleTimeout = TimeSpan.FromSeconds(100);
-            //    options.Cookie.HttpOnly = true;
-            //    options.Cookie.IsEssential = true;
-            //});
-
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpContextAccessor();
@@ -62,6 +53,11 @@ namespace Flashcards.Web
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var app = builder.Build();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor
+            });
 
             app.UseStaticFiles();
 
