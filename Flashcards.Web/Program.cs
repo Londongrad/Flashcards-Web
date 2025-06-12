@@ -54,17 +54,22 @@ namespace Flashcards.Web
 
             var app = builder.Build();
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            var forwardedHeaderOptions = new ForwardedHeadersOptions
             {
-                ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor
-            });
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+                RequireHeaderSymmetry = false,
+                ForwardLimit = null
+            };
+            forwardedHeaderOptions.KnownNetworks.Clear();
+            forwardedHeaderOptions.KnownProxies.Clear();
+
+            app.UseForwardedHeaders(forwardedHeaderOptions);
 
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();
             app.UseRouting();
 
-            //app.UseSession();
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
