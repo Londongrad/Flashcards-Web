@@ -23,19 +23,19 @@
                 }
             </div>
 
-            <button onclick="showInPopup('@Url.Action("UpdateAvatar", "Account", new { Model.ImageURL }, Context.Request.Scheme)', 'Change avatar')" type="button" class="btn btn-primary m-2">
+            <button onclick="showInPopup('@Url.Action("UpdateAvatar", "Account", new { Model.ImageURL })', 'Change avatar')" type="button" class="btn btn-primary m-2">
                 <i class="bi bi-card-image"></i> Change avatar
             </button>
 
-            <button onclick="showInPopup('@Url.Action("ChangePasswordInSettings", "Account", null, Context.Request.Scheme)', 'Change password')" type="button" class="btn btn-primary m-2">
+            <button onclick="showInPopup('@Url.Action("ChangePasswordInSettings", "Account")', 'Change password')" type="button" class="btn btn-primary m-2">
                 <i class="bi bi-arrow-repeat"></i> Change password
             </button>
 
-            <button onclick="showInPopup('@Url.Action("ChangeEmail", "Account", null, Context.Request.Scheme)', 'Change email')" type="button" class="btn btn-primary m-2">
+            <button onclick="showInPopup('@Url.Action("ChangeEmail", "Account")', 'Change email')" type="button" class="btn btn-primary m-2">
                 <i class="bi bi-arrow-repeat"></i> Change email
             </button>
 
-            <button onclick="showInPopup('@Url.Action("ChangeUsername", "Account", null, Context.Request.Scheme)', 'Change username')" class="btn btn-primary m-2">
+            <button onclick="showInPopup('@Url.Action("ChangeUsername", "Account")', 'Change username')" class="btn btn-primary m-2">
                 <i class="bi bi-arrow-repeat"></i> Change username
             </button>
         </div>
@@ -75,7 +75,7 @@
         <h1 class="text-danger mt-5">Danger zone</h1>
         <hr class="border-bottom border-white" />
 
-        <button onclick="showInPopup('@Url.Action("DeleteAccount", "Account", null, Context.Request.Scheme)', 'Delete account')" class="btn btn-danger border-1 border-dark-subtle">
+        <button onclick="showInPopup('@Url.Action("DeleteAccount", "Account")', 'Delete account')" class="btn btn-danger border-1 border-dark-subtle">
             <i class="bi bi-x-octagon"></i> Delete account
         </button>
     </div>
