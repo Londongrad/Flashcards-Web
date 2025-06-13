@@ -54,6 +54,7 @@ namespace Flashcards.Web
 
             var app = builder.Build();
 
+            // Этот участок кода помог решить проблему, при которой от Ajax приходил http запрос вместо https
             var forwardedHeaderOptions = new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
