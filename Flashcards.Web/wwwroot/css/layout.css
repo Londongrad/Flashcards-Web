@@ -108,13 +108,25 @@ button.accept-policy {
     }
 
 .tile {
-    margin-top: 40px;
+    margin: 40px auto; /* Центрирование по горизонтали */
     background-color: #003142;
     transform-style: preserve-3d;
     transition: all 0.5s;
-    width: 1100px;
-    height: 600px;
+    width: 90vw; /* 90% ширины экрана */
+    max-width: 1100px; /* Ограничение сверху */
+    height: auto;
     max-height: 700px;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+/* Для маленьких экранов — корректируем */
+@media (max-width: 768px) {
+    .tile {
+        width: 95vw;
+        padding: 10px;
+        max-height: none; /* Если важно избежать обрезки */
+    }
 }
 
     .tile:hover {
