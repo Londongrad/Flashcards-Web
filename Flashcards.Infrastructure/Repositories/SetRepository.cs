@@ -10,51 +10,75 @@ namespace Flashcards.Infrastructure.Repositories
     public class SetRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : IRepository<Set>
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
-        private readonly string _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
 
+        // Get the current logged-in user's ID from the HTTP context
+        private readonly string _userId = httpContextAccessor.HttpContext.User
+            .FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+
+        /// <summary>Returns a base query filtered by current user.</summary>
+        private IQueryable<Set> UserSets => _dbContext.Sets.Where(s => s.UserId == _userId);
+
+        /// <summary>Deletes a set with the specified ID if it belongs to the current user.</summary>
         public async Task DeleteAsync(int id)
         {
-            await _dbContext.Sets.Where(s => s.Id == id && _userId == s.UserId)
-                .ExecuteDeleteAsync();
+            await UserSets.Where(s => s.Id == id).ExecuteDeleteAsync();
         }
 
+        /// <summary>Retrieves all sets that belong to the current user, including their associated words.</summary>
         public async Task<IEnumerable<Set>> GetAllAsync()
         {
-            return await _dbContext.Sets.Where(s => s.UserId == _userId).Include(s => s.Words).AsNoTracking().ToListAsync();
+            return await UserSets
+                .Include(s => s.Words)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
+        /// <summary>Retrieves a specific set by ID if it belongs to the current user.</summary>
         public async Task<Set?> GetAsync(int id)
         {
-            return await _dbContext.Sets.Where(s => s.UserId == _userId).Include(s => s.Words).AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
+            return await UserSets
+                .Include(s => s.Words)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
+        /// <summary>Updates the name of a set if it belongs to the current user.</summary>
         public async Task UpdateAsync(Set set)
         {
-            await _dbContext.Sets.Where(s => s.Id == set.Id && _userId == s.UserId)
+            await UserSets
+                .Where(s => s.Id == set.Id)
                 .ExecuteUpdateAsync(sp => sp
-                .SetProperty(s => s.Name, set.Name)
+                    .SetProperty(s => s.Name, set.Name)
                 );
         }
 
+        /// <summary>Adds a new set for the current user.</summary>
         public async Task AddAsync(Set set)
         {
+            // Ensure the set is linked to the current user
             set.UserId = _userId;
+
             await _dbContext.Sets.AddAsync(set);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> IsNotUnique(string name, int id) => await Task.Run(() =>
+        /// <summary>Checks whether a set name is not unique. <br/>
+        /// If id == 0: check if any set with the same name exists. <br/>
+        /// If id != 0: check if another set with the same name exists (used during update).</summary>
+        public async Task<bool> IsNotUnique(string name, int id)
         {
-            if (id == 0)
-                return _dbContext.Set<Set>().Any(s => s.Name == name);
-            else
-                return _dbContext.Set<Set>().Any(s => s.Name == name && s.Id != id);
-        });
+            var query = _dbContext.Sets.AsQueryable();
 
+            if (id == 0)
+                return await query.AnyAsync(s => s.Name == name && s.UserId == _userId);
+
+            return await query.AnyAsync(s => s.Name == name && s.Id != id && s.UserId == _userId);
+        }
+
+        /// <summary>Deletes all sets belonging to the current user.</summary>
         public async Task DeleteAllAsync()
         {
-            await _dbContext.Sets.Where(s => _userId == s.UserId)
-                .ExecuteDeleteAsync();
+            await UserSets.ExecuteDeleteAsync();
         }
     }
 }

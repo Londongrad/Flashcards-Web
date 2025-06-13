@@ -4,159 +4,200 @@
     Layout = "_LayoutForStudyWords";
 }
 
-<div style="margin-top: 60px;" id="divToStudy">
-    <div class="d-flex justify-content-center align-items-center mx-0">
+<!-- Wrapper around the entire block -->
+<div class="d-flex justify-content-center align-items-center mx-0" style="margin-top: 60px;">
 
-        <button disabled id="BtnPrev" class="btn btn-primary bg-black mx-2 align-content-center" style="width: 20px; height: 90px">
-            <i class="bi bi-chevron-left"></i>
-        </button>
+    <!-- Left arrow button (Previous) -->
+    <button disabled id="BtnPrev" class="btn btn-primary bg-black mx-2 align-content-center" style="width: 20px; height: 90px">
+        <i class="bi bi-chevron-left"></i>
+    </button>
 
-        <div>
-            <div class="row text-center align-items-center mx-0 w-100">
-                <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.CurrentWord.SetId" type="button" class="btn btn-primary text-bg-dark col-3">
-                    <i class="bi bi-arrow-down-left-circle"></i> Back to the set
+    <!-- Container for the top panel and the flashcard tile -->
+    <div>
+
+        <!-- Top panel: Back button — Counter — Favorite button -->
+        <div class="row text-center align-items-center mx-0 w-100">
+
+            <!-- Back to set button (navigates back to the word set) -->
+            <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.CurrentWord.SetId"
+               type="button" class="btn btn-primary text-bg-dark col-3">
+                <i class="bi bi-arrow-down-left-circle"></i> Back to the set
+            </a>
+
+            <!-- Counter displaying current word index / total count -->
+            <h3 id="counter" class="text-white col-6 m-0">1/@Model.Count</h3>
+
+            <!-- Favorite button (star icon) on the top right -->
+            <div class="col-3 text-end">
+                <a id="BtnFav" class="btn sound-fav-btn" title="Favorite"
+                   style="background-color: @(!Model.CurrentWord.IsFavorite ? "transparent" : "yellow")">
+                    <i class="bi bi-star-fill"></i>
                 </a>
-
-                <h3 id="counter" class="text-white col-6 m-0">1/@Model.Count</h3>
-
-                <div class="col-3 text-end">
-                    <a id="BtnFav" class="btn sound-fav-btn" title="Favorite"
-                       style="background-color: @(!Model.CurrentWord.IsFavorite ? "transparent" : "yellow")">
-                        <i class="bi bi-star-fill"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="tile mt-2">
-                <div class="text-center tile__face">
-                    <p class="text-white text-to-learn" id="wordName">@Model.CurrentWord.Name</p>
-                </div>
-
-                <div class="text-center tile__face tile__face--back" style="height: 400px; width: auto; margin-top: 10px;">
-                    @if (!string.IsNullOrEmpty(Model.CurrentWord.ImagePath))
-                    {
-                        <img id="wordImage" src="@Model.CurrentWord.ImagePath" />
-                    }
-                </div>
-
-                <div class="text-center text-white text-to-learn tile__face tile__face--back">
-                    <p id="wordDefinition">@Model.CurrentWord.Definition</p>
-                </div>
             </div>
         </div>
 
-        <button id="BtnNext" class="btn btn-primary text-bg-dark-subtle mx-2 align-content-center" style="width: 20px; height: 90px">
-            <i class="bi bi-chevron-right"></i>
-        </button>
+        <!-- Flashcard container -->
+        <div class="tile mt-2">
+
+            <!-- Front side of the flashcard: displays the word -->
+            <div class="text-center tile__face">
+                <p class="text-white text-to-learn" id="wordName">@Model.CurrentWord.Name</p>
+            </div>
+
+            <!-- Back side of the flashcard: displays image if available -->
+            <div class="text-center tile__face tile__face--back" style="height: 400px; width: auto; margin-top: 10px;">
+                @if (!string.IsNullOrEmpty(Model.CurrentWord.ImagePath))
+                {
+                    <img id="wordImage" src="@Model.CurrentWord.ImagePath" />
+                }
+            </div>
+
+            <!-- Second back side of the flashcard: displays definition -->
+            <div class="text-center text-white text-to-learn tile__face tile__face--back">
+                <p id="wordDefinition">@Model.CurrentWord.Definition</p>
+            </div>
+        </div>
     </div>
+
+    <!-- Right arrow button (Next) -->
+    <button id="BtnNext" class="btn btn-primary text-bg-dark-subtle mx-2 align-content-center" style="width: 20px; height: 90px">
+        <i class="bi bi-chevron-right"></i>
+    </button>
 </div>
 
 @section Scripts {
-    @* Flip the card *@
+    @* Flip the card when clicked *@
     <script type="text/javascript">
+
         const tile = document.querySelector(".tile");
+
+        // Toggle the "is-flipped" class on click to animate card flip
         tile.addEventListener("click", function () {
             tile.classList.toggle("is-flipped");
         });
     </script>
 
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
 
+            // The initial word to be spoken (fetched from the server-side model)
             var firstText = "@Model.CurrentWord.Name";
 
+            // Default voice name for speech synthesis
             var defaultVoiceName = "Microsoft Hazel - English (United Kingdom)";
 
+            // Check if the browser supports the Speech Synthesis API
             if (speechSynthesis) {
+                // Supported, continue
             } else {
+                // Not supported, alert the user
                 alert("Bad news! Your browser doesn't have the Speech Synthesis API this project requires. Try opening this webpage using the newest version of Google Chrome.");
             }
 
-            // Create a new instance of SpeechSynthesisUtterance.
+            // Create a new SpeechSynthesisUtterance instance
             var msg = new SpeechSynthesisUtterance();
 
-            speechSynthesis.addEventListener('voiceschanged', function() {
-                // Set voice
-                msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == defaultVoiceName })[0];
+            // When the list of available voices changes (e.g., loaded), set the desired voice
+            speechSynthesis.addEventListener('voiceschanged', function () {
+                msg.voice = speechSynthesis.getVoices().filter(function (voice) {
+                    return voice.name == defaultVoiceName;
+                })[0];
+
+                // Speak the initial word
                 speak(firstText);
             });
 
-            // Create a new utterance for the specified text and add it to
-            // the queue.
+            // Function to speak a given text
             function speak(text) {
-                // Stop the previous tts
+                // Cancel any ongoing speech
                 window.speechSynthesis.cancel();
 
-                // Set the text.
+                // Set the text to be spoken
                 msg.text = text;
 
-                // Queue this utterance.
+                // Start speaking
                 window.speechSynthesis.speak(msg);
             }
 
+            // Index of the currently displayed word
             var currentIndex = 0;
+
+            // Total number of words (from server-side model)
             var totalCount = @Model.Count;
+
+            // ID of the current word (used for favorite action)
             var id = @Model.CurrentWord.Id;
 
+            // Disable "Next" button if we're already at the last word
             $("#BtnNext").prop("disabled", currentIndex === totalCount - 1);
 
+            // Function to load a word by index using AJAX
             function loadWord(index) {
                 $.ajax({
                     url: '@Url.Action("SwitchWord", "Home")',
                     type: 'GET',
                     data: { index: index },
                     success: function (data) {
-                        if($('.tile').hasClass("is-flipped")){
+                        // If the card is flipped, flip it back
+                        if ($('.tile').hasClass("is-flipped")) {
                             tile.classList.toggle("is-flipped");
                         }
+
+                        // Update the favorite button's background color
                         $("#BtnFav").css("background-color", data.isFavorite ? "yellow" : "transparent");
 
+                        // Update counter, word name, definition, and image
                         $("#counter").text((index + 1) + "/" + totalCount);
                         $("#wordName").text(data.name);
                         $("#wordDefinition").text(data.definition);
                         $("#wordImage").attr("src", data.imagePath);
 
-                        // Enable/Disable buttons based on index
+                        // Enable or disable navigation buttons
                         $("#BtnPrev").prop("disabled", index === 0);
                         $("#BtnNext").prop("disabled", index === totalCount - 1);
 
+                        // Speak the new word
                         speak(data.name);
 
+                        // Update current word ID and index
                         id = data.id;
                         currentIndex = index;
                     },
                     error: function () {
-                        alert("No more items.");
+                        alert("No more items."); // Show alert if request fails
                     }
                 });
             }
 
+            // Handle click on "Next" button
             $("#BtnNext").on("click", function () {
                 if (currentIndex < totalCount - 1) {
                     loadWord(currentIndex + 1);
                 }
             });
 
+            // Handle click on "Previous" button
             $("#BtnPrev").on("click", function () {
                 if (currentIndex > 0) {
                     loadWord(currentIndex - 1);
                 }
             });
 
+            // Handle click on "Favorite" button
             $("#BtnFav").on("click", function () {
                 $.ajax({
                     type: "POST",
-                    url:  '@Url.Action("Favorite", "Home")',
+                    url: '@Url.Action("Favorite", "Home")',
                     data: { id: id },
                     success: function (res) {
+                        // Change background color based on favorite status
                         if (res.isFavorite) {
                             $("#BtnFav").css("background-color", "yellow");
-                        }
-                        else {
+                        } else {
                             $("#BtnFav").css("background-color", "transparent");
                         }
                     }
-                })
+                });
             });
         });
     </script>
