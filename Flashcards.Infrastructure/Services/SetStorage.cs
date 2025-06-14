@@ -5,6 +5,7 @@ using System.Security.Claims;
 
 namespace Flashcards.Infrastructure.Services
 {
+    /// <summary> Interface for this service was considered as excessive </summary>
     public class SetStorage(IHttpContextAccessor httpContextAccessor)
     {
         private static readonly ConcurrentDictionary<string, Set> _setStorage = [];
@@ -38,6 +39,7 @@ namespace Flashcards.Infrastructure.Services
         public void Modify(Word word)
         {
             var set = Get();
+
             if (set == null)
                 return;
 

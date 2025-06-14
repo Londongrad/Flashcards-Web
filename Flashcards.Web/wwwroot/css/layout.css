@@ -189,15 +189,23 @@ button.accept-policy {
     display: inline-block;
     vertical-align: middle;
     width: 70px;
+    height: 70px;
     min-height: 70px;
     min-width: 70px;
-    height: 70px;
+    max-height: 100%;
+    max-width: 100%;
     border-radius: 50%;
     overflow: hidden;
+    object-fit: cover;
 }
 
 .avatar-container-header {
+    display: flex;
+    align-items: center; /* центрирует по вертикали */
+    justify-content: center; /* центрирует по горизонтали */
     height: 80px;
+    width: 80px; /* необязательно, но может помочь */
+    padding: 0;
 }
 
 .toastr-top-center {
@@ -209,4 +217,55 @@ button.accept-policy {
 img {
     width: auto;
     height: 100%;
+}
+
+.responsive-text {
+    font-size: 1.25rem; /* по умолчанию (десктоп) */
+    font-weight: 300;
+}
+
+@media (max-width: 768px) {
+    .responsive-text {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .responsive-text {
+        font-size: 1rem;
+    }
+}
+
+.responsive-small { /* по умолчанию (десктоп) */
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+@media (max-width: 768px) {
+    .responsive-small {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .responsive-small {
+        font-size: 0.9rem;
+    }
+}
+
+.responsive-text-big {
+    font-size: 2rem; /* по умолчанию (десктоп) */
+    font-weight: 300;
+}
+
+@media (max-width: 768px) {
+    .responsive-text-big {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .responsive-text-big {
+        font-size: 1rem;
+    }
 }

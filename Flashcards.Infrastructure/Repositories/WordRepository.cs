@@ -1,13 +1,18 @@
 ﻿using Flashcards.Application.Common.Interfaces;
 using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Flashcards.Infrastructure.Repositories
 {
-    public class WordRepository(ApplicationDbContext dbContext) : IRepository<Word>
+    public class WordRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : IRepository<Word>
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
+
+        private readonly string _userId = httpContextAccessor.HttpContext.User
+            .FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
         /// <summary> Deletes a word by its ID. <br/>
         /// Uses ExecuteDeleteAsync for efficient deletion without loading the entity. </summary>
@@ -53,7 +58,7 @@ namespace Flashcards.Infrastructure.Repositories
         /// Used for uniqueness validation. </summary>
         public async Task<bool> IsNotUnique(string name, int id)
         {
-            var query = _dbContext.Words.AsQueryable();
+            var query = _dbContext.Words.Include(w => w.Set).Where(w => w.Set!.UserId == _userId);
 
             if (id == 0)
             {
@@ -66,7 +71,7 @@ namespace Flashcards.Infrastructure.Repositories
         }
 
         /// <summary>
-        /// Deletes all words (not implemented).
+        /// Deletes all words (not implemented). This method was considered as exessive due to a fact that the entity Set in the database has the property OnDelete = CASCADE
         /// </summary>
         public Task DeleteAllAsync() => throw new NotImplementedException();
     }

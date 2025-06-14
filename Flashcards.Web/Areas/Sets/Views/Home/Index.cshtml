@@ -5,24 +5,24 @@
 
 <div class="row pt-4 pb-3 m-1">
 
-    <h2 class="text-light mb-0 col-6 align-content-center">
+    <p class="text-light mb-0 col-6 align-content-center responsive-text-big">
         Your library
-    </h2>
+    </p>
 
     <div class="col-6 text-end">
-        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home")', 'New set')" title="Create new set" class="btn btn-primary border-1 border-dark-subtle text-bg-dark">
+        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home")', 'New set')" title="Create new set" class="btn btn-primary border-1 border-dark-subtle text-bg-dark responsive-small" style="text-transform: none; border-radius: 4%;">
             <i class="bi bi-plus-lg"></i> Add new set
         </a>
     </div>
 
     @if (!Model.Any())
     {
-        <div class="row m-5">
-            <img src="~/images/empty.png" style="width: 70px; height: 60px;" class="col-2 mx-1 p-0" />
-            <h2 class="text-light col-10 m-0 p-0">
+        <div class="row m-5" style="max-height: 96px">
+            <img src="~/images/empty.png" style="width: 96px;" class="col-2 m-0 p-0" />
+            <p class="text-light col-10 m-0 p-0 responsive-text-big">
                 Currently you don't have any sets in your library.
                 Add one by pressing button above.
-            </h2>
+            </p>
         </div>
     }
     else

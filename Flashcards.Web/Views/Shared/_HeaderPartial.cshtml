@@ -6,10 +6,12 @@
 <div class="container-fluid m-0 p-0">
     <header>
         <nav class="navbar navbar-dark bg-primary border-bottom box-shadow mb-3">
+            <div class="container-fluid d-flex justify-content-between align-items-center flex-nowrap p-0">
 
-            <div class="container-fluid">
-
-                <a asp-area="Sets" asp-controller="Home" asp-action="Index" class="navbar-brand ms-5">Flashcards</a>
+                <a asp-area="Sets" asp-controller="Home" asp-action="Index"
+                   class="navbar-brand ms-5 responsive-text" style="text-transform: none;">
+                    Flashcards
+                </a>
 
                 @if (user is not null)
                 {
@@ -17,42 +19,54 @@
 
                         @if (@user.ImageURL is null)
                         {
-                            <button class="btn dropdown-toggle text-bg-dark" data-bs-auto-close="outside"
-                                    type="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn dropdown-toggle text-bg-dark responsive-text" style="text-transform: none;"
+                                    data-bs-auto-close="outside"
+                                    type="button"
+                                    id="dropdownMenu1"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
                                 @user.UserName
-
                             </button>
                         }
                         else
                         {
-                            <a class="btn dropdown-toggle avatar-container-header" id="dropdownMenu1" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="btn dropdown-toggle avatar-container-header responsive-text"
+                               id="dropdownMenu1"
+                               data-bs-auto-close="outside"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
                                 <img class="user-link-photo" src="@user.ImageURL" />
                             </a>
                         }
 
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="dropdownMenu1">
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark"
+                            aria-labelledby="dropdownMenu1">
                             <li class="justify-content-center" style="display: flex">
                                 @if (@user.ImageURL is not null)
                                 {
                                     <img class="user-link-photo ms-2" src="@user.ImageURL" />
                                 }
                                 <div class="text-center align-content-center mx-2 text-nowrap">
-                                    <p class="m-0">@user.UserName</p>
-                                    <p class="m-0">@user.Email</p>
+                                    <p class="m-0 responsive-text">@user.UserName</p>
+                                    <p class="m-0 responsive-text">@user.Email</p>
                                 </div>
                             </li>
 
                             <li class="dropdown-divider"></li>
 
                             <li class="text-center text-big">
-                                <a asp-area="Account" asp-controller="Account" asp-action="Settings" class="dropdown-item">
+                                <a asp-area="Account" asp-controller="Account" asp-action="Settings"
+                                   class="dropdown-item responsive-text">
                                     <i class="bi bi-gear"></i> Settings
                                 </a>
                             </li>
+
                             <li class="dropdown-divider"></li>
+
                             <li class="text-center text-big">
-                                <form method="post" asp-area="Account" asp-controller="Account" asp-action="Logout">
-                                    <button type="submit" class="dropdown-item">
+                                <form method="post" asp-area="Account"
+                                      asp-controller="Account" asp-action="Logout">
+                                    <button type="submit" class="dropdown-item responsive-text">
                                         <i class="bi bi-x-circle"></i> Logout
                                     </button>
                                 </form>
