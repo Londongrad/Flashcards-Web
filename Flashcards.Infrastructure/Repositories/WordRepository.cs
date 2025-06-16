@@ -42,11 +42,8 @@ namespace Flashcards.Infrastructure.Repositories
                 );
         }
 
-        /// <summary> Retrieves all words without tracking (read-only). </summary>
-        public async Task<IEnumerable<Word>> GetAllAsync()
-        {
-            return await _dbContext.Words.AsNoTracking().ToListAsync();
-        }
+        /// <summary> Not implemented. Instead navigation property is used in order to receive words. </summary>
+        public Task<IEnumerable<Word>> GetAllAsync() => throw new NotImplementedException();
 
         /// <summary> Retrieves a specific word by ID without tracking. </summary>
         public async Task<Word?> GetAsync(int id)

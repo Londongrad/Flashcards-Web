@@ -1,50 +1,17 @@
-﻿using System.Security.Claims;
-using Flashcards.Domain.Entities;
+﻿using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
 using Flashcards.Infrastructure.Repositories;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 
 namespace Flashcards.Tests;
 
 public class SetRepositoryTests
 {
-    private static ApplicationDbContext CreateSqliteDbContext()
-    {
-        var connection = new SqliteConnection("DataSource=:memory:");
-        connection.Open();
-
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseSqlite(connection)
-            .Options;
-
-        var context = new ApplicationDbContext(options);
-        context.Database.EnsureCreated();
-
-        return context;
-    }
-
-    private static IHttpContextAccessor MockHttpContextAccessor(string userId)
-    {
-        var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, userId) };
-        var identity = new ClaimsIdentity(claims, "TestAuth");
-        var principal = new ClaimsPrincipal(identity);
-
-        var context = new DefaultHttpContext { User = principal };
-        var accessor = new Mock<IHttpContextAccessor>();
-        accessor.Setup(x => x.HttpContext).Returns(context);
-
-        return accessor.Object;
-    }
-
     [Fact]
     public async Task GetAllAsync_ReturnsOnlyUsersSets()
     {
-        var repo1 = new SetRepository(CreateSqliteDbContext(), MockHttpContextAccessor("user1"));
-        var repo2 = new SetRepository(CreateSqliteDbContext(), MockHttpContextAccessor("user2"));
+        var repo1 = CreateSetRep("user1");
+        var repo2 = CreateSetRep("user2");
 
         await repo1.AddAsync(new Set(1, "Set 1", "user1"));
         await repo2.AddAsync(new Set(2, "Set 2", "user2"));
@@ -57,8 +24,8 @@ public class SetRepositoryTests
     [Fact]
     public async Task GetAsync_ReturnsSetIfBelongsToUser()
     {
-        var repo1 = new SetRepository(CreateSqliteDbContext(), MockHttpContextAccessor("user1"));
-        var repo2 = new SetRepository(CreateSqliteDbContext(), MockHttpContextAccessor("user2"));
+        var repo1 = CreateSetRep("user1");
+        var repo2 = CreateSetRep("user2");
 
         await repo1.AddAsync(new Set(1, "Set 1", "user1"));
         await repo2.AddAsync(new Set(2, "Set 2", "user2"));
@@ -72,7 +39,7 @@ public class SetRepositoryTests
     [Fact]
     public async Task AddAsync_AddsSetWithUserId()
     {
-        var repo = new SetRepository(CreateSqliteDbContext(), MockHttpContextAccessor("user1"));
+        var repo = CreateSetRep("user1");
 
         var set = new Set(1, "New Set", "user1");
 
@@ -86,7 +53,7 @@ public class SetRepositoryTests
     [Fact]
     public async Task DeleteAsync_RemovesUserSet()
     {
-        var repo = new SetRepository(CreateSqliteDbContext(), MockHttpContextAccessor("user1"));
+        var repo = CreateSetRep("user1");
 
         await repo.AddAsync(new Set(1, "Set", "user1"));
 
@@ -99,8 +66,7 @@ public class SetRepositoryTests
     [Fact]
     public async Task UpdateAsync_ChangesName()
     {
-        var context = CreateSqliteDbContext();
-        var repo = new SetRepository(context, MockHttpContextAccessor("user1"));
+        var repo = CreateSetRep("user1");
 
         var originalSet = new Set(1, "Old Name", "user1");
         var updatedSet = new Set(1, "New Name", "user1");
@@ -115,7 +81,7 @@ public class SetRepositoryTests
     [Fact]
     public async Task IsNotUnique_ReturnsTrueIfNameExists()
     {
-        var repo = new SetRepository(CreateSqliteDbContext(), MockHttpContextAccessor("user1"));
+        var repo = CreateSetRep("user1");
 
         await repo.AddAsync(new Set(1, "Set", "user1"));
 
@@ -127,8 +93,8 @@ public class SetRepositoryTests
     [Fact]
     public async Task DeleteAllAsync_RemovesAllUsersSets()
     {
-        var repo1 = new SetRepository(CreateSqliteDbContext(), MockHttpContextAccessor("user1"));
-        var repo2 = new SetRepository(CreateSqliteDbContext(), MockHttpContextAccessor("user2"));
+        var repo1 = CreateSetRep("user1");
+        var repo2 = CreateSetRep("user2");
 
         await repo1.AddAsync(new Set(1, "Set 1", "user1"));
         await repo1.AddAsync(new Set(2, "Set 2", "user1"));
@@ -138,5 +104,10 @@ public class SetRepositoryTests
 
         var remaining = await repo1.GetAllAsync();
         remaining.Should().BeEmpty();
+    }
+
+    internal static SetRepository CreateSetRep(string userId)
+    {
+        return new SetRepository(DatabaseTests.CreateSqliteDbContext(), DatabaseTests.MockHttpContextAccessor(userId));
     }
 }
