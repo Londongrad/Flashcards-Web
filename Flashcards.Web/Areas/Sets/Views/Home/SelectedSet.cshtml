@@ -7,6 +7,9 @@
     <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id })', 'Edit set')" class="btn sound-fav-btn" title="Edit name of the set">
         <i class="bi bi-pencil-square"></i>
     </a>
+    <button id="deleteSet" title="Delete set" class="btn text-truncate sound-fav-btn">
+        <i class="bi bi-trash3"></i>
+    </button>
 </p>
 
 <div class="justify-content-center align-items-center text-center mx-5">
@@ -31,67 +34,49 @@
 
             <a onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { setId = Model.Id })', 'Add new word')" title="Create new word" class="btn btn-primary border-1 border-dark-subtle text-bg-dark text-truncate">
                 <i class="bi bi-plus-lg"></i> Add new word
-            </a>    
-        </div>
-
-        <!-- Правая кнопка -->
-        <div class="flex-shrink-0">
-            <button id="deleteSet" title="Delete set" class="btn btn-danger border-1 border-dark-subtle text-truncate" style="max-width: 150px;">
-                <i class="bi bi-trash3"></i> Delete set
-            </button>
+            </a>
         </div>
     </div>
+    @foreach (var word in Model.Words!)
+    {
+        <div class="quizlet-card">
+            <div class="quizlet-block word">
+                <p>@word.Name</p>
+            </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped" cellpadding="0">
-            <thead>
-                <tr class="text-center">
-                    <th>Word</th>
-                    <th>Definition</th>
-                    <th>Image</th>
-                    <th></th>
-                </tr>
-            </thead>
+            <div class="quizlet-block definition">
+                <p>@word.Definition</p>
+            </div>
 
-            <tbody class="table-group-divider">
-                @foreach (var word in Model.Words!)
+            <div class="quizlet-block image">
+                @if (!string.IsNullOrEmpty(@word.ImagePath))
                 {
-                    <tr class="table-align" id="tableRow-@word.Id">
-                        <td class="table-data" style="width:18%">@word.Name</td>
-                        <td class="table-data">@word.Definition</td>
-                        <td style="width:18%">
-                            @if (!string.IsNullOrEmpty(@word.ImagePath))
-                            {
-                                <img src="@word.ImagePath" class="zoom-img" asp-append-version="true" />
-                            }
-                            else
-                            {
-                                <p>No image</p>
-                            }
-                        </td>
-                        <td style="width:10%">
-                            <div class="btn-group-vertical" role="group">
-                                <a onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { word.SetId, word.Id })', 'Edit word')" class="btn border-black border-1 text-bg-info p-2 text-center text-nowrap">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </a>
-
-                                <button data-id="@word.Id" class="btn border-black border-1 text-bg-dark p-2 text-center text-nowrap deleteWord">
-                                    <i class="bi bi-trash-fill"></i> Delete
-                                </button>
-                            </div>
-
-                        </td>
-                    </tr>
+                    <img src="@word.ImagePath" class="zoom-img" asp-append-version="true" />
                 }
-            </tbody>
-        </table>
-    </div>
+                else
+                {
+                    <p class="no-image">No image</p>
+                }
+            </div>
+
+            <div class="quizlet-block actions">
+                <button onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { word.SetId, word.Id })', 'Edit word')" class="quizlet-btn edit">
+                    <i class="bi bi-pencil"></i> Edit
+                </button>
+                <button data-id="@word.Id" class="quizlet-btn delete deleteWord">
+                    <i class="bi bi-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    }
 </div>
 
 @section Scripts {
     <script type="text/javascript">
+        const isMobile = window.innerWidth < 768;
+
         mediumZoom('.zoom-img', {
-            margin: 50,
+            margin: isMobile ? 5 : 50,
             background: "transparent"
         });
     </script>

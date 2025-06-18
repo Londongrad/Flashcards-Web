@@ -4,76 +4,76 @@
     Layout = "_LayoutForStudyWords";
 }
 
-<!-- Wrapper around the entire block -->
-<div class="d-flex justify-content-center align-items-center mx-0" style="margin-top: 60px;">
+@* <div class="row text-center align-items-center mx-0 w-100">
 
-    <!-- Left arrow button (Previous) -->
-    <button disabled id="BtnPrev" class="btn btn-primary bg-black mx-2 align-content-center" style="width: 20px; height: 90px">
-        <i class="bi bi-chevron-left"></i>
-    </button>
+    <!-- Back to set button (navigates back to the word set) -->
+    <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.CurrentWord.SetId"
+       type="button" class="btn btn-primary text-bg-dark col-3">
+        <i class="bi bi-arrow-down-left-circle"></i> Back to the set
+    </a>
 
-    <!-- Container for the top panel and the flashcard tile -->
-    <div>
+    <!-- Counter displaying current word index / total count -->
+    <h3 id="counter" class="text-white col-6 m-0">1/@Model.Count</h3>
 
-        <!-- Top panel: Back button — Counter — Favorite button -->
-        <div class="row text-center align-items-center mx-0 w-100">
+    <!-- Favorite button (star icon) on the top right -->
+    <div class="col-3 text-end">
+        <a id="BtnFav" class="btn sound-fav-btn" title="Favorite"
+           style="background-color: @(!Model.CurrentWord.IsFavorite ? "transparent" : "yellow")">
+            <i class="bi bi-star-fill"></i>
+        </a>
+    </div>
+</div> *@
 
-            <!-- Back to set button (navigates back to the word set) -->
-            <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.CurrentWord.SetId"
-               type="button" class="btn btn-primary text-bg-dark col-3">
-                <i class="bi bi-arrow-down-left-circle"></i> Back to the set
+<div class="quizlet-layout">
+    <div class="quizlet-nav-btns-wrapper">
+        <button id="BtnPrev" class="quizlet-nav-btn btn-prev">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+    </div>
+
+    <div id="card" class="quizlet-flip-container" onclick="flipCard(this)">
+
+        <div class="quizlet-top-buttons">
+            <a id="BtnSound" class="btn sound-fav-btn" title="Play sound">
+                <i class="bi bi-volume-up-fill"></i>
             </a>
 
-            <!-- Counter displaying current word index / total count -->
-            <h3 id="counter" class="text-white col-6 m-0">1/@Model.Count</h3>
-
-            <!-- Favorite button (star icon) on the top right -->
-            <div class="col-3 text-end">
-                <a id="BtnFav" class="btn sound-fav-btn" title="Favorite"
-                   style="background-color: @(!Model.CurrentWord.IsFavorite ? "transparent" : "yellow")">
-                    <i class="bi bi-star-fill"></i>
-                </a>
-            </div>
+            <a id="BtnFav" class="btn sound-fav-btn" title="Favorite"
+               style="background-color: @(!Model.CurrentWord.IsFavorite ? "transparent" : "yellow")">
+                <i class="bi bi-star-fill"></i>
+            </a>
         </div>
 
-        <!-- Flashcard container -->
-        <div class="tile mt-2">
-
-            <!-- Front side of the flashcard: displays the word -->
-            <div class="text-center tile__face">
-                <p class="text-white text-to-learn" id="wordName">@Model.CurrentWord.Name</p>
+        <div class="quizlet-flipper">
+            <div class="quizlet-front">
+                <p id="wordName" class="quizlet-word">@Model.CurrentWord.Name</p>
             </div>
-
-            <!-- Back side of the flashcard: displays image if available -->
-            <div class="text-center tile__face tile__face--back" style="height: 400px; width: auto; margin-top: 10px;">
-                @if (!string.IsNullOrEmpty(Model.CurrentWord.ImagePath))
-                {
-                    <img id="wordImage" src="@Model.CurrentWord.ImagePath" />
-                }
-            </div>
-
-            <!-- Second back side of the flashcard: displays definition -->
-            <div class="text-center text-white text-to-learn tile__face tile__face--back">
-                <p id="wordDefinition">@Model.CurrentWord.Definition</p>
+            <div class="quizlet-back">
+                <p id="wordDefinition" class="quizlet-definition">@Model.CurrentWord.Definition</p>
+                <img id="wordImage" src="@Model.CurrentWord.ImagePath" alt="Image" />
             </div>
         </div>
     </div>
 
-    <!-- Right arrow button (Next) -->
-    <button id="BtnNext" class="btn btn-primary text-bg-dark-subtle mx-2 align-content-center" style="width: 20px; height: 90px">
-        <i class="bi bi-chevron-right"></i>
-    </button>
+    <div class="quizlet-nav-btns-wrapper">
+        <button id="BtnNext" class="quizlet-nav-btn btn-next">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+    </div>
 </div>
 
 @section Scripts {
     @* Flip the card when clicked *@
     <script type="text/javascript">
-
-        const tile = document.querySelector(".tile");
-
-        // Toggle the "is-flipped" class on click to animate card flip
-        tile.addEventListener("click", function () {
-            tile.classList.toggle("is-flipped");
+        function flipCard(card) {
+            card.classList.toggle("flipped");
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".quizlet-top-buttons").forEach(btnGroup => {
+                btnGroup.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                });
+            });
         });
     </script>
 
@@ -82,6 +82,9 @@
 
             // The initial word to be spoken (fetched from the server-side model)
             var firstText = "@Model.CurrentWord.Name";
+
+            // Flashcard
+            const card = document.getElementById("card");
 
             // Default voice name for speech synthesis
             var defaultVoiceName = "Microsoft Hazel - English (United Kingdom)";
@@ -139,8 +142,8 @@
                     data: { index: index },
                     success: function (data) {
                         // If the card is flipped, flip it back
-                        if ($('.tile').hasClass("is-flipped")) {
-                            tile.classList.toggle("is-flipped");
+                        if (card.classList.contains("flipped")) {
+                            card.classList.remove("flipped");
                         }
 
                         // Update the favorite button's background color
@@ -199,6 +202,13 @@
                     }
                 });
             });
+
+            $("#BtnSound").on("click", function () {
+                const word = $("#wordName").text().trim(); // Получаем текущее слово с карточки
+                if (word) {
+                    speak(word); // Используем уже определённую функцию
+                }
+        });
         });
     </script>
 }

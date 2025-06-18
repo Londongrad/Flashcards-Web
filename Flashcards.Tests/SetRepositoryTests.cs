@@ -10,8 +10,9 @@ public class SetRepositoryTests
     [Fact]
     public async Task GetAllAsync_ReturnsOnlyUsersSets()
     {
-        var repo1 = CreateSetRep("user1");
-        var repo2 = CreateSetRep("user2");
+        var context = DatabaseTests.CreateSqliteDbContext();
+        var repo1 = CreateSetRep(context, "user1");
+        var repo2 = CreateSetRep(context, "user2");
 
         await repo1.AddAsync(new Set(1, "Set 1", "user1"));
         await repo2.AddAsync(new Set(2, "Set 2", "user2"));
@@ -24,8 +25,9 @@ public class SetRepositoryTests
     [Fact]
     public async Task GetAsync_ReturnsSetIfBelongsToUser()
     {
-        var repo1 = CreateSetRep("user1");
-        var repo2 = CreateSetRep("user2");
+        var context = DatabaseTests.CreateSqliteDbContext();
+        var repo1 = CreateSetRep(context, "user1");
+        var repo2 = CreateSetRep(context, "user2");
 
         await repo1.AddAsync(new Set(1, "Set 1", "user1"));
         await repo2.AddAsync(new Set(2, "Set 2", "user2"));
@@ -84,28 +86,38 @@ public class SetRepositoryTests
         var repo = CreateSetRep("user1");
 
         await repo.AddAsync(new Set(1, "Set", "user1"));
-
         var result = await repo.IsNotUnique("Set", 0);
-
         result.Should().BeTrue();
+
+        var resultForUpdate = await repo.IsNotUnique("Set", 1);
+        resultForUpdate.Should().BeFalse();
     }
 
     [Fact]
     public async Task DeleteAllAsync_RemovesAllUsersSets()
     {
-        var repo1 = CreateSetRep("user1");
-        var repo2 = CreateSetRep("user2");
+        var context = DatabaseTests.CreateSqliteDbContext();
+
+        var repo1 = CreateSetRep(context, "user1");
+        var repo2 = CreateSetRep(context, "user2");
 
         await repo1.AddAsync(new Set(1, "Set 1", "user1"));
         await repo1.AddAsync(new Set(2, "Set 2", "user1"));
         await repo2.AddAsync(new Set(3, "Set 3", "user2"));
 
         await repo1.DeleteAllAsync();
-
         var remaining = await repo1.GetAllAsync();
         remaining.Should().BeEmpty();
+
+        var user2Sets = await repo2.GetAllAsync();
+        user2Sets.Should().NotBeNull();
+        user2Sets.Should().ContainSingle().Which.Name.Should().Be("Set 3");
     }
 
+    internal static SetRepository CreateSetRep(ApplicationDbContext context, string userId)
+    {
+        return new SetRepository(context, DatabaseTests.MockHttpContextAccessor(userId));
+    }
     internal static SetRepository CreateSetRep(string userId)
     {
         return new SetRepository(DatabaseTests.CreateSqliteDbContext(), DatabaseTests.MockHttpContextAccessor(userId));

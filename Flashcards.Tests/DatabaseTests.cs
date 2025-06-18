@@ -24,6 +24,7 @@ namespace Flashcards.Tests
 
             //For tests purposes
             context.Sets.Add(new Domain.Entities.Set(999, "SetForTests", "user999"));
+            context.Words.Add(new Domain.Entities.Word(999, "WordForTests", "Definition", "", 999));
 
             return context;
         }

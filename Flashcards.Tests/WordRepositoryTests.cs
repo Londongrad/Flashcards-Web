@@ -1,5 +1,4 @@
 ﻿using Flashcards.Domain.Entities;
-using Flashcards.Infrastructure.Data;
 using Flashcards.Infrastructure.Repositories;
 using FluentAssertions;
 

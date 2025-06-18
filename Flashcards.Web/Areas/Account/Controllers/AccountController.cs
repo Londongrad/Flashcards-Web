@@ -14,10 +14,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
+        public IActionResult Login() => View();
 
         [AllowAnonymous]
         [HttpPost]
