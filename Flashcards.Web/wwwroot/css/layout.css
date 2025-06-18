@@ -472,26 +472,12 @@ img {
     margin: 0 auto;
 }
 
-.quizlet-nav-btn {
-    width: 60px;
-    height: 60px;
-    font-size: 1.5rem;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s;
-    flex-shrink: 0;
-}
-
-.quizlet-layout {
+/*.quizlet-layout {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 20px;
-}
+}*/
 
 .btn-container {
     display: flex;
