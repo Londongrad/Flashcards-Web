@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -26,6 +26,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Flashcards.Infrastructure\Flashcards.Infrastructure.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Content Include="wwwroot\**\*.*" CopyToPublishDirectory="PreserveNewest" />
+	</ItemGroup>
 
   <ItemGroup>
     <Resource Include="wwwroot\images\i.webp" />
