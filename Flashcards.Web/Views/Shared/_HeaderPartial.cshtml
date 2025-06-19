@@ -15,64 +15,55 @@
 
                 @if (user is not null)
                 {
-                    <div class="dropdown me-5">
-
-                        @if (@user.ImageURL is null)
+                    <div class="dropdown me-4">
+                        @if (user.ImageURL is null)
                         {
-                            <button class="btn dropdown-toggle text-bg-dark responsive-text" style="text-transform: none;"
-                                    data-bs-auto-close="outside"
-                                    type="button"
-                                    id="dropdownMenu1"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                @user.UserName
+                            <button class="btn dropdown-toggle text-bg-dark rounded-circle p-0"
+                                    style="width: 42px; height: 42px;"
+                                    data-bs-toggle="dropdown" aria-expanded="false"
+                                    data-bs-auto-close="outside" id="dropdownMenu1">
+                                <i class="bi bi-person-circle fs-4"></i>
                             </button>
                         }
                         else
                         {
-                            <a class="btn dropdown-toggle avatar-container-header responsive-text"
-                               id="dropdownMenu1"
-                               data-bs-auto-close="outside"
-                               data-bs-toggle="dropdown"
-                               aria-expanded="false">
-                                <img class="user-link-photo" src="@user.ImageURL" />
+                            <a class="btn dropdown-toggle p-0 border-0"
+                               data-bs-toggle="dropdown" aria-expanded="false"
+                               data-bs-auto-close="outside" id="dropdownMenu1"
+                               style="width: 42px; height: 42px;">
+                                <img class="rounded-circle object-fit-cover" src="@user.ImageURL" style="width: 42px; height: 42px;" />
                             </a>
                         }
 
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark"
-                            aria-labelledby="dropdownMenu1">
-                            <li class="justify-content-center" style="display: flex">
-                                @if (@user.ImageURL is not null)
-                                {
-                                    <img class="user-link-photo ms-2" src="@user.ImageURL" />
-                                }
-                                <div class="text-center align-content-center mx-2 text-nowrap">
-                                    <p class="m-0 responsive-text">@user.UserName</p>
-                                    <p class="m-0 responsive-text">@user.Email</p>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow-sm p-3" aria-labelledby="dropdownMenu1" style="min-width: 240px; border-radius: 12px;">
+                            <!-- Profile section -->
+                            <li class="d-flex align-items-center gap-2 mb-2">
+                                <img class="rounded-circle" src="@user.ImageURL" style="width: 40px; height: 40px;" />
+                                <div class="text-white">
+                                    <div class="fw-semibold">@user.UserName</div>
+                                    <div class="text-light small">@user.Email</div>
                                 </div>
                             </li>
 
-                            <li class="dropdown-divider"></li>
+                            <li><hr class="dropdown-divider"></li>
 
-                            <li class="text-center text-big">
+                            <!-- Settings -->
+                            <li>
                                 <a asp-area="Account" asp-controller="Account" asp-action="Settings"
-                                   class="dropdown-item responsive-text">
+                                   class="dropdown-item d-flex align-items-center gap-2">
                                     <i class="bi bi-gear"></i> Settings
                                 </a>
                             </li>
 
-                            <li class="dropdown-divider"></li>
-
-                            <li class="text-center text-big">
-                                <form method="post" asp-area="Account"
-                                      asp-controller="Account" asp-action="Logout">
-                                    <button type="submit" class="dropdown-item responsive-text">
+                            <!-- Logout -->
+                            <li>
+                                <form method="post" asp-area="Account" asp-controller="Account" asp-action="Logout">
+                                    <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger">
                                         <i class="bi bi-x-circle"></i> Logout
                                     </button>
                                 </form>
                             </li>
                         </ul>
-
                     </div>
                 }
             </div>

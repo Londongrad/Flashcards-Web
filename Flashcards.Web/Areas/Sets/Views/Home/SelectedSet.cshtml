@@ -2,41 +2,51 @@
 
 <input hidden asp-for="Id" />
 
-<p class="text-large text-light text-center my-5">
-    Name of the set is <strong id="setName">@Model.Name</strong>. This set has in total <strong id="numWords">@Model.Words?.Count</strong> <strong id="word">@(Model.Words?.Count == 1 ? "word" : "words")</strong>
-    <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id })', 'Edit set')" class="btn sound-fav-btn" title="Edit name of the set">
-        <i class="bi bi-pencil-square"></i>
-    </a>
-    <button id="deleteSet" title="Delete set" class="btn text-truncate sound-fav-btn">
-        <i class="bi bi-trash3"></i>
-    </button>
-</p>
+<div class="d-flex flex-column flex-md-row justify-content-center align-items-center text-light my-4 py-3 border-bottom border-secondary-subtle gap-2 text-center">
+    <!-- Текст -->
+    <p class="mb-0 responsive-text">
+        Name of the set is <strong id="setName" class="text-white">@Model.Name</strong>.
+        This set has in total <strong id="numWords" class="text-white">@Model.Words?.Count</strong>
+        <strong id="word" class="text-white">@(Model.Words?.Count == 1 ? "word" : "words")</strong>
+    </p>
+
+    <!-- Кнопки справа (будут под текстом на мобилке, справа — на широких экранах) -->
+    <div class="d-flex gap-2 align-items-center justify-content-center">
+        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id })', 'Edit set')" class="btn sound-fav-btn p-1" title="Edit name of the set">
+            <i class="bi bi-pencil-square fs-5 text-light"></i>
+        </a>
+        <button id="deleteSet" title="Delete set" class="btn sound-fav-btn p-1">
+            <i class="bi bi-trash3 fs-5 text-light"></i>
+        </button>
+    </div>
+</div>
 
 <div class="justify-content-center align-items-center text-center mx-5">
 
-    <div class="d-flex flex-nowrap align-items-end justify-content-between w-100 gap-2 flex-button-row" style="min-height: 80px;">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 py-2 button-container">
         <!-- Левая кнопка -->
         <div class="flex-shrink-0">
-            <a asp-area="Sets" asp-controller="Home" asp-action="Index" class="btn btn-primary border-1 border-dark-subtle text-bg-dark text-truncate" style="max-width: 140px;">
-                <i class="bi bi-arrow-down-left-circle"></i> Back
+            <a asp-area="Sets" asp-controller="Home" asp-action="Index" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-arrow-left"></i> Back
             </a>
         </div>
 
         <!-- Центральные кнопки -->
-        <div class="d-flex flex-nowrap justify-content-center flex-grow-1 center-buttons" style="min-width: 0;">
-            <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { Model.Id, flag = false })'" id="BtnStudy" class="btn btn-primary border-1 border-dark-subtle text-bg-dark text-truncate">
-                <i class="bi bi-yin-yang"></i> Study this set
+        <div class="d-flex flex-wrap justify-content-center gap-2 flex-grow-1">
+            <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { Model.Id, flag = false })'" id="BtnStudy" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-play-circle"></i> Study
             </button>
 
-            <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { id = Model.Id, flag = true })'" id="BtnStudyFav" type="button" class="btn btn-primary border-1 border-dark-subtle text-bg-dark text-truncate">
-                <i class="bi bi-yin-yang"></i> Study only favorite [@Model.Words?.Where(w => w.IsFavorite == true).Count() words]
+            <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { id = Model.Id, flag = true })'" id="BtnStudyFav" type="button" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-star"></i> Favorite [@Model.Words?.Where(w => w.IsFavorite == true).Count() words]
             </button>
 
-            <a onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { setId = Model.Id })', 'Add new word')" title="Create new word" class="btn btn-primary border-1 border-dark-subtle text-bg-dark text-truncate">
-                <i class="bi bi-plus-lg"></i> Add new word
+            <a onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { setId = Model.Id })', 'Add new word')" title="Create new word" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-plus-lg"></i> Add
             </a>
         </div>
     </div>
+
     @foreach (var word in Model.Words!)
     {
         <div class="quizlet-card">
@@ -61,10 +71,10 @@
 
             <div class="quizlet-block actions ">
                 <button onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { word.SetId, word.Id })', 'Edit word')" class="quizlet-btn edit">
-                    <i class="bi bi-pencil"></i> Edit
+                    <i class="bi bi-pencil"></i>
                 </button>
                 <button data-id="@word.Id" class="quizlet-btn delete deleteWord">
-                    <i class="bi bi-trash"></i> Delete
+                    <i class="bi bi-trash"></i>
                 </button>
             </div>
         </div>

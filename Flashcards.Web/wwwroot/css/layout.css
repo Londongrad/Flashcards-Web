@@ -279,7 +279,7 @@ img {
     padding: 16px;
     gap: 16px;
     align-items: center;
-    margin-bottom: 200px;
+    margin-bottom: 5px;
 }
 
 .quizlet-block {
@@ -577,4 +577,17 @@ img {
     z-index: 5;
     display: flex;
     gap: 10px; /* расстояние между кнопками */
+}
+
+/*Buttons in the selectedSet View*/
+@media (max-width: 576px) {
+    .button-container {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+        .button-container .btn {
+            width: 100%;
+            justify-content: center;
+        }
 }
