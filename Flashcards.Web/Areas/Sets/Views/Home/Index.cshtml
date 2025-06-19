@@ -3,40 +3,51 @@
     ViewData["Title"] = "Flashcards";
 }
 
-<div class="row pt-4 pb-3 m-1">
-
-    <p class="text-light mb-0 col-6 align-content-center responsive-text-big">
-        Your library
-    </p>
-
-    <div class="col-6 text-end">
-        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home")', 'New set')" title="Create new set" class="btn btn-primary border-1 border-dark-subtle text-bg-dark responsive-small" style="text-transform: none; border-radius: 4%;">
-            <i class="bi bi-plus-lg"></i> Add new set
-        </a>
-    </div>
-
+<div class="pt-4 pb-3 m-5">
     @if (!Model.Any())
     {
-        <div class="row m-5" style="max-height: 96px">
-            <img src="~/images/empty.png" style="width: 96px;" class="col-2 m-0 p-0" />
-            <p class="text-light col-10 m-0 p-0 responsive-text-big">
-                Currently you don't have any sets in your library.
-                Add one by pressing button above.
-            </p>
+        <div class="empty-library-container">
+            <div class="empty-card">
+                <img src="/images/empty.png" alt="No sets" class="empty-illustration">
+                <h2>Your library is empty</h2>
+                <p class="text-light">You don't have any sets yet. Click the button below to create one.</p>
+                <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home")', 'New set')" title="Create new set" class="btn btn-custom-dark">
+                    <i class="bi bi-plus-circle"></i> Add New Set
+                </a>
+            </div>
         </div>
     }
     else
     {
-        foreach (var set in Model.OrderByDescending(x => x.Id))
-        {
-            <form class="card border-0" style="background-color: transparent;">
-                <button type="submit" asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@set.Id" class="btn btn-primary mt-2 my-card">
-                    <div class="card-body">
-                        <h3 class="card-title">@set.Name</h3>
-                        <div class="card-text responsive-text text-lowercase">@set.Words?.Count termins</div>
-                    </div>
-                </button>
-            </form>
-        }
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title mb-0">My Sets</h2>
+            <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home")', 'New set')" title="Create new set" class="btn btn-custom-dark">
+                <i class="bi bi-plus-lg"></i> Add new set
+            </a>
+        </div>
+
+        <div class="row g-3">
+            @foreach (var set in Model.OrderByDescending(x => x.Id))
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <form class="set-form">
+                        <button type="submit"
+                                asp-area="Sets"
+                                asp-controller="Home"
+                                asp-action="SelectedSet"
+                                asp-route-id="@set.Id"
+                                class="set-card w-100 border-0 text-start">
+
+                            <div class="set-info">
+                                <div class="set-title">@set.Name</div>
+                                <div class="set-terms">@set.Words?.Count termins</div>
+                            </div>
+
+                            <i class="bi bi-book"></i>
+                        </button>
+                    </form>
+                </div>
+            }
+        </div>
     }
 </div>

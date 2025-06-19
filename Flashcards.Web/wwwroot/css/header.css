@@ -1,0 +1,37 @@
+﻿.user-dropdown {
+    max-width: calc(100vw - 2rem);
+}
+
+.dropdown-menu.user-dropdown {
+    right: -23px !important; /* отрицательное значение — сдвиг ВПРАВО */
+    left: auto !important;
+    transform: none !important;
+    top: 100% !important;
+    margin-top: 0.5rem;
+    max-width: calc(100vw - 2rem);
+}
+
+.dropdown-menu.theme-dropdown {
+    top: 100% !important;
+    margin-top: 0.25rem !important;
+    left: 0 !important;
+    right: auto !important;
+    transform: translateY(10px); /* важно для анимации */
+}
+
+/* Плавное открытие */
+.dropdown-menu {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 200ms ease, transform 200ms ease;
+    display: block;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+    .dropdown-menu.show {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+    }

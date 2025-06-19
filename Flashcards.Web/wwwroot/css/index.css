@@ -1,0 +1,102 @@
+﻿.empty-library-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 75vh;
+}
+
+.empty-card {
+    background-color: #123b63;
+    color: white;
+    border-radius: 20px;
+    padding: 2rem 2.5rem;
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.empty-illustration {
+    width: 100px;
+    height: auto;
+    margin-bottom: 1.5rem;
+}
+
+.empty-card h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #f0f0f0;
+    margin-bottom: 0.75rem;
+}
+
+.empty-card p {
+    font-size: 1rem;
+    color: #cfd8dc;
+    margin-bottom: 1.5rem;
+}
+
+.btn-custom-dark {
+    background-color: #384077;
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 2rem;
+    font-size: 1.05rem;
+    font-weight: 400;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-custom-dark:hover {
+        background-color: #4e57a3;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        color: #ffffff
+    }
+
+.set-form {
+    margin-bottom: 1.25rem;
+}
+
+.set-card {
+    background-color: #1c1b3a;
+    background: linear-gradient(to right, #1c1b3a, #232142);
+    color: #ffffff;
+    padding: 1rem 1.5rem;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+    .set-card:hover {
+        background-color: #2a294d;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    .set-card:focus {
+        outline: 2px solid #4fc3f7;
+        outline-offset: 3px;
+    }
+
+.set-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.set-terms {
+    font-size: 0.95rem;
+    color: #aaa;
+}
+
+.section-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: white;
+}

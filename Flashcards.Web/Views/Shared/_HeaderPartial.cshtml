@@ -13,66 +13,63 @@
                     Flashcards
                 </a>
 
-                @if (user is not null)
-                {
-                    <div class="dropdown me-5">
-                        @if (user.ImageURL is null)
-                        {
-                            <button class="btn dropdown-toggle text-bg-dark rounded-circle p-0"
-                                    style="width: 42px; height: 42px;"
-                                    data-bs-toggle="dropdown" aria-expanded="false"
-                                    data-bs-auto-close="outside" id="dropdownMenu1">
-                                <i class="bi bi-person-circle fs-4"></i>
-                            </button>
-                        }
-                        else
-                        {
-                            <a class="btn dropdown-toggle p-0 border-0"
-                               data-bs-toggle="dropdown" aria-expanded="false"
-                               data-bs-auto-close="outside" id="dropdownMenu1"
-                               style="width: 60px; height: 60px;">
-                                <img class="rounded-circle object-fit-cover" src="@user.ImageURL" style="width: 60px; height: 60px;" />
+                <div class="dropdown me-5">
+                    @if (user?.ImageURL is null)
+                    {
+                        <button class="btn dropdown-toggle text-bg-dark rounded-circle p-0"
+                                style="width: 60px; height: 60px;"
+                                data-bs-toggle="dropdown" aria-expanded="false"
+                                data-bs-auto-close="outside" id="dropdownMenu1">
+                            <i class="bi bi-person-circle fs-4"></i>
+                        </button>
+                    }
+                    else
+                    {
+                        <a class="btn dropdown-toggle p-0 border-0"
+                           data-bs-toggle="dropdown" aria-expanded="false"
+                           data-bs-auto-close="outside" id="dropdownMenu1"
+                           style="width: 60px; height: 60px;">
+                            <img class="rounded-circle object-fit-cover" src="@user.ImageURL" style="width: 60px; height: 60px;" />
+                        </a>
+                    }
+
+                    <ul class="dropdown-menu dropdown-menu-dark shadow-sm p-3 user-dropdown"
+                        aria-labelledby="dropdownMenu1"
+                        style="min-width: 280px; border-radius: 12px;">
+
+                        <!-- Profile section -->
+                        <li class="d-flex align-items-center gap-3 mb-3 flex-nowrap">
+                            <img class="rounded-circle flex-shrink-0"
+                                 src="@user?.ImageURL"
+                                 style="width: 60px; height: 60px; object-fit: cover;" />
+
+                            <div class="text-white text-break" style="min-width: 0;">
+                                <div class="fw-semibold responsive-text">@user?.UserName</div>
+                                <div class="text-light small">@user?.Email</div>
+                            </div>
+                        </li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <!-- Settings -->
+                        <li>
+                            <a asp-area="Account" asp-controller="Account" asp-action="Settings"
+                               class="dropdown-item d-flex align-items-center gap-2 responsive-text">
+                                <i class="bi bi-gear"></i> Settings
                             </a>
-                        }
+                        </li>
 
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow-sm p-3"
-                            aria-labelledby="dropdownMenu1"
-                            style="min-width: 280px; max-width: 100%; border-radius: 12px;">
-
-                            <!-- Profile section -->
-                            <li class="d-flex align-items-center gap-3 mb-3 flex-nowrap">
-                                <img class="rounded-circle flex-shrink-0"
-                                     src="@user.ImageURL"
-                                     style="width: 60px; height: 60px; object-fit: cover;" />
-
-                                <div class="text-white text-break" style="min-width: 0;">
-                                    <div class="fw-semibold responsive-text">@user.UserName</div>
-                                    <div class="text-light small">@user.Email</div>
-                                </div>
-                            </li>
-
-                            <li><hr class="dropdown-divider"></li>
-
-                            <!-- Settings -->
-                            <li>
-                                <a asp-area="Account" asp-controller="Account" asp-action="Settings"
-                                   class="dropdown-item d-flex align-items-center gap-2 responsive-text">
-                                    <i class="bi bi-gear"></i> Settings
-                                </a>
-                            </li>
-
-                            <!-- Logout -->
-                            <li>
-                                <form method="post" asp-area="Account" asp-controller="Account" asp-action="Logout">
-                                    <button type="submit"
-                                            class="dropdown-item d-flex align-items-center gap-2 text-danger responsive-text">
-                                        <i class="bi bi-x-circle"></i> Logout
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                }
+                        <!-- Logout -->
+                        <li>
+                            <form method="post" asp-area="Account" asp-controller="Account" asp-action="Logout">
+                                <button type="submit"
+                                        class="dropdown-item d-flex align-items-center gap-2 text-danger responsive-text">
+                                    <i class="bi bi-x-circle"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
     </header>

@@ -12,10 +12,10 @@
 
     <!-- Кнопки справа (будут под текстом на мобилке, справа — на широких экранах) -->
     <div class="d-flex gap-2 align-items-center justify-content-center">
-        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id })', 'Edit set')" class="btn sound-fav-btn p-1" title="Edit name of the set">
+        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id })', 'Edit set')" class="btn sound-fav-btn" title="Edit name of the set">
             <i class="bi bi-pencil-square fs-5 text-light"></i>
         </a>
-        <button id="deleteSet" title="Delete set" class="btn sound-fav-btn p-1">
+        <button id="deleteSet" title="Delete set" class="btn sound-fav-btn">
             <i class="bi bi-trash3 fs-5 text-light"></i>
         </button>
     </div>
@@ -64,7 +64,7 @@
                 }
                 else
                 {
-                    <p class="no-image">No image</p>
+                    <p class="no-image mb-0">No image</p>
                 }
             </div>
 
@@ -102,6 +102,8 @@
 
             $(".deleteWord").on("click", function () {
                 var id = $(this).data("id");
+                var card = $(this).closest(".quizlet-card");
+
                 bootbox.confirm("Do you really wanna delete this word?", function(result) {
                     if(result){
                         $.ajax({
@@ -116,8 +118,8 @@
 
                                 toastr.success("The word has been successfully deleted");
 
-                                $("#tableRow-" + id).css('background','tomato');
-                                $("#tableRow-" + id).fadeOut(800, function(){
+                                card.css('background','tomato');
+                                card.fadeOut(800, function(){
                                     $(this).remove();
                                 });
 

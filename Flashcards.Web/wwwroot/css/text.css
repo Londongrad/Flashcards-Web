@@ -1,0 +1,63 @@
+﻿.responsive-text {
+    font-size: 1.25rem; /* по умолчанию (десктоп) */
+    font-weight: 300;
+}
+
+@media (max-width: 768px) {
+    .responsive-text {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .responsive-text {
+        font-size: 1rem;
+    }
+}
+
+.responsive-small { /* по умолчанию (десктоп) */
+    font-size: 0.7rem;
+    font-weight: 300;
+}
+
+@media (max-width: 768px) {
+    .responsive-small {
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .responsive-small {
+        font-size: 0.5rem;
+    }
+}
+
+.responsive-text-big {
+    font-size: 2rem; /* по умолчанию (десктоп) */
+    font-weight: 300;
+}
+
+@media (max-width: 768px) {
+    .responsive-text-big {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .responsive-text-big {
+        font-size: 1rem;
+    }
+}
+
+.text-big {
+    font-size: 20px;
+}
+
+.text-large {
+    font-size: 38px;
+}
+
+.text-to-learn {
+    font-size: 40px;
+    color: wheat;
+}

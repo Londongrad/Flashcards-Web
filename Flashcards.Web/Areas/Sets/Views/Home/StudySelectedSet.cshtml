@@ -24,7 +24,7 @@
         </button>
     </div>
 
-    <div id="card" class="quizlet-flip-container" onclick="flipCard(this)">
+    <div id="card" class="quizlet-flip-container">
         <div class="quizlet-top-buttons">
             <a id="BtnSound" class="btn sound-fav-btn" title="Play sound">
                 <i class="bi bi-volume-up-fill"></i>
@@ -40,7 +40,10 @@
             </div>
             <div class="quizlet-back">
                 <p id="wordDefinition" class="quizlet-definition">@Model.CurrentWord.Definition</p>
-                <img id="wordImage" src="@Model.CurrentWord.ImagePath" alt="Image" />
+                @if (!string.IsNullOrEmpty(Model.CurrentWord.ImagePath))
+                {
+                    <img id="wordImage" src="@Model.CurrentWord.ImagePath" alt="Image" />
+                }
             </div>
         </div>
     </div>
@@ -74,16 +77,48 @@
 @section Scripts {
     @* Flip the card when clicked *@
     <script type="text/javascript">
-        function flipCard(card) {
-            card.classList.toggle("flipped");
-        }
         document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".quizlet-top-buttons").forEach(btnGroup => {
-                btnGroup.addEventListener("click", function (e) {
+            const card = document.getElementById("card");
+            const topButtons = card.querySelector(".quizlet-top-buttons");
+
+            let isDragging = false;
+            let mouseDown = false;
+
+            // Блокируем клик на кнопках (звук, звезда)
+            topButtons.querySelectorAll("a").forEach(button => {
+                button.addEventListener("click", function (e) {
                     e.stopPropagation();
                 });
             });
+
+            // Отслеживаем, был ли drag (для выделения текста)
+            card.addEventListener("mousedown", () => {
+                mouseDown = true;
+                isDragging = false;
+            });
+
+            card.addEventListener("mousemove", () => {
+                if (mouseDown) {
+                    isDragging = true;
+                }
+            });
+
+            card.addEventListener("mouseup", () => {
+                mouseDown = false;
+            });
+
+            // Сам переворот по click
+            card.addEventListener("click", () => {
+                if (!isDragging) {
+                    flipCard(card);
+                }
+                isDragging = false; // сброс
+            });
         });
+
+        function flipCard(card) {
+            card.classList.toggle("flipped");
+        }
     </script>
 
     <script type="text/javascript">
@@ -142,6 +177,7 @@
 
             // Disable "Next" button if we're already at the last word
             $("#BtnNext").prop("disabled", currentIndex === totalCount - 1);
+            $("#BtnPrev").prop("disabled", totalCount === 1);
 
             // Function to load a word by index using AJAX
             function loadWord(index) {
