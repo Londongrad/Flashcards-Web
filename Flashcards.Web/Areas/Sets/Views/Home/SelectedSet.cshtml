@@ -2,7 +2,7 @@
 
 <input hidden asp-for="Id" />
 
-<div class="d-flex flex-column flex-md-row justify-content-center align-items-center text-light my-4 py-3 border-bottom border-secondary-subtle gap-2 text-center">
+<div class="d-flex flex-column flex-md-row justify-content-center align-items-center text-light py-3 border-secondary-subtle gap-2 text-center">
     <!-- Текст -->
     <p class="mb-0 responsive-text">
         Name of the set is <strong id="setName" class="text-white">@Model.Name</strong>.
@@ -22,17 +22,13 @@
 </div>
 
 <div class="justify-content-center align-items-center text-center mx-5">
-
+    @* Navigation buttons + add new *@
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 py-2 button-container">
-        <!-- Левая кнопка -->
-        <div class="flex-shrink-0">
+        <div class="d-flex flex-wrap justify-content-center gap-2 flex-grow-1">
             <a asp-area="Sets" asp-controller="Home" asp-action="Index" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
                 <i class="bi bi-arrow-left"></i> Back
             </a>
-        </div>
 
-        <!-- Центральные кнопки -->
-        <div class="d-flex flex-wrap justify-content-center gap-2 flex-grow-1">
             <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { Model.Id, flag = false })'" id="BtnStudy" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
                 <i class="bi bi-play-circle"></i> Study
             </button>
@@ -47,15 +43,18 @@
         </div>
     </div>
 
+    @* Collection of Words *@
     @foreach (var word in Model.Words!)
     {
         <div class="quizlet-card">
             <div class="quizlet-block word">
-                <p>@word.Name</p>
+                <p class="mb-0">@word.Name</p>
             </div>
 
+            <div class="divider"></div> <!-- Вертикальная линия -->
+
             <div class="quizlet-block definition">
-                <p>@word.Definition</p>
+                <p class="mb-0">@word.Definition</p>
             </div>
 
             <div class="quizlet-block image">
@@ -69,7 +68,7 @@
                 }
             </div>
 
-            <div class="quizlet-block actions ">
+            <div class="quizlet-block actions">
                 <button onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { word.SetId, word.Id })', 'Edit word')" class="quizlet-btn edit">
                     <i class="bi bi-pencil"></i>
                 </button>

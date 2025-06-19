@@ -48,10 +48,13 @@ button.accept-policy {
 .my-card {
     background-color: #181735;
     font-size: 20px;
+    border-radius: 12px;
+    transition: transform 0.2s ease;
 }
 
     .my-card:hover {
         box-shadow: 0px 0px 40px -15px rgba(66, 68, 90, 1);
+        transform: scale(1.015);
     }
 
 .text-big {
@@ -273,13 +276,22 @@ img {
 /*Flashcard in a selected set*/
 .quizlet-card {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr auto;
+    grid-template-columns: 1fr 6px 2fr 1fr auto;
     background-color: #1a1a40;
     border-radius: 12px;
     padding: 16px;
     gap: 16px;
     align-items: center;
     margin-bottom: 5px;
+}
+
+.divider {
+    background-color: black;
+    width: 2px;
+    height: 100%;
+    justify-self: center;
+    align-self: center;
+    border-radius: 1px;
 }
 
 .quizlet-block {
@@ -336,23 +348,19 @@ img {
         color: #0a0a0a;
     }
 
-        .quizlet-btn.edit:hover {
-            background-color: #30b7b7;
-        }
-
     .quizlet-btn.delete {
         background-color: #ff6b6b;
         color: #fff;
     }
 
-        .quizlet-btn.delete:hover {
-            background-color: #e95555;
-        }
-
 @media (max-width: 768px) {
     .quizlet-card {
         grid-template-columns: 1fr;
         text-align: center;
+    }
+
+    .divider {
+        display: none;
     }
 
     .quizlet-block.actions {
@@ -364,25 +372,21 @@ img {
     .quizlet-block.image img {
         margin: 0 auto;
     }
-} 
-
-/*Flashcard*/
-.nav-btn {
-    background-color: #3ccfcf;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 18px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #0a0a0a;
-    cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-    .nav-btn:hover {
-        background-color: #30b7b7;
+@media (max-width: 576px) {
+    .button-container {
+        flex-direction: column;
+        align-items: stretch;
     }
 
+        .button-container .btn {
+            width: 100%;
+            justify-content: center;
+        }
+}
+
+/*Flashcard*/
 .quizlet-flip-container {
     width: 100%;
     max-width: 700px;
@@ -416,7 +420,7 @@ img {
     align-items: center;
     background-color: #1a1a40;
     color: white;
-    padding: 16px;
+    padding: 0px;
     text-align: center;
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
@@ -467,17 +471,13 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 5px;
+    margin-top: 10px;
     flex-wrap: nowrap;
-    margin: 0 auto;
+    position: relative;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
-
-/*.quizlet-layout {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-}*/
 
 .btn-container {
     display: flex;
@@ -550,44 +550,102 @@ img {
     }
 }
 
-@media (min-width: 769px) {
-    .quizlet-layout {
-        flex-direction: row;
-        justify-content: center; /* Вместо space-between */
-        align-items: center;
-        gap: 20px;
-        max-width: 100%;
-        padding: 0 20px;
-    }
-
-    .quizlet-nav-btns-wrapper {
-        display: flex;
-        align-items: center;
-    }
-
-    .btn-prev, .btn-next {
-        position: static;
-    }
-}
-
 .quizlet-top-buttons {
     position: absolute;
     top: 12px;
     right: 12px;
     z-index: 5;
     display: flex;
-    gap: 10px; /* расстояние между кнопками */
+    gap: 5px; /* расстояние между кнопками */
 }
 
-/*Buttons in the selectedSet View*/
-@media (max-width: 576px) {
-    .button-container {
-        flex-direction: column !important;
-        align-items: stretch !important;
+.back-button-fixed {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: transparent;
+    color: #f0f0f0;
+    border: none;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    z-index: 10;
+    transition: color 0.2s ease;
+}
+
+    .back-button-fixed:hover {
+        color: #3ccfcf;
     }
 
-        .button-container .btn {
-            width: 100%;
-            justify-content: center;
+/* Счётчик — по центру над карточкой */
+.quizlet-counter {
+    margin-top: 60px;
+    text-align: center;
+}
+
+#counter {
+    color: #ccc;
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+/* По умолчанию — только десктоп */
+.desktop-only {
+    display: flex;
+}
+
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-only {
+        display: flex;
+    }
+
+    .quizlet-layout {
+        flex-direction: column;
+    }
+
+    .mobile-nav-btns-wrapper {
+        justify-content: center;
+        gap: 2px;
+        margin-top: 10px;
+    }
+
+        .mobile-nav-btns-wrapper button {
+            width: 50px;
+            height: 50px;
         }
+
+    .mobile-back-wrapper {
+        margin-top: 20px;
+        justify-content: center;
+        display: flex;
+    }
+
+    .back-button-bottom {
+        background-color: transparent;
+        color: #f0f0f0;
+        border: none;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+    }
+
+        .back-button-bottom:hover {
+            color: #3ccfcf;
+        }
+
+    .back-button-fixed.mobile-hidden {
+        display: none;
+    }
 }
