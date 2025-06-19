@@ -1,0 +1,24 @@
+﻿.custom-modal {
+    border-radius: 1rem;
+    background-color: #1e1e2f;
+    color: #f8f9fa;
+    box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.6);
+}
+
+.modal-header {
+    background-color: #2a2a3a;
+    border-bottom: 1px solid #444;
+}
+
+.btn-close {
+    filter: invert(1);
+}
+
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+    transform: translateY(-20%);
+}
+
+.modal.fade.show .modal-dialog {
+    transform: translateY(0);
+}
