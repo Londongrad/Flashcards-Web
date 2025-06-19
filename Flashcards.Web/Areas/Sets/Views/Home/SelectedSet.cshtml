@@ -78,9 +78,33 @@
             </div>
         </div>
     }
+    <button id="scrollToBottomBtn" title="Scroll to bottom">
+        <i class="bi bi-arrow-down-short"></i>
+    </button>
 </div>
 
 @section Scripts {
+    @*Scroll to the bottom button*@
+    <script type="text/javascript">
+        const scrollBtn = document.getElementById("scrollToBottomBtn");
+
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 100) {
+                scrollBtn.classList.add("show");
+            } else {
+                scrollBtn.classList.remove("show");
+            }
+        });
+
+        scrollBtn.addEventListener("click", () => {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: "smooth"
+            });
+        });
+    </script>
+
+    @* Image Zoom *@
     <script type="text/javascript">
         const isMobile = window.innerWidth < 768;
 

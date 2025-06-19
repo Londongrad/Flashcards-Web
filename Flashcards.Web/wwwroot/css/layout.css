@@ -7,7 +7,7 @@
 html, body {
     overflow-x: hidden;
     overflow-y: auto;
-    height: 100%;
+    height: auto;
 }
 
 button:disabled,

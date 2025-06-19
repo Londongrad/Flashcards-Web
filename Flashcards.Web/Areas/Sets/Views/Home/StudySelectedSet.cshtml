@@ -40,10 +40,7 @@
             </div>
             <div class="quizlet-back">
                 <p id="wordDefinition" class="quizlet-definition">@Model.CurrentWord.Definition</p>
-                @if (!string.IsNullOrEmpty(Model.CurrentWord.ImagePath))
-                {
-                    <img id="wordImage" src="@Model.CurrentWord.ImagePath" alt="Image" />
-                }
+                <img id="wordImage" src="@Model.CurrentWord.ImagePath" alt="Image" />
             </div>
         </div>
     </div>
@@ -198,7 +195,12 @@
                         $("#counter").text((index + 1) + "/" + totalCount);
                         $("#wordName").text(data.name);
                         $("#wordDefinition").text(data.definition);
-                        $("#wordImage").attr("src", data.imagePath);
+
+                        if (data.imagePath) {
+                            $("#wordImage").attr("src", data.imagePath).show();
+                        } else {
+                            $("#wordImage").hide();
+                        }
 
                         // Enable or disable navigation buttons
                         $("#BtnPrev").prop("disabled", index === 0);
