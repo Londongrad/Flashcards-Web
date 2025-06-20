@@ -120,9 +120,23 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            // Create a new SpeechSynthesisUtterance instance
+            var msg = new SpeechSynthesisUtterance();
+
+            // Index of the currently displayed word
+            var currentIndex = 0;
+
+            // Total number of words (from server-side model)
+            var totalCount = @Model.Count;
+
+            // ID of the current word (used for favorite action)
+            var id = @Model.CurrentWord.Id;
 
             // The initial word to be spoken (fetched from the server-side model)
             var firstText = "@Model.CurrentWord.Name";
+
+            // The initial word's image to display or hide
+            var firstImageUrl = "@Model.CurrentWord.ImagePath";
 
             // Flashcard
             const card = document.getElementById("card");
@@ -138,9 +152,6 @@
                 alert("Bad news! Your browser doesn't have the Speech Synthesis API this project requires. Try opening this webpage using the newest version of Google Chrome.");
             }
 
-            // Create a new SpeechSynthesisUtterance instance
-            var msg = new SpeechSynthesisUtterance();
-
             // When the list of available voices changes (e.g., loaded), set the desired voice
             speechSynthesis.addEventListener('voiceschanged', function () {
                 msg.voice = speechSynthesis.getVoices().filter(function (voice) {
@@ -150,6 +161,8 @@
                 // Speak the initial word
                 speak(firstText);
             });
+
+            imageToShowOrHide(firstImageUrl);
 
             // Function to speak a given text
             function speak(text) {
@@ -163,18 +176,17 @@
                 window.speechSynthesis.speak(msg);
             }
 
-            // Index of the currently displayed word
-            var currentIndex = 0;
-
-            // Total number of words (from server-side model)
-            var totalCount = @Model.Count;
-
-            // ID of the current word (used for favorite action)
-            var id = @Model.CurrentWord.Id;
+            function imageToShowOrHide(url){
+                if (url) {
+                    $("#wordImage").attr("src", url).show();
+                } else {
+                    $("#wordImage").hide();
+                }
+            }
 
             // Disable "Next" button if we're already at the last word
-            $("#BtnNext").prop("disabled", currentIndex === totalCount - 1);
-            $("#BtnPrev").prop("disabled", totalCount === 1);
+            $("#BtnNext, #BtnNextMobile").prop("disabled", currentIndex === totalCount - 1);
+            $("#BtnPrev, #BtnNextMobile").prop("disabled", totalCount === 1);
 
             // Function to load a word by index using AJAX
             function loadWord(index) {
@@ -196,15 +208,11 @@
                         $("#wordName").text(data.name);
                         $("#wordDefinition").text(data.definition);
 
-                        if (data.imagePath) {
-                            $("#wordImage").attr("src", data.imagePath).show();
-                        } else {
-                            $("#wordImage").hide();
-                        }
+                        imageToShowOrHide(data.imagePath);
 
                         // Enable or disable navigation buttons
-                        $("#BtnPrev").prop("disabled", index === 0);
-                        $("#BtnNext").prop("disabled", index === totalCount - 1);
+                        $("#BtnPrev, #BtnNextMobile").prop("disabled", index === 0);
+                        $("#BtnNext, #BtnNextMobile").prop("disabled", index === totalCount - 1);
 
                         // Speak the new word
                         speak(data.name);
@@ -220,14 +228,14 @@
             }
 
             // Handle click on "Next" button
-            $("#BtnNext").on("click", function () {
+            $("#BtnNext, #BtnNextMobile").on("click", function () {
                 if (currentIndex < totalCount - 1) {
                     loadWord(currentIndex + 1);
                 }
             });
 
             // Handle click on "Previous" button
-            $("#BtnPrev").on("click", function () {
+            $("#BtnPrev, #BtnNextMobile").on("click", function () {
                 if (currentIndex > 0) {
                     loadWord(currentIndex - 1);
                 }

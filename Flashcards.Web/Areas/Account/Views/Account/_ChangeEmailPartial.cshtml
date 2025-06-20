@@ -5,23 +5,20 @@
 }
 
 <form id="formEmail" asp-area="Account" asp-controller="Account" asp-action="ChangeEmail" method="post">
-
-    <div class="border p-3 mt-4">
+    <div class="modal-form-container">
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="input-group row mb-3">
-            <label asp-for="@Model.Email" class="input-group-text bg-dark text-light"></label>
-            <input asp-for="@Model.Email" class="form-control bg-dark text-light">
-            <span asp-validation-for="@Model.Email" class="text-danger mt-2"></span>
+        <div class="mb-3 text-center">
+            <label asp-for="@Model.Email" class="form-label"></label>
+            <input asp-for="@Model.Email" class="form-control">
+            <span asp-validation-for="@Model.Email" class="text-danger small"></span>
         </div>
 
-        <div class="row">
-            <div class="col-5 m-auto">
-                <button type="submit" class="btn btn-primary">
-                    Save changes
-                </button>
-            </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-submit">
+                Save
+            </button>
         </div>
     </div>
 </form>

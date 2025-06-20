@@ -11,23 +11,23 @@
     <input hidden asp-for="SetId" />
     <input hidden asp-for="Id" />
 
-    <div class="border p-3 mt-4">
+    <div class="modal-form-container">
 
-        <div class="input-group mb-3 row">
-            <label asp-for="Name" class="input-group-text text-light bg-dark"></label>
-            <input asp-for="Name" class="form-control text-light bg-dark">
-            <span asp-validation-for="Name" class="text-danger"></span>
+        <div class="mb-3 text-center">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control">
+            <span asp-validation-for="Name" class="text-danger small"></span>
         </div>
 
-        <div class="input-group mb-3 row">
-            <label asp-for="Definition" class="input-group-text text-light bg-dark"></label>
-            <input asp-for="Definition" class="form-control text-light bg-dark">
-            <span asp-validation-for="Definition" class="text-danger"></span>
+        <div class="mb-3 text-center">
+            <label asp-for="Definition" class="form-label"></label>
+            <input asp-for="Definition" class="form-control">
+            <span asp-validation-for="Definition" class="text-danger small"></span>
         </div>
 
-        <div class="input-group mb-3 row">
-            <label asp-for="ImagePath" class="input-group-text text-light bg-dark"></label>
-            <input asp-for="ImagePath" class="form-control text-light bg-dark">
+        <div class="mb-3 text-center">
+            <label asp-for="ImagePath" class="form-label"></label>
+            <input asp-for="ImagePath" class="form-control">
         </div>
 
         <div class="row">

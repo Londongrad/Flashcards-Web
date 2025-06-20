@@ -11,7 +11,7 @@
     <hr class="border-bottom border-white mt-0" />
 
     <div class="settings-container">
-        <div class="avatar-wrapper text-center mb-3">
+        <div class="avatar-wrapper text-center">
             @if (!string.IsNullOrEmpty(@Model.ImageURL))
             {
                 <div class="avatar-container mx-auto">
@@ -20,7 +20,10 @@
             }
             else
             {
-                <h6 class="avatar-img text-light text-center">Currently no image</h6>
+                <div class="avatar-container mx-auto text-center align-content-center mb-0">
+                    <h6 class="avatar-img text-light mb-0">Currently no image</h6>
+                </div>
+                //<h6 class="avatar-img text-light">Currently no image</h6>
             }
         </div>
 

@@ -253,6 +253,12 @@ namespace Flashcards.Web.Areas.Account.Controllers
             if (user is null)
                 return BadRequest();
 
+            if (string.Equals(vm.ImageURL, user.ImageURL))
+            {
+                ModelState.AddModelError("", "The same image URL");
+                return PartialView("_ChangeAvatarPartial");
+            }
+
             user.ImageURL = vm.ImageURL;
             IdentityResult result = await userManager.UpdateAsync(user);
             if (result.Succeeded)
@@ -319,25 +325,25 @@ namespace Flashcards.Web.Areas.Account.Controllers
                 return PartialView("_ChangeEmailPartial");
 
             var user = await userManager.GetUserAsync(User);
-            if (user != null)
-            {
-                if (string.Equals(model.Email, user.Email))
-                {
-                    ModelState.AddModelError("", "The same email");
-                    return PartialView("_ChangeEmailPartial");
-                }
-                var emailToken = await userManager.GenerateChangeEmailTokenAsync(user, model.Email!);
-                IdentityResult result = await userManager.ChangeEmailAsync(user, model.Email!, emailToken);
-                if (result.Succeeded)
-                {
-                    TempData["success"] = "Email has been successfully updated";
-                    return Json(new { success = true });
-                }
-                ModelState.AddModelError("", "An error occured during this process. Most likely user with this email already exists");
-                return Json(new { success = false });
-            }
-            else
+
+            if (user is null)
                 return Unauthorized();
+
+            if (string.Equals(model.Email, user.Email))
+            {
+                ModelState.AddModelError("", "The same email");
+                return PartialView("_ChangeEmailPartial");
+            }
+            var emailToken = await userManager.GenerateChangeEmailTokenAsync(user, model.Email!);
+            IdentityResult result = await userManager.ChangeEmailAsync(user, model.Email!, emailToken);
+            if (result.Succeeded)
+            {
+                TempData["success"] = "Email has been successfully updated";
+                return Json(new { success = true });
+            }
+            ModelState.AddModelError("", "An error occured during this process. It's either your input is incorrect or user with this email already exists.");
+            return PartialView("_ChangeEmailPartial", model);
+
         }
 
         #endregion [ Change email ]

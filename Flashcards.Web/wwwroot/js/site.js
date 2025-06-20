@@ -10,6 +10,10 @@ showInPopup = (url, title) => {
             $("#form-modal .modal-body").html(res);
             $("#form-modal .modal-title").html(title);
             $("#form-modal").modal('show');
+
+            if (url.includes("UpdateAvatar")) {
+                setupClearableInputs(document.getElementById("form-modal"));
+            }
         }
     })
 }
@@ -28,5 +32,26 @@ popupPost = (form) => {
                 $.validator.unobtrusive.parse(document);
             }
         }
+    });
+}
+
+//Clear input button
+function setupClearableInputs(container) {
+    container.querySelectorAll('.clearable-input').forEach(function (input) {
+        const clearBtn = input.closest('.position-relative')?.querySelector('.btn-clear');
+        if (!clearBtn) return;
+
+        function toggleClearButton() {
+            clearBtn.style.display = input.value.trim() !== '' ? 'block' : 'none';
+        }
+
+        toggleClearButton();
+
+        input.addEventListener('input', toggleClearButton);
+        clearBtn.addEventListener('click', function () {
+            input.value = '';
+            toggleClearButton();
+            input.focus();
+        });
     });
 }

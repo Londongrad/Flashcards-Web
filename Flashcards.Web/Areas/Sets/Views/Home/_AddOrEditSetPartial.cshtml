@@ -12,12 +12,12 @@
     <input asp-for="UserId" hidden />
     <input asp-for="Id" hidden />
 
-    <div class="border p-0">
+    <div class="modal-form-container">
 
-        <div class="input-group mb-1 row m-0">
-            <label asp-for="Name" class="input-group-text text-light bg-dark"></label>
-            <input asp-for="Name" class="form-control text-light bg-dark">
-            <span asp-validation-for="Name" class="text-danger mt-2"></span>
+        <div class="mb-3 text-center">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control">
+            <span asp-validation-for="Name" class="text-danger small"></span>
         </div>
 
         <div class="row">
