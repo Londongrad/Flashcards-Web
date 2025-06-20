@@ -120,10 +120,9 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            console.log("СКРИПТ ЗАПУЩЕН");
-
-            // Create a new SpeechSynthesisUtterance instance
-            var msg = new SpeechSynthesisUtterance();
+            // Create a variable for speechSynthesis utterance
+            let msg = null;
+            let speechSupported = false;
 
             // Index of the currently displayed word
             var currentIndex = 0;
@@ -146,28 +145,26 @@
             // Default voice name for speech synthesis
             var defaultVoiceName = "Microsoft Hazel - English (United Kingdom)";
 
-            // Check if the browser supports the Speech Synthesis API
-            if (speechSynthesis) {
-                // Supported, continue
+            // Проверка поддержки SpeechSynthesis
+            if ('speechSynthesis' in window && typeof SpeechSynthesisUtterance !== "undefined") {
+                msg = new SpeechSynthesisUtterance();
+                speechSupported = true;
+
+                // Установка голоса
+                speechSynthesis.addEventListener('voiceschanged', function () {
+                    msg.voice = speechSynthesis.getVoices().find(voice => voice.name === defaultVoiceName);
+                    // Speak the initial word
+                    speak(firstText);
+                });
             } else {
-                // Not supported, alert the user
-                alert("Bad news! Your browser doesn't have the Speech Synthesis API this project requires. Try opening this webpage using the newest version of Google Chrome.");
+                console.warn("Speech synthesis is not supported on this device.");
             }
-
-            // When the list of available voices changes (e.g., loaded), set the desired voice
-            speechSynthesis.addEventListener('voiceschanged', function () {
-                msg.voice = speechSynthesis.getVoices().filter(function (voice) {
-                    return voice.name == defaultVoiceName;
-                })[0];
-
-                // Speak the initial word
-                speak(firstText);
-            });
 
             imageToShowOrHide(firstImageUrl);
 
             // Function to speak a given text
             function speak(text) {
+                if (!speechSupported || !msg) return;
                 // Cancel any ongoing speech
                 window.speechSynthesis.cancel();
 
