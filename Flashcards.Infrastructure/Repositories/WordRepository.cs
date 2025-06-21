@@ -1,18 +1,13 @@
 ﻿using Flashcards.Application.Interfaces;
 using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Flashcards.Infrastructure.Repositories
 {
-    public class WordRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : IWordRepository
+    public class WordRepository(ApplicationDbContext dbContext) : IWordRepository
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
-
-        private readonly string _userId = httpContextAccessor.HttpContext.User
-            .FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
         /// <summary> Deletes a word by its ID. <br/>
         /// Uses ExecuteDeleteAsync for efficient deletion without loading the entity. </summary>
@@ -42,9 +37,6 @@ namespace Flashcards.Infrastructure.Repositories
                 );
         }
 
-        /// <summary> Not implemented. Instead navigation property is used in order to receive words. </summary>
-        public Task<IEnumerable<Word>> GetAllAsync() => throw new NotImplementedException();
-
         /// <summary> Retrieves a specific word by ID without tracking. </summary>
         public async Task<Word?> GetAsync(int id)
         {
@@ -53,9 +45,9 @@ namespace Flashcards.Infrastructure.Repositories
 
         /// <summary> Checks if a word with the given name already exists (excluding the one with the given ID).
         /// Used for uniqueness validation. </summary>
-        public async Task<bool> IsNotUnique(string name, int id)
+        public async Task<bool> IsNotUnique(string name, int id, string userId)
         {
-            var query = _dbContext.Words.Include(w => w.Set).Where(w => w.Set!.UserId == _userId);
+            var query = _dbContext.Words.Include(w => w.Set).Where(w => w.Set!.UserId == userId);
 
             if (id == 0)
             {

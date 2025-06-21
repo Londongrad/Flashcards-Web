@@ -2,33 +2,32 @@
 using Flashcards.Application.Interfaces;
 using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Flashcards.Infrastructure.Repositories
 {
-    public class SetRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : ISetRepository
+    public class SetRepository(ApplicationDbContext dbContext) : ISetRepository
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
 
-        // Get the current logged-in user's ID from the HTTP context
-        private readonly string _userId = httpContextAccessor.HttpContext.User
-            .FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
-
         /// <summary>Returns a base query filtered by current user.</summary>
-        private IQueryable<Set> UserSets => _dbContext.Sets.Where(s => s.UserId == _userId);
+        public IQueryable<Set> GetUserSets(string userId)
+        {
+            return _dbContext.Sets.Where(s => s.UserId == userId);
+        }
 
         /// <summary>Deletes a set with the specified ID if it belongs to the current user.</summary>
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, string userId)
         {
-            await UserSets.Where(s => s.Id == id).ExecuteDeleteAsync();
+            await GetUserSets(userId)
+                .Where(s => s.Id == id)
+                .ExecuteDeleteAsync();
         }
 
         /// <summary>Retrieves all sets that belong to the current user without their associated words.</summary>
-        public async Task<IEnumerable<SetDTO>> GetAllSummariesAsync()
+        public async Task<IEnumerable<SetDTO>> GetAllSummariesAsync(string userId)
         {
-            return await UserSets
+            return await GetUserSets(userId)
                 .Select(s => new SetDTO()
                 {
                     Id = s.Id,
@@ -41,9 +40,9 @@ namespace Flashcards.Infrastructure.Repositories
         }
 
         /// <summary>Retrieves a specific set by ID if it belongs to the current user.</summary>
-        public async Task<Set?> GetAsync(int id)
+        public async Task<Set?> GetAsync(int id, string userId)
         {
-            return await UserSets
+            return await GetUserSets(userId)
                 .Include(s => s.Words)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Id == id);
@@ -52,7 +51,7 @@ namespace Flashcards.Infrastructure.Repositories
         /// <summary>Updates the name of a set if it belongs to the current user.</summary>
         public async Task UpdateAsync(Set set)
         {
-            await UserSets
+            await GetUserSets(set.UserId)
                 .Where(s => s.Id == set.Id)
                 .ExecuteUpdateAsync(sp => sp
                     .SetProperty(s => s.Name, set.Name)
@@ -62,9 +61,6 @@ namespace Flashcards.Infrastructure.Repositories
         /// <summary>Adds a new set for the current user.</summary>
         public async Task AddAsync(Set set)
         {
-            // Ensure the set is linked to the current user
-            set.UserId = _userId;
-
             await _dbContext.Sets.AddAsync(set);
             await _dbContext.SaveChangesAsync();
         }
@@ -72,20 +68,20 @@ namespace Flashcards.Infrastructure.Repositories
         /// <summary>Checks whether a set name is not unique. <br/>
         /// If id == 0: check if any set with the same name exists. <br/>
         /// If id != 0: check if another set with the same name exists (used during update).</summary>
-        public async Task<bool> IsNotUnique(string name, int id)
+        public async Task<bool> IsNotUnique(string name, int id, string userId)
         {
-            var query = _dbContext.Sets.AsQueryable();
+            var query = GetUserSets(userId);
 
             if (id == 0)
-                return await query.AnyAsync(s => s.Name == name && s.UserId == _userId);
+                return await query.AnyAsync(s => s.Name == name);
 
-            return await query.AnyAsync(s => s.Name == name && s.Id != id && s.UserId == _userId);
+            return await query.AnyAsync(s => s.Name == name && s.Id != id);
         }
 
         /// <summary>Deletes all sets belonging to the current user.</summary>
-        public async Task DeleteAllAsync()
+        public async Task DeleteAllAsync(string userId)
         {
-            await UserSets.ExecuteDeleteAsync();
+            await GetUserSets(userId).ExecuteDeleteAsync();
         }
     }
 }

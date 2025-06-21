@@ -2,8 +2,16 @@
 
 namespace Flashcards.Application.Interfaces
 {
-    public interface IWordRepository : IRepository<Word>
+    public interface IWordRepository
     {
-        Task<IEnumerable<Word>> GetAllAsync();
+        Task UpdateAsync(Word word);
+
+        Task DeleteAsync(int id);
+
+        Task<Word?> GetAsync(int id);
+
+        Task AddAsync(Word word);
+
+        Task<bool> IsNotUnique(string name, int id, string userId);
     }
 }

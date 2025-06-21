@@ -2,6 +2,7 @@ using AutoMapper;
 using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Services;
 using Flashcards.Web.Areas.Sets.Models;
+using Flashcards.Web.Common;
 using Flashcards.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 {
     [Authorize]
     [Area("Sets")]
-    public class HomeController(DataManager dataManager, IMapper mapper, SetStorage setStorage) : Controller
+    public class HomeController(DataManager dataManager, IMapper mapper, SetStorage setStorage) : BaseCotroller
     {
         private readonly DataManager _dataManager = dataManager;
         private readonly IMapper _mapper = mapper;
@@ -19,17 +20,23 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var sets = _mapper.Map<List<SetSummaryViewModel>>(await _dataManager.SetRepository.GetAllSummariesAsync());
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
+            var sets = _mapper.Map<List<SetSummaryViewModel>>(await _dataManager.SetRepository.GetAllSummariesAsync(userId));
             return View(sets);
         }
 
         [HttpGet]
         public async Task<IActionResult> SelectedSet(int id)
         {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
             if (id is 0)
                 return BadRequest();
 
-            var set = await _dataManager.SetRepository.GetAsync(id);
+            var set = await _dataManager.SetRepository.GetAsync(id, userId);
 
             if (set is null)
                 return NotFound();
@@ -40,10 +47,13 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public async Task<IActionResult> StudySelectedSet(int id, bool flag)
         {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
             if (id is 0)
                 return BadRequest();
 
-            var set = _mapper.Map<SetViewModel>(await _dataManager.SetRepository.GetAsync(id));
+            var set = _mapper.Map<SetViewModel>(await _dataManager.SetRepository.GetAsync(id, userId));
 
             if (set is null)
                 return NotFound();
@@ -108,6 +118,9 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public async Task<IActionResult> AddOrEditSet(int id = 0)
         {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
             if (id is 0)
             {
                 var set = new SetViewModel();
@@ -115,7 +128,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             }
             else
             {
-                var set = await _dataManager.SetRepository.GetAsync(id);
+                var set = await _dataManager.SetRepository.GetAsync(id, userId);
 
                 if (set is null)
                     return NotFound();
@@ -127,6 +140,9 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOrEditSet(SetViewModel set)
         {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
             if (!ModelState.IsValid)
                 return PartialView("_AddOrEditSetPartial", set);
 
@@ -136,7 +152,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                 return PartialView("_AddOrEditSetPartial", set);
             }
 
-            if (await _dataManager.SetRepository.IsNotUnique(set.Name, set.Id))
+            if (await _dataManager.SetRepository.IsNotUnique(set.Name, set.Id, userId))
             {
                 ModelState.AddModelError("", "Set with this name already exists");
                 return PartialView("_AddOrEditSetPartial", set);
@@ -144,6 +160,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
             if (set.Id == 0)
             {
+                set.UserId = userId;
                 await _dataManager.SetRepository.AddAsync(_mapper.Map<Set>(set));
                 TempData["success"] = "New set has been successfully created";
                 return Json(new { success = true, isNew = true });
@@ -162,6 +179,9 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public async Task<IActionResult> AddOrEditWord(int setId, int id = 0)
         {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
             if (setId is 0)
                 return BadRequest();
 
@@ -173,7 +193,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             }
             else
             {
-                var set = await _dataManager.SetRepository.GetAsync(setId);
+                var set = await _dataManager.SetRepository.GetAsync(setId, userId);
 
                 if (set is null)
                     return NotFound();
@@ -190,10 +210,13 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOrEditWord(WordViewModel word)
         {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
             if (!ModelState.IsValid)
                 return PartialView("_AddOrEditWordPartial", word);
 
-            if (await _dataManager.WordRepository.IsNotUnique(word.Name, word.Id))
+            if (await _dataManager.WordRepository.IsNotUnique(word.Name, word.Id, userId))
             {
                 ModelState.AddModelError("", "Word with this name already exists");
                 return PartialView("_AddOrEditWordPartial", word);
@@ -232,15 +255,18 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteSet(int id)
         {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
             if (id is 0)
                 return BadRequest();
 
-            var set = await _dataManager.SetRepository.GetAsync(id);
+            var set = await _dataManager.SetRepository.GetAsync(id, userId);
 
             if (set is null)
                 return NotFound();
 
-            await _dataManager.SetRepository.DeleteAsync(id);
+            await _dataManager.SetRepository.DeleteAsync(id, userId);
 
             TempData["success"] = "The set has been successfully deleted";
 

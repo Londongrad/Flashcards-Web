@@ -1,26 +1,25 @@
 ﻿using Flashcards.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using System.Collections.Concurrent;
-using System.Security.Claims;
 
 namespace Flashcards.Infrastructure.Services
 {
     /// <summary> Interface for this service was considered as excessive </summary>
-    public class SetStorage(IHttpContextAccessor httpContextAccessor)
+    public class SetStorage()
     {
         private static readonly ConcurrentDictionary<string, Set> _setStorage = [];
 
-        // Current user ID extracted from the HTTP context
-        private readonly string _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+        private string _userId = "";
 
         /// <summary> Stores a Set object for the current user.
         /// If a set already exists for the user, it is replaced. </summary>
         public void Set(Set set)
         {
+            _userId = set.UserId;
+
             // Remove old entry (if exists) to ensure clean replacement
-            _setStorage.Remove(_userId, out _);
+            _setStorage.Remove(set.UserId, out _);
             // Try to add the new set to the dictionary
-            _setStorage.TryAdd(_userId, set);
+            _setStorage.TryAdd(set.UserId, set);
         }
 
         /// <summary> Retrieves the Set object stored for the current user.

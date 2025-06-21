@@ -1,5 +1,6 @@
 ﻿using Flashcards.Infrastructure.Data;
 using Flashcards.Web.Areas.Account.Models;
+using Flashcards.Web.Common;
 using Flashcards.Web.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,7 +13,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
 {
     [Area("Account")]
     [Authorize]
-    public class AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, DataManager dataManager) : Controller
+    public class AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, DataManager dataManager) : BaseCotroller
     {
         #region [ Login ]
 
@@ -234,7 +235,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
             {
                 await signInManager.SignOutAsync();
                 await userManager.DeleteAsync(user);
-                await dataManager.SetRepository.DeleteAllAsync();
+                await dataManager.SetRepository.DeleteAllAsync(user.Id);
                 return Json(new { success = true });
             }
             else
