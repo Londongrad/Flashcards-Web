@@ -41,7 +41,7 @@
                 </div>
                 <div class="quizlet-back">
                     <p id="wordDefinition" class="quizlet-definition responsive-text">@Model.CurrentWord.Definition</p>
-                    <img id="wordImage" src="@Model.CurrentWord.ImagePath" alt="Image" />
+                    <img class="zoom-img" id="wordImage" src="@Model.CurrentWord.ImagePath" alt="Image" />
                 </div>
             </div>
         </div>
@@ -75,22 +75,25 @@
 
 @section Scripts {
     @* Flip the card when clicked *@
-    <script type="text/javascript">
+    <script>
+        let zoomInstance = null;
+        let isMobile = false;
+
         document.addEventListener("DOMContentLoaded", function () {
             const card = document.getElementById("card");
             const topButtons = card.querySelector(".quizlet-top-buttons");
+            const wordImage = document.getElementById("wordImage");
+            isMobile = window.innerWidth < 768;
 
             let isDragging = false;
             let mouseDown = false;
 
-            // Блокируем клик на кнопках (звук, звезда)
             topButtons.querySelectorAll("a").forEach(button => {
                 button.addEventListener("click", function (e) {
                     e.stopPropagation();
                 });
             });
 
-            // Отслеживаем, был ли drag (для выделения текста)
             card.addEventListener("mousedown", () => {
                 mouseDown = true;
                 isDragging = false;
@@ -106,17 +109,46 @@
                 mouseDown = false;
             });
 
-            // Сам переворот по click
             card.addEventListener("click", () => {
                 if (!isDragging) {
                     flipCard(card);
                 }
-                isDragging = false; // сброс
+                isDragging = false;
             });
+
+            if (wordImage) {
+                wordImage.addEventListener("click", function (e) {
+                    e.stopPropagation(); // не переворачивать обратно
+
+                    // Если зум уже создан, просто открыть его
+                    if (zoomInstance) {
+                        zoomInstance.open({ target: wordImage });
+                    }
+                });
+            }
         });
 
         function flipCard(card) {
+            const wasFlipped = card.classList.contains("flipped");
             card.classList.toggle("flipped");
+
+            if (!wasFlipped) {
+                // Дождаться отрисовки после transform
+                setTimeout(() => {
+                    const zoomTarget = document.querySelector('.quizlet-back .zoom-img');
+
+                    if (zoomTarget) {
+                        if (!zoomInstance) {
+                            zoomInstance = mediumZoom(zoomTarget, {
+                                margin: isMobile ? 5 : 50,
+                                background: "rgba(0, 0, 0, 0.7)"
+                            });
+                        } else {
+                            zoomInstance.attach(zoomTarget);
+                        }
+                    }
+                }, 350); // таймер чуть больше, чем CSS transition (300ms)
+            }
         }
     </script>
 

@@ -1,9 +1,9 @@
-using Flashcards.Application.Common.Interfaces;
-using Flashcards.Domain.Entities;
+using Flashcards.Application.Interfaces;
 using Flashcards.Infrastructure.Data;
 using Flashcards.Infrastructure.Repositories;
 using Flashcards.Infrastructure.Services;
 using Flashcards.Web.Middleware;
+using Flashcards.Web.Services;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -47,8 +47,8 @@ namespace Flashcards.Web
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddScoped<IRepository<Set>, SetRepository>();
-            builder.Services.AddScoped<IRepository<Word>, WordRepository>();
+            builder.Services.AddScoped<ISetRepository, SetRepository>();
+            builder.Services.AddScoped<IWordRepository, WordRepository>();
             builder.Services.AddScoped<DataManager>();
             builder.Services.AddScoped<SetStorage>();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());

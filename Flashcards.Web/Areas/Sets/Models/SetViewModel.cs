@@ -18,5 +18,7 @@ namespace Flashcards.Web.Areas.Sets.Models
         public List<WordViewModel> Words { get; set; } = [];
 
         public string? UserId { get; set; }
+
+        public bool HasImages { get; set; }
     }
 }

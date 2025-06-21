@@ -1,5 +1,6 @@
 ﻿using Flashcards.Infrastructure.Data;
 using Flashcards.Web.Areas.Account.Models;
+using Flashcards.Web.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;

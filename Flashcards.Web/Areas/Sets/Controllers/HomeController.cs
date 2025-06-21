@@ -1,8 +1,8 @@
 using AutoMapper;
 using Flashcards.Domain.Entities;
-using Flashcards.Infrastructure.Data;
 using Flashcards.Infrastructure.Services;
 using Flashcards.Web.Areas.Sets.Models;
+using Flashcards.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +19,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var sets = _mapper.Map<List<SetViewModel>>(await _dataManager.SetRepository.GetAllAsync());
+            var sets = _mapper.Map<List<SetSummaryViewModel>>(await _dataManager.SetRepository.GetAllSummariesAsync());
             return View(sets);
         }
 

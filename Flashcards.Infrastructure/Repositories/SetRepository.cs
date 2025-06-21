@@ -1,4 +1,5 @@
-﻿using Flashcards.Application.Common.Interfaces;
+﻿using Flashcards.Application.DTOs;
+using Flashcards.Application.Interfaces;
 using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +8,7 @@ using System.Security.Claims;
 
 namespace Flashcards.Infrastructure.Repositories
 {
-    public class SetRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : IRepository<Set>
+    public class SetRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : ISetRepository
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
 
@@ -24,11 +25,17 @@ namespace Flashcards.Infrastructure.Repositories
             await UserSets.Where(s => s.Id == id).ExecuteDeleteAsync();
         }
 
-        /// <summary>Retrieves all sets that belong to the current user, including their associated words.</summary>
-        public async Task<IEnumerable<Set>> GetAllAsync()
+        /// <summary>Retrieves all sets that belong to the current user without their associated words.</summary>
+        public async Task<IEnumerable<SetDTO>> GetAllSummariesAsync()
         {
             return await UserSets
-                .Include(s => s.Words)
+                .Select(s => new SetDTO()
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    HasImages = s.Words.Any(w => w.ImagePath != null),
+                    WordCount = s.Words.Count
+                })
                 .AsNoTracking()
                 .ToListAsync();
         }

@@ -1,4 +1,4 @@
-﻿using Flashcards.Application.Common.Interfaces;
+﻿using Flashcards.Application.Interfaces;
 using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace Flashcards.Infrastructure.Repositories
 {
-    public class WordRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : IRepository<Word>
+    public class WordRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : IWordRepository
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
 
@@ -66,10 +66,5 @@ namespace Flashcards.Infrastructure.Repositories
             // Check if any other word has the same name (on update)
             return await query.AnyAsync(w => w.Name == name && w.Id != id);
         }
-
-        /// <summary>
-        /// Deletes all words (not implemented). This method was considered as exessive due to a fact that the entity Set in the database has the property OnDelete = CASCADE
-        /// </summary>
-        public Task DeleteAllAsync() => throw new NotImplementedException();
     }
 }

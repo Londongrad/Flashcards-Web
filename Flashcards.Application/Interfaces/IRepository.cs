@@ -1,6 +1,6 @@
 ﻿using Flashcards.Domain.Entities;
 
-namespace Flashcards.Application.Common.Interfaces
+namespace Flashcards.Application.Interfaces
 {
     public interface IRepository<T> where T : EntityBase
     {
@@ -8,14 +8,10 @@ namespace Flashcards.Application.Common.Interfaces
 
         Task DeleteAsync(int id);
 
-        Task<IEnumerable<T>> GetAllAsync();
-
         Task<T?> GetAsync(int id);
 
         Task AddAsync(T entity);
 
         Task<bool> IsNotUnique(string name, int id);
-
-        Task DeleteAllAsync();
     }
 }
