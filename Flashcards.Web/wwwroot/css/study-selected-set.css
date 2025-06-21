@@ -1,14 +1,32 @@
 ﻿
+/* Обёртка карточки — центрирует */
+.quizlet-center-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
 
-
+/* Карточка */
 .quizlet-flip-container {
     width: 100%;
     max-width: 700px;
     height: 500px;
     perspective: 1000px;
     box-sizing: border-box;
-    position: relative;
     overflow: hidden;
+}
+
+/* Главный контейнер */
+.quizlet-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    flex-direction: row;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .quizlet-flipper {
@@ -82,18 +100,6 @@
     font-size: 1.4rem;
 }
 
-.quizlet-layout {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    margin-top: 10px;
-    flex-wrap: nowrap;
-    position: relative;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
 .quizlet-nav-btn {
     width: 60px;
     height: 60px;
@@ -131,40 +137,6 @@
         cursor: not-allowed;
         opacity: 0.6; /* визуально тоже помогает */
     }
-
-@media (max-width: 768px) {
-    .quizlet-layout {
-        flex-direction: column;
-    }
-
-    .quizlet-nav-btn {
-        margin: 0 5px;
-        width: 45px;
-        height: 45px;
-    }
-
-    .btn-prev,
-    .btn-next {
-        position: static;
-    }
-
-    .quizlet-flip-container {
-        width: 90vw;
-        max-width: 900px;
-        height: 90vw;
-        max-height: 300px;
-        perspective: 1000px;
-        cursor: pointer;
-        transition: width 0.3s ease, height 0.3s ease;
-    }
-
-    .quizlet-nav-btns-wrapper {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 10px;
-    }
-}
 
 .quizlet-top-buttons {
     position: absolute;
@@ -216,17 +188,25 @@
     display: none;
 }
 
+.mobile-nav-btns-wrapper {
+    display: none;
+    justify-content: center;
+    margin-top: 10px;
+    gap: 10px;
+}
+
 @media (max-width: 768px) {
     .desktop-only {
-        display: none;
+        display: none !important;
     }
 
     .mobile-only {
-        display: flex;
+        display: flex !important;
     }
 
     .quizlet-layout {
         flex-direction: column;
+        gap: 0;
     }
 
     .mobile-nav-btns-wrapper {
@@ -263,5 +243,34 @@
 
     .back-button-fixed.mobile-hidden {
         display: none;
+    }
+
+    .quizlet-nav-btn {
+        margin: 0 5px;
+        width: 45px;
+        height: 45px;
+    }
+
+    .btn-prev,
+    .btn-next {
+        position: static;
+    }
+
+    .quizlet-flip-container {
+        width: clamp(280px, 90vw, 600px);
+        height: auto;
+        aspect-ratio: 3 / 2;
+    }
+
+    .quizlet-nav-btns-wrapper {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .quizlet-center-wrapper {
+        width: 100%;
+        justify-content: center;
     }
 }
