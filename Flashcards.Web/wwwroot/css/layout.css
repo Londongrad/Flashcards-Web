@@ -103,3 +103,18 @@ button.accept-policy {
     z-index: 2;
     display: none; /* скрыт по умолчанию */
 }
+
+/*Настройка для тостера на мобилке*/
+/* Override Toastr container for top-center on small screens */
+#toast-container.toast-top-center {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    right: auto !important;
+    margin-left: 0 !important;
+    max-width: 90vw !important;
+    width: max-content !important;
+    text-align: center;
+    box-sizing: border-box;
+    top: 1rem;
+    z-index: 9999;
+}
