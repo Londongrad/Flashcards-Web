@@ -185,7 +185,7 @@
 
             // Disable "Next" button if we're already at the last/first word
             $("#BtnNext, #BtnNextMobile").prop("disabled", currentIndex === totalCount - 1);
-            $("#BtnPrev, #BtnNextMobile").prop("disabled", currentIndex === 0);
+            $("#BtnPrev, #BtnPrevMobile").prop("disabled", currentIndex === 0);
 
             // Function to load a word by index using AJAX
             function loadWord(index) {
@@ -210,7 +210,7 @@
                         imageToShowOrHide(data.imagePath);
 
                         // Enable or disable navigation buttons
-                        $("#BtnPrev, #BtnNextMobile").prop("disabled", index === 0);
+                        $("#BtnPrev, #BtnPrevMobile").prop("disabled", index === 0);
                         $("#BtnNext, #BtnNextMobile").prop("disabled", index === totalCount - 1);
 
                         // Speak the new word
