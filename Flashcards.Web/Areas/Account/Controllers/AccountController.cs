@@ -227,7 +227,9 @@ namespace Flashcards.Web.Areas.Account.Controllers
             if (user is null)
                 return Unauthorized();
 
-            if (string.Equals(user.Email, vm.Email) && string.Equals(user.UserName, vm.Username))
+            var isPasswordValid = await userManager.CheckPasswordAsync(user, vm.Password!);
+
+            if (isPasswordValid)
             {
                 await signInManager.SignOutAsync();
                 await userManager.DeleteAsync(user);

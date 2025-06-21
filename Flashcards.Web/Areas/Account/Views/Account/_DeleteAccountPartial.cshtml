@@ -9,18 +9,12 @@
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <span class="text-danger">Be aware that you won't be able to restore it. If you wish to proceed enter your username and email.</span>
+        <span class="text-danger">Be aware that you won't be able to restore it. If you wish to proceed enter your password.</span>
 
         <div class="my-3 text-center">
-            <label asp-for="@Model.Email" class="form-label"></label>
-            <input asp-for="@Model.Email" class="form-control" autocomplete="off">
-            <span asp-validation-for="Email" class="text-danger small"></span>
-        </div>
-
-        <div class="mb-3 text-center">
-            <label asp-for="@Model.Username" class="form-label"></label>
-            <input asp-for="@Model.Username" class="form-control" autocomplete="off">
-            <span asp-validation-for="Username" class="text-danger small"></span>
+            <label asp-for="@Model.Password" class="form-label"></label>
+            <input asp-for="@Model.Password" class="form-control">
+            <span asp-validation-for="Password" class="text-danger small"></span>
         </div>
 
         <div class="text-center">

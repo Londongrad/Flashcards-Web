@@ -8,7 +8,7 @@ namespace Flashcards.Web.Areas.Sets.Models
 
         [Required(ErrorMessage = "Name is required.")]
         [Display(Name = "Name of the set")]
-        [MaxLength(2, ErrorMessage = "The name of the set must be with a maximum length of 2 characters")]
+        [MaxLength(20, ErrorMessage = "The name of the set must be with a maximum length of 20 characters")]
         //[Remote(action: "CheckSet", controller: "Home", areaName: "Sets", HttpMethod = "POST", AdditionalFields = nameof(Id), ErrorMessage = "Set with this name already exists")]
         public string Name { get; set; } = null!;
 

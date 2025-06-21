@@ -118,6 +118,8 @@
         $(document).ready(function() {
 
             const logoutUrl = "/Account/Account/Login";
+
+            // Some data (fethed from server-side model)
             var count = @Model.Words.Count;
             var countFav = @Model.Words.Where(w => w.IsFavorite == true).Count();
             var setId = @Model.Id;
@@ -155,7 +157,7 @@
                                 if (xhr.status === 401) {
                                     // User was logged out — show warning and redirect
                                     toastr.warning("You have been logged out. Redirecting to the login page...");
-                                    setTimeout(function () {
+                                    setTimeout(function (res) {
                                         window.location.href = logoutUrl;
                                     }, 2000);
                                 } else {
@@ -171,22 +173,32 @@
             $("#deleteSet").on("click", function () {
                 bootbox.confirm("Do you really wanna delete this set?", function(result) {
                     if(result){
+
+                        // Disable both "Study" buttons to prevent premature navigation
+                        $("#BtnStudy").prop("disabled", true);
+                        $("#BtnStudyFav").prop("disabled", true);
+
                         $.ajax({
                             url: '@Url.Action("DeleteSet", "Home")',
                             type: "POST",
                             data: { id: setId },
                             success: function(res) {
+                                // Redirect to index after successful deletion
                                 window.location.href = '@Url.Action("Index", "Home")';
                             },
                             error: function (xhr) {
+                                // Re-enable buttons in case of error
+                                $("#BtnStudy").prop("disabled", false);
+                                $("#BtnStudyFav").prop("disabled", false);
+
                                 if (xhr.status === 401) {
                                     // User was logged out — show warning and redirect
                                     toastr.warning("You have been logged out. Redirecting to the login page...");
-                                    setTimeout(function () {
+                                    setTimeout(function (res) {
                                         window.location.href = logoutUrl;
                                     }, 2000);
                                 } else {
-                                    // Optional: handle other errors
+                                    // General error handling
                                     toastr.error("An error occurred while trying to delete the set.");
                                 }
                             }
