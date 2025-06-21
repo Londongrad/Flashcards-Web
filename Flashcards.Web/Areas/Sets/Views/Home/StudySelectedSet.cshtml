@@ -125,25 +125,25 @@
             let speechSupported = false;
 
             // Index of the currently displayed word
-            var currentIndex = 0;
+            let currentIndex = 0;
 
             // Total number of words (from server-side model)
-            var totalCount = @Model.Count;
+            const totalCount = @Model.Count;
 
             // ID of the current word (used for favorite action)
-            var id = @Model.CurrentWord.Id;
+            let id = @Model.CurrentWord.Id;
 
             // The initial word to be spoken (fetched from the server-side model)
-            var firstText = "@Model.CurrentWord.Name";
+            const firstText = "@Model.CurrentWord.Name";
 
             // The initial word's image to display or hide
-            var firstImageUrl = "@Model.CurrentWord.ImagePath";
+            const firstImageUrl = "@Model.CurrentWord.ImagePath";
 
             // Flashcard
             const card = document.getElementById("card");
 
             // Default voice name for speech synthesis
-            var defaultVoiceName = "Microsoft Hazel - English (United Kingdom)";
+            const defaultVoiceName = "Microsoft Hazel - English (United Kingdom)";
 
             // Проверка поддержки SpeechSynthesis
             if ('speechSynthesis' in window && typeof SpeechSynthesisUtterance !== "undefined") {
@@ -157,7 +157,7 @@
                     speak(firstText);
                 });
             } else {
-                console.warn("Speech synthesis is not supported on this device.");
+                console.warn("Speech synthesis is not supported.");
             }
 
             imageToShowOrHide(firstImageUrl);
@@ -183,9 +183,9 @@
                 }
             }
 
-            // Disable "Next" button if we're already at the last word
+            // Disable "Next" button if we're already at the last/first word
             $("#BtnNext, #BtnNextMobile").prop("disabled", currentIndex === totalCount - 1);
-            $("#BtnPrev, #BtnNextMobile").prop("disabled", totalCount === 1);
+            $("#BtnPrev, #BtnNextMobile").prop("disabled", currentIndex === 0);
 
             // Function to load a word by index using AJAX
             function loadWord(index) {
@@ -220,8 +220,18 @@
                         id = data.id;
                         currentIndex = index;
                     },
-                    error: function () {
-                        alert("No more items."); // Show alert if request fails
+                    error: function (xhr) {
+                        if (xhr.status === 401) {
+                            // User session expired, show warning and redirect to login
+                            toastr.warning("You have been logged out. Redirecting to the login page...");
+
+                            setTimeout(function () {
+                                window.location.href = "/Account/Account/Login";
+                            }, 2000);
+                        } else {
+                            // General failure case
+                            alert("No more items.");
+                        }
                     }
                 });
             }

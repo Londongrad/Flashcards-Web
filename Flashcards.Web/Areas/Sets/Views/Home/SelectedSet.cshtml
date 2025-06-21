@@ -117,6 +117,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
+            const logoutUrl = "/Account/Account/Login";
             var count = @Model.Words.Count;
             var countFav = @Model.Words.Where(w => w.IsFavorite == true).Count();
             var setId = @Model.Id;
@@ -149,6 +150,18 @@
 
                                 $("#BtnStudy").prop("disabled", count === 0);
                                 $("#BtnStudyFav").prop("disabled", countFav === 0);
+                            },
+                            error: function (xhr) {
+                                if (xhr.status === 401) {
+                                    // User was logged out — show warning and redirect
+                                    toastr.warning("You have been logged out. Redirecting to the login page...");
+                                    setTimeout(function () {
+                                        window.location.href = logoutUrl;
+                                    }, 2000);
+                                } else {
+                                    // Optional: handle other errors
+                                    toastr.error("An error occurred while trying to delete the set.");
+                                }
                             }
                         });
                     }
@@ -164,6 +177,18 @@
                             data: { id: setId },
                             success: function(res) {
                                 window.location.href = '@Url.Action("Index", "Home")';
+                            },
+                            error: function (xhr) {
+                                if (xhr.status === 401) {
+                                    // User was logged out — show warning and redirect
+                                    toastr.warning("You have been logged out. Redirecting to the login page...");
+                                    setTimeout(function () {
+                                        window.location.href = logoutUrl;
+                                    }, 2000);
+                                } else {
+                                    // Optional: handle other errors
+                                    toastr.error("An error occurred while trying to delete the set.");
+                                }
                             }
                         });
                     }

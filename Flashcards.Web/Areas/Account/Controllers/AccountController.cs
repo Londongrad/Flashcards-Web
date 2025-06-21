@@ -1,8 +1,11 @@
 ﻿using Flashcards.Infrastructure.Data;
 using Flashcards.Web.Areas.Account.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Flashcards.Web.Areas.Account.Controllers
 {
@@ -20,21 +23,34 @@ namespace Flashcards.Web.Areas.Account.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await signInManager.PasswordSignInAsync(model.Username!, model.Password!, model.RememberMe, false);
+            if (!ModelState.IsValid)
+                return View(model);
 
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index", "Home", new { area = "Sets" });
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Email or password is incorrect.");
-                    return View(model);
-                }
+            var user = await userManager.FindByNameAsync(model.Username!);
+            if (user == null || !await userManager.CheckPasswordAsync(user, model.Password!))
+            {
+                ModelState.AddModelError("", "Email or password is incorrect.");
+                return View(model);
             }
-            return View(model);
+
+            // Генерация нового SessionToken
+            user.SessionToken = Guid.NewGuid().ToString();
+            await userManager.UpdateAsync(user);
+
+            // Формируем claims вручную
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, user.Id),
+                new(ClaimTypes.Name, user.UserName!),
+                new("SessionToken", user.SessionToken!) // добавляем кастомный токен
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(claimsIdentity);
+
+            await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
+
+            return RedirectToAction("Index", "Home", new { area = "Sets" });
         }
 
         #endregion [ Login ]

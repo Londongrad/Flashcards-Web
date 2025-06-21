@@ -14,6 +14,16 @@ showInPopup = (url, title) => {
             if (url.includes("UpdateAvatar")) {
                 setupClearableInputs(document.getElementById("form-modal"));
             }
+        },
+        error: function (xhr) {
+            if (xhr.status === 401) {
+                toastr.warning("You have been logged out. Redirecting to the login page...");
+
+                // Ждём 2 секунды, чтобы тостер успел показаться
+                setTimeout(function () {
+                    window.location.href = "/Account/Account/Login";
+                }, 2000);
+            }
         }
     })
 }

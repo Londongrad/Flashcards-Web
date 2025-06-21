@@ -7,5 +7,6 @@ namespace Flashcards.Infrastructure.Data
     {
         [Display(Name = "Image URL")]
         public string? ImageURL { get; set; }
+        public string? SessionToken { get; set; }
     }
 }

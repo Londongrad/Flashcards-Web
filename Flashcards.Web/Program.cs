@@ -3,6 +3,7 @@ using Flashcards.Domain.Entities;
 using Flashcards.Infrastructure.Data;
 using Flashcards.Infrastructure.Repositories;
 using Flashcards.Infrastructure.Services;
+using Flashcards.Web.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -74,6 +75,8 @@ namespace Flashcards.Web
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<SingleSessionMiddleware>();
 
             app.MapStaticAssets();
             app.MapControllerRoute(

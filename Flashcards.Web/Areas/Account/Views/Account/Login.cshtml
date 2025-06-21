@@ -4,13 +4,12 @@
     string Title = "Login Page";
     ViewBag.Title = Title;
 }
-
 <div class="account-container">
     <div class="account_box">
 
         <h2 class="text-center mb-4">@Title</h2>
 
-        <form asp-area ="Account" asp-controller="Account" asp-action="Login" method="post">
+        <form asp-area="Account" asp-controller="Account" asp-action="Login" method="post">
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -26,7 +25,7 @@
                 <span asp-validation-for="Password" class="text-danger"> </span>
             </div>
 
-            <div class="float-end" >
+            <div class="float-end">
                 <a asp-area="Account" asp-controller="Account" asp-action="VerifyEmail" class="text-decoration-none">
                     Forgot password?
                 </a>
@@ -48,3 +47,12 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    @if (Context.Request.Query["forcedLogout"] == "true")
+    {
+        <script>
+            toastr.warning("You were logged out because your account has been entered elsewhere");
+        </script>
+    }
+}
