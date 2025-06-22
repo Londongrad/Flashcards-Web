@@ -43,6 +43,14 @@ namespace Flashcards.Infrastructure.Repositories
         public async Task<Set?> GetAsync(int id, string userId)
         {
             return await GetUserSets(userId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == id);
+        }
+
+        /// <summary>Retrieves a specific set by ID if it belongs to the current user.</summary>
+        public async Task<Set?> GetWithWordsAsync(int id, string userId)
+        {
+            return await GetUserSets(userId)
                 .Include(s => s.Words)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Id == id);

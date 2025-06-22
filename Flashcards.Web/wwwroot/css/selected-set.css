@@ -55,36 +55,37 @@
         gap: 8px;
     }
 
-.quizlet-btn {
+.icon-btn {
+    background: transparent;
     border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 0.9rem;
+    padding: 6px;
+    font-size: 1.2rem;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
+    border-radius: 50%;
+    color: #ccc;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-    .quizlet-btn.edit {
-        background-color: #3ccfcf;
-        color: #0a0a0a;
+    .icon-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
     }
 
-    .quizlet-btn.edit:hover {
-        background-color: white;
-    }
+.edit-btn i {
+    color: #3ccfcf;
+}
 
-    .quizlet-btn.delete {
-        background-color: #ff6b6b;
-        color: #fff;
-    }
+.delete-btn i {
+    color: #ff6b6b;
+}
 
-    .quizlet-btn.delete:hover {
-        background-color: black;
-    }
+.fav-btn i {
+    color: white;
+}
+
+.fav-btn.favorited i {
+    color: gold;
+}
 
 @media (max-width: 768px) {
     .quizlet-card {

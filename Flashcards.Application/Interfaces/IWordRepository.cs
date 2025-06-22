@@ -8,7 +8,7 @@ namespace Flashcards.Application.Interfaces
 
         Task DeleteAsync(int id);
 
-        Task<Word?> GetAsync(int id);
+        Task<Word?> GetAsync(int id, int setId, string userId);
 
         Task AddAsync(Word word);
 

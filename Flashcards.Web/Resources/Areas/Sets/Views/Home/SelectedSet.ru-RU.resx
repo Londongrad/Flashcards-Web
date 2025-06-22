@@ -141,6 +141,9 @@
   <data name="EditWord" xml:space="preserve">
     <value>Редактировать слово</value>
   </data>
+  <data name="Favorite" xml:space="preserve">
+    <value>В избранное</value>
+  </data>
   <data name="NoImage" xml:space="preserve">
     <value>Нет картинки</value>
   </data>
@@ -159,9 +162,6 @@
   <data name="StudyFavorite" xml:space="preserve">
     <value>Только избранные</value>
   </data>
-  <data name="ToastrDeleteSet" xml:space="preserve">
-    <value />
-  </data>
   <data name="ToastrDeleteSetError" xml:space="preserve">
     <value>Произошла ошибка во время удаления набора.</value>
   </data>
@@ -173,6 +173,9 @@
   </data>
   <data name="ToastrLogout" xml:space="preserve">
     <value>Вы вышли из системы. Выполняется перенаправление...</value>
+  </data>
+  <data name="Word" xml:space="preserve">
+    <value>слово</value>
   </data>
   <data name="Words" xml:space="preserve">
     <value>слов</value>

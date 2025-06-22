@@ -10,6 +10,7 @@ namespace Flashcards.Application.Interfaces
         Task AddAsync(Set set);
         Task DeleteAsync(int id, string userId);
         Task<Set?> GetAsync(int id, string userId);
+        Task<Set?> GetWithWordsAsync(int id, string userId);
         Task<IEnumerable<SetDTO>> GetAllSummariesAsync(string userId);
         Task DeleteAllAsync(string userId);
         IQueryable<Set> GetUserSets(string userId);

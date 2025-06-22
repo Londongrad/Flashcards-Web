@@ -73,11 +73,15 @@ button.accept-policy {
     font-size: 20px;
 }
 
-.toastr-top-center {
-    top: 12px;
-    left: 50%;
-    margin: 0 0 0 -150px;
-}
+    .sound-fav-btn:hover{
+        color: gray;
+    }
+
+    .toastr-top-center {
+        top: 12px;
+        left: 50%;
+        margin: 0 0 0 -150px;
+    }
 
 .clearable-input {
     height: 45px;

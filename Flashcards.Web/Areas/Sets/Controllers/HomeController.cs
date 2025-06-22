@@ -37,7 +37,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (id is 0)
                 return BadRequest();
 
-            var set = await _dataManager.SetRepository.GetAsync(id, userId);
+            var set = await _dataManager.SetRepository.GetWithWordsAsync(id, userId);
 
             if (set is null)
                 return NotFound();
@@ -75,9 +75,12 @@ namespace Flashcards.Web.Areas.Sets.Controllers
         #region [ FAVORITE ]
 
         [HttpPost]
-        public async Task<IActionResult> Favorite(int id)
+        public async Task<IActionResult> Favorite(int id, int setId)
         {
-            var word = await _dataManager.WordRepository.GetAsync(id);
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
+            var word = await _dataManager.WordRepository.GetAsync(id, setId, userId);
             if (word is not null)
             {
                 if (word.IsFavorite)
@@ -176,12 +179,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             }
             else
             {
-                var set = await _dataManager.SetRepository.GetAsync(setId, userId);
-
-                if (set is null)
-                    return NotFound();
-
-                var word = set.Words!.FirstOrDefault(x => x.Id == id);
+                var word = await _dataManager.WordRepository.GetAsync(id, setId, userId);
 
                 if (word is null)
                     return NotFound();

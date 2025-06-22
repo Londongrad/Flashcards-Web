@@ -38,9 +38,14 @@ namespace Flashcards.Infrastructure.Repositories
         }
 
         /// <summary> Retrieves a specific word by ID without tracking. </summary>
-        public async Task<Word?> GetAsync(int id)
+        public async Task<Word?> GetAsync(int id, int setId, string userId)
         {
-            return await _dbContext.Words.AsNoTracking().FirstOrDefaultAsync(w => w.Id == id);
+            return await _dbContext.Words
+                .Include(w => w.Set)
+                .Where(w => w.Id == id &&
+                            w.SetId == setId &&
+                            w.Set!.UserId == userId)
+                .FirstOrDefaultAsync();
         }
 
         /// <summary> Checks if a word with the given name already exists (excluding the one with the given ID).

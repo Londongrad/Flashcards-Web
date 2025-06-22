@@ -16,10 +16,10 @@
 
     <!-- Кнопки справа (будут под текстом на мобилке, справа — на широких экранах) -->
     <div class="d-flex gap-2 align-items-center justify-content-center">
-        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id })', '@Localizer["EditSet"]')" class="btn sound-fav-btn" title="@Localizer["EditSet"]">
+        <button onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id })', '@Localizer["EditSet"]')" class="icon-btn" title="@Localizer["EditSet"]">
             <i class="bi bi-pencil-square fs-5 text-light"></i>
-        </a>
-        <button id="deleteSet" title="@Localizer["DeleteSet"]" class="btn sound-fav-btn">
+        </button>
+        <button id="deleteSet" title="@Localizer["DeleteSet"]" class="icon-btn">
             <i class="bi bi-trash3 fs-5 text-light"></i>
         </button>
     </div>
@@ -37,8 +37,14 @@
                 <i class="bi bi-play-circle"></i> @Localizer["Study"]
             </button>
 
-            <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { id = Model.Id, flag = true })'" id="BtnStudyFav" type="button" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
-                <i class="bi bi-star"></i> @Localizer["StudyFavorite"] [@favCount @(favCount == 1 ? Localizer["Word"] : Localizer["Words"])]
+            <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { id = Model.Id, flag = true })'"
+                    id="BtnStudyFav"
+                    type="button"
+                    class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-star"></i>
+                @Localizer["StudyFavorite"]
+                [<span id="FavCount">@favCount</span>
+                <span id="FavWordLabel">@((favCount == 1) ? Localizer["Word"] : Localizer["Words"])</span>]
             </button>
 
             <a onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { setId = Model.Id })', '@Localizer["AddNewWord"]')" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1">
@@ -73,12 +79,17 @@
             </div>
 
             <div class="quizlet-block actions">
-                <button onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { word.SetId, word.Id })', '@Localizer["EditWord"]')" class="quizlet-btn edit">
-                    <i class="bi bi-pencil"></i>
-                </button>
-                <button data-id="@word.Id" class="quizlet-btn delete deleteWord">
-                    <i class="bi bi-trash"></i>
-                </button>
+                <div class="quizlet-block actions">
+                    <button id="BtnFav" class="icon-btn fav-btn @(word.IsFavorite ? "favorited" : "")" data-id="@word.Id" data-setid="@word.SetId" title="@Localizer["Favorite"]">
+                        <i class="bi bi-star-fill"></i>
+                    </button>
+                    <button onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { word.SetId, word.Id })', '@Localizer["EditWord"]')" class="icon-btn edit-btn" title="@Localizer["Edit"]">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="icon-btn delete-btn deleteWord" data-id="@word.Id" title="@Localizer["Delete"]">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
             </div>
         </div>
     }
@@ -207,6 +218,37 @@
                                 }
                             }
                         });
+                    }
+                });
+            });
+
+            $("#BtnFav").on("click", function () {
+                const button = $(this);
+                const wordId = button.data("id");
+                const setId = button.data("setid");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Sets/Home/Favorite",
+                    data: { id: wordId, setId: setId },
+                    success: function (res) {
+                        button.toggleClass("favorited", res.isFavorite);
+
+                        const countSpan = document.getElementById("FavCount");
+                        const wordLabelSpan = document.getElementById("FavWordLabel");
+
+                        if (countSpan && wordLabelSpan) {
+                            let currentCount = parseInt(countSpan.innerText);
+                            currentCount += res.isFavorite ? 1 : -1;
+                            countSpan.innerText = currentCount;
+
+                            // Обновление подписи: Word или Words
+                            const label = currentCount === 1 ? "@Localizer["Word"]" : "@Localizer["Words"]";
+                            wordLabelSpan.innerText = label;
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 401) handleSessionExpired();
                     }
                 });
             });

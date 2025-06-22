@@ -26,19 +26,19 @@
             }
         </div>
 
-        <button onclick="showInPopup('@Url.Action("UpdateAvatar", "Account", new { Model.ImageURL })', 'Change avatar')" type="button" class="btn btn-primary">
+        <button onclick="showInPopup('@Url.Action("UpdateAvatar", "Account", new { Model.ImageURL })', '@Localizer["ChangeAvatar"]')" type="button" class="btn btn-primary">
             <i class="bi bi-card-image"></i> @Localizer["ChangeAvatar"]
         </button>
 
-        <button onclick="showInPopup('@Url.Action("ChangePasswordInSettings", "Account")', 'Change password')" type="button" class="btn btn-primary">
+        <button onclick="showInPopup('@Url.Action("ChangePasswordInSettings", "Account")', '@Localizer["ChangePassword"]')" type="button" class="btn btn-primary">
             <i class="bi bi-arrow-repeat"></i> @Localizer["ChangePassword"]
         </button>
 
-        <button onclick="showInPopup('@Url.Action("ChangeEmail", "Account")', 'Change email')" type="button" class="btn btn-primary">
+        <button onclick="showInPopup('@Url.Action("ChangeEmail", "Account")', '@Localizer["ChangeEmail"]')" type="button" class="btn btn-primary">
             <i class="bi bi-arrow-repeat"></i> @Localizer["ChangeEmail"]
         </button>
 
-        <button onclick="showInPopup('@Url.Action("ChangeUsername", "Account")', 'Change username')" class="btn btn-primary">
+        <button onclick="showInPopup('@Url.Action("ChangeUsername", "Account")', '@Localizer["ChangeUsername"]')" class="btn btn-primary">
             <i class="bi bi-arrow-repeat"></i> @Localizer["ChangeUsername"]
         </button>
     </div>
@@ -85,7 +85,7 @@
     <hr class="border-bottom border-white mt-0" />
 
     <div class="settings-container mb-4">
-        <button onclick="showInPopup('@Url.Action("DeleteAccount", "Account")', 'Delete account')" class="btn btn-danger border-1 border-dark-subtle text-center">
+        <button onclick="showInPopup('@Url.Action("DeleteAccount", "Account")', '@Localizer["DeleteAccount"]')" class="btn btn-danger border-1 border-dark-subtle text-center">
             <i class="bi bi-x-octagon"></i> @Localizer["DeleteAccount"]
         </button>
     </div>

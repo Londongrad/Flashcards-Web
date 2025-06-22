@@ -51,11 +51,11 @@
         <div id="card" class="quizlet-flip-container">
 
             <div class="quizlet-top-buttons">
-                <a id="BtnSound" class="btn sound-fav-btn" title="@Localizer["PlaySound"]">
+                <a id="BtnSound" class="btn icon-btn" title="@Localizer["PlaySound"]">
                     <i class="bi bi-volume-up-fill"></i>
                 </a>
-                <a id="BtnFav" class="btn sound-fav-btn" title="@Localizer["Favorite"]"
-                   style="background-color: @(!Model.FirstWord.IsFavorite ? "transparent" : "yellow")">
+                <a id="BtnFav" class="btn icon-btn" title="@Localizer["Favorite"]"
+                   style="color: @(!Model.FirstWord.IsFavorite ? "white" : "gold")">
                     <i class="bi bi-star-fill"></i>
                 </a>
             </div>
@@ -230,7 +230,7 @@
                     success: function (res) {
                         console.log("Favorite result:", res);
                         // Change background color based on favorite status
-                        $("#BtnFav").css("background-color", res.isFavorite ? "yellow" : "transparent");
+                        $("#BtnFav").css("color", res.isFavorite ? "gold" : "white");
                         words[currentIndex].IsFavorite = res.isFavorite;
                     },
                     error: function (xhr) {
@@ -262,7 +262,7 @@
             $("#wordName").text(word.Name);
             $("#wordDefinition").text(word.Definition);
             updateImage(word.ImagePath);
-            $("#BtnFav").css("background-color", word.IsFavorite ? "yellow" : "transparent");
+            $("#BtnFav").css("color", word.IsFavorite ? "gold" : "white");
 
             $("#BtnPrev, #BtnPrevMobile").prop("disabled", index === 0);
             $("#BtnNext, #BtnNextMobile").prop("disabled", index === words.length - 1);
