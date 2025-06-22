@@ -5,7 +5,7 @@ namespace Flashcards.Web.Areas.Account.Models
 {
     public class ImageViewModel
     {
-        [Display(Name = "Image URL")]
+        [Display(Name = "ImageURL")]
         [ValidateNever]
         public string? ImageURL { get; set; }
     }

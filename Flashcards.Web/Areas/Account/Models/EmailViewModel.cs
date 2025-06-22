@@ -4,8 +4,8 @@ namespace Flashcards.Web.Areas.Account.Models
 {
     public class EmailViewModel
     {
-        [StringLength(20, MinimumLength = 6, ErrorMessage = "The {0} must be at {2} and at max {1} characters long.")]
-        [Required(ErrorMessage = "Email is required")]
+        [StringLength(20, MinimumLength = 6, ErrorMessage = "StringLengthMessage")]
+        [Required(ErrorMessage = "RequiredMessage")]
         public string? Email { get; set; }
     }
 }

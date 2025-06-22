@@ -23,4 +23,9 @@
 		<ProjectReference Include="..\Flashcards.Infrastructure\Flashcards.Infrastructure.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Resources\Areas\Sets\Views\Home\" />
+	  <Folder Include="Resources\Shared\" />
+	</ItemGroup>
+
 </Project>

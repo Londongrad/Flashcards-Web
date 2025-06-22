@@ -1,7 +1,7 @@
 ﻿@model LoginViewModel;
 
 @{
-    string Title = "Login Page";
+    string Title = Localizer["LoginPage"].Value;
     ViewBag.Title = Title;
 }
 <div class="account-container">
@@ -27,7 +27,7 @@
 
             <div class="float-end">
                 <a asp-area="Account" asp-controller="Account" asp-action="VerifyEmail" class="text-decoration-none">
-                    Forgot password?
+                    @Localizer["ForgotPassword"]
                 </a>
 
             </div>
@@ -42,7 +42,7 @@
             <input type="submit" value="Login" class="btn btn-success w-100 p-2" />
 
             <p class="text-center mt-2">
-                Don't have an account? <a asp-area="Account" asp-controller="Account" asp-action="Register" class="text-decoration-none">Register</a>
+                @Localizer["NoAccount"]<a asp-area="Account" asp-controller="Account" asp-action="Register" class="text-decoration-none">@Localizer["Register"]</a>
             </p>
         </form>
     </div>

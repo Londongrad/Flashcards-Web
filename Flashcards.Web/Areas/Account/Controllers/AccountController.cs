@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Security.Claims;
 
 namespace Flashcards.Web.Areas.Account.Controllers
@@ -243,6 +244,25 @@ namespace Flashcards.Web.Areas.Account.Controllers
                 ModelState.AddModelError("", "An error occured during this process. Try again");
                 return PartialView("_DeleteAccountPartial", vm);
             }
+        }
+
+        [HttpPost]
+        public IActionResult ChangeLanguage(string lang)
+        {
+            if (lang != null)
+            {
+                var culture = new CultureInfo(lang);
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
+
+                // Добавляем cookie, чтобы запомнить выбранный язык
+                Response.Cookies.Append(
+                    ".AspNetCore.Culture",
+                    $"c={lang}|uic={lang}",
+                    new CookieOptions { Expires = DateTime.UtcNow.AddYears(1) });
+            }
+
+            return Redirect(Request.Headers.Referer.ToString());
         }
 
         #endregion [ Delete account ]

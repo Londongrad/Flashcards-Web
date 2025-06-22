@@ -5,6 +5,7 @@ using Flashcards.Web.Middleware;
 using Flashcards.Web.Services;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -20,6 +21,12 @@ namespace Flashcards.Web
                 (
                     options => options.UseSqlServer(builder.Configuration.GetConnectionString("Host"))
                 );
+
+            // Настройка локализации
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+            builder.Services.AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
 
             // Add services to the container.
             // Identity system
@@ -44,7 +51,12 @@ namespace Flashcards.Web
                 options.SlidingExpiration = true;
             });
 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews()
+                .AddDataAnnotationsLocalization(options =>
+                {
+                    options.DataAnnotationLocalizerProvider = (type, factory) =>
+                        factory.Create(typeof(SharedResource));
+                }); ;
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<ISetRepository, SetRepository>();
             builder.Services.AddScoped<IWordRepository, WordRepository>();
@@ -52,6 +64,15 @@ namespace Flashcards.Web
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var app = builder.Build();
+
+            // Поддерживаемые культуры
+            var supportedCultures = new[] { "en-US", "ru-RU" };
+            var localizationOptions = new RequestLocalizationOptions()
+                .SetDefaultCulture("en-US")
+                .AddSupportedCultures(supportedCultures)
+                .AddSupportedUICultures(supportedCultures);
+
+            app.UseRequestLocalization(localizationOptions);
 
             // Этот участок кода помог решить проблему, при которой от Ajax приходил http запрос вместо https
             var forwardedHeaderOptions = new ForwardedHeadersOptions
