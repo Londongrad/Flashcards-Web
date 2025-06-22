@@ -73,10 +73,6 @@ button.accept-policy {
     font-size: 20px;
 }
 
-    .sound-fav-btn:hover {
-        background-color: black;
-    }
-
 .toastr-top-center {
     top: 12px;
     left: 50%;

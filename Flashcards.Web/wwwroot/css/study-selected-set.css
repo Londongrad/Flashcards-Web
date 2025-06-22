@@ -196,6 +196,21 @@
     gap: 10px;
 }
 
+/*Button for settings*/
+.settings-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1050;
+    background-color: transparent;
+    border: none;
+    color: white;
+}
+
+    .settings-modal-btn:hover {
+        color: #ccc;
+    }
+
 @media (max-width: 768px) {
     .desktop-only {
         display: none !important;

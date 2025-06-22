@@ -15,6 +15,29 @@
     <h3 id="counter">1/@Model.Count</h3>
 </div>
 
+<!-- Кнопка "Settings" в правом верхнем углу -->
+<a class="btn settings-modal-btn" id="BtnSettings" data-bs-toggle="modal" data-bs-target="#settingsModal" title="Settings">
+    <i class="bi bi-gear-fill fs-4"></i>
+</a>
+
+<!-- Модальное окно -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-top-end modal-sm">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title text-light" id="settingsModalLabel">Voice Settings</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <label for="voiceSelect" class="form-label">Select voice:</label>
+                <select id="voiceSelect" class="form-select">
+                    <!-- Опции будут добавлены динамически -->
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Layout карточки -->
 <div class="quizlet-layout">
     <!-- Кнопка навигации по карточкам ("назад") для десктопа -->
@@ -26,6 +49,7 @@
 
     <div class="quizlet-center-wrapper">
         <div id="card" class="quizlet-flip-container">
+
             <div class="quizlet-top-buttons">
                 <a id="BtnSound" class="btn sound-fav-btn" title="Play sound">
                     <i class="bi bi-volume-up-fill"></i>
@@ -35,6 +59,7 @@
                     <i class="bi bi-star-fill"></i>
                 </a>
             </div>
+
             <div class="quizlet-flipper">
                 <div class="quizlet-front">
                     <p id="wordName" class="quizlet-word">@Model.FirstWord.Name</p>
@@ -80,20 +105,62 @@
         let currentIndex = 0;
         let id = words[0].Id;
 
-        // Create a variable for speechSynthesis utterance, default voice and get the card
-        let msg = null;
+        // Create a variable for current voice, default voice and get the card
         let speechSupported = false;
         const defaultVoiceName = "Microsoft Hazel - English (United Kingdom)";
         const card = document.getElementById("card");
+        let currentVoice = null;
 
         // For zoom purposes (on mobile it should be bigger)
         const isMobile = window.innerWidth < 768;
         let zoomInstance = null;
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", async function () {
+            // Проверка поддержки TTS (озвучки)
+            if ('speechSynthesis' in window && typeof SpeechSynthesisUtterance !== "undefined") {
+                // Если поддерживается, показываем кнопку
+                document.getElementById("BtnSettings").style.display = "inline-block";
+            } else {
+                // Если не поддерживается, скрываем кнопку
+                document.getElementById("BtnSettings").style.display = "none";
+            }
+
             initFlipCard();
-            initSpeechSynthesis();
-            loadWord(currentIndex);
+            await initSpeechSynthesis();
+            loadWord(currentIndex); // теперь currentVoice уже готов
+        });
+
+        if (typeof speechSynthesis !== 'undefined') {
+            speechSynthesis.onvoiceschanged = () => {
+                const voices = speechSynthesis.getVoices();
+                populateVoiceList(voices);
+            };
+        }
+
+        document.getElementById("BtnSettings").addEventListener("click", function (e) {
+            e.stopPropagation();
+            document.getElementById("settingsMenu").classList.toggle("hidden");
+        });
+
+        // Закрыть меню настроек, если клик вне его
+        document.addEventListener("click", function (event) {
+            const menu = document.getElementById("settingsMenu");
+            const settingsBtn = document.getElementById("BtnSettings");
+            if (!menu.contains(event.target) && !settingsBtn.contains(event.target)) {
+                menu.classList.add("hidden");
+            }
+        });
+
+        // Обработчик выбора голоса
+        document.getElementById("voiceSelect").addEventListener("change", function () {
+            const selectedName = this.value;
+            const voices = speechSynthesis.getVoices();
+            const selectedVoice = voices.find(v => v.name === selectedName);
+
+            if (selectedVoice) {
+                localStorage.setItem("preferredVoiceName", selectedVoice.name);
+                currentVoice = selectedVoice;
+            }
         });
 
         function initFlipCard() {
@@ -235,26 +302,75 @@
             }
         }
 
-        function initSpeechSynthesis() {
+        function waitForVoicesToLoad(timeout = 3000) {
+            return new Promise((resolve, reject) => {
+                let voices = speechSynthesis.getVoices();
+                if (voices.length) return resolve(voices);
+
+                const interval = setInterval(() => {
+                    voices = speechSynthesis.getVoices();
+                    if (voices.length) {
+                        clearInterval(interval);
+                        resolve(voices);
+                    }
+                }, 100);
+
+                setTimeout(() => {
+                    clearInterval(interval);
+                    reject("Voice loading timed out");
+                }, timeout);
+            });
+        }
+
+        async function initSpeechSynthesis() {
             if ('speechSynthesis' in window && typeof SpeechSynthesisUtterance !== "undefined") {
-                msg = new SpeechSynthesisUtterance();
                 speechSupported = true;
 
-                speechSynthesis.addEventListener('voiceschanged', function () {
-                    msg.voice = speechSynthesis.getVoices().find(voice => voice.name === defaultVoiceName);
-                    speak(words[currentIndex].Name);
-                });
+                try {
+                    const voices = await waitForVoicesToLoad();
+                    populateVoiceList(voices);
+                } catch (err) {
+                    console.warn("Failed to load voices:", err);
+                }
+            }
+        }
+
+        // Populate settings for voice selection
+        function populateVoiceList(voices) {
+            const voiceSelect = document.getElementById("voiceSelect");
+            voiceSelect.innerHTML = '';
+
+            const savedVoiceName = localStorage.getItem("preferredVoiceName");
+            let selectedVoiceName = savedVoiceName || defaultVoiceName;
+
+            voices.forEach((voice) => {
+                const option = document.createElement("option");
+                option.value = voice.name; // 👈 используем name, не индекс
+                option.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelect.appendChild(option);
+            });
+
+            const selectedVoice = voices.find(v => v.name === selectedVoiceName);
+
+            if (selectedVoice) {
+                voiceSelect.value = selectedVoice.name;
+                currentVoice = selectedVoice;
             } else {
-                console.warn("Speech synthesis is not supported.");
+                currentVoice = voices[0];
+                voiceSelect.value = voices[0].name;
             }
         }
 
         // TTS
         function speak(text) {
-            if (!speechSupported || !msg) return;
-            window.speechSynthesis.cancel();
-            msg.text = text;
-            window.speechSynthesis.speak(msg);
+            if (!speechSupported || !currentVoice) return;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.voice = currentVoice;
+
+            speechSynthesis.cancel();
+            console.log("Speaking with:", currentVoice?.name);
+            speechSynthesis.speak(utterance);
         }
 
         function handleSessionExpired() {
