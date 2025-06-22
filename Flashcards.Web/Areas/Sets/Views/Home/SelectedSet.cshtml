@@ -1,21 +1,25 @@
 ﻿@model SetViewModel
 
+@{
+    int? favCount = Model.Words?.Where(w => w.IsFavorite == true).Count();
+}
+
 <input hidden asp-for="Id" />
 
 <div class="d-flex flex-column flex-md-row justify-content-center align-items-center text-light py-3 border-secondary-subtle gap-2 text-center">
     <!-- Текст -->
     <p class="mb-0 responsive-text">
-        Name of the set is <strong id="setName" class="text-white">@Model.Name</strong>.
-        This set has in total <strong id="numWords" class="text-white">@Model.Words?.Count</strong>
-        <strong id="word" class="text-white">@(Model.Words?.Count == 1 ? "word" : "words")</strong>
+        @Localizer["SetName"]<strong id="setName" class="text-white">@Model.Name</strong>.
+        @Localizer["SetCount"]<strong id="numWords" class="text-white">@Model.Words?.Count</strong>
+        <strong id="word" class="text-white">@(Model.Words?.Count == 1 ? Localizer["Word"] : Localizer["Words"])</strong>
     </p>
 
     <!-- Кнопки справа (будут под текстом на мобилке, справа — на широких экранах) -->
     <div class="d-flex gap-2 align-items-center justify-content-center">
-        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id })', 'Edit set')" class="btn sound-fav-btn" title="Edit name of the set">
+        <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home", new { Model.Id })', '@Localizer["EditSet"]')" class="btn sound-fav-btn" title="@Localizer["EditSet"]">
             <i class="bi bi-pencil-square fs-5 text-light"></i>
         </a>
-        <button id="deleteSet" title="Delete set" class="btn sound-fav-btn">
+        <button id="deleteSet" title="@Localizer["DeleteSet"]" class="btn sound-fav-btn">
             <i class="bi bi-trash3 fs-5 text-light"></i>
         </button>
     </div>
@@ -26,19 +30,19 @@
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 py-2 button-container">
         <div class="d-flex flex-wrap justify-content-center gap-2 flex-grow-1">
             <a asp-area="Sets" asp-controller="Home" asp-action="Index" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
-                <i class="bi bi-arrow-left"></i> Back
+                <i class="bi bi-arrow-left"></i> @Localizer["Back"]
             </a>
 
             <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { Model.Id, flag = false })'" id="BtnStudy" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
-                <i class="bi bi-play-circle"></i> Study
+                <i class="bi bi-play-circle"></i> @Localizer["Study"]
             </button>
 
             <button onclick="location.href='@Url.Action("StudySelectedSet", "Home", new { id = Model.Id, flag = true })'" id="BtnStudyFav" type="button" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
-                <i class="bi bi-star"></i> Favorite [@Model.Words?.Where(w => w.IsFavorite == true).Count() words]
+                <i class="bi bi-star"></i> @Localizer["StudyFavorite"] [@favCount @(favCount == 1 ? Localizer["Word"] : Localizer["Words"])]
             </button>
 
-            <a onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { setId = Model.Id })', 'Add new word')" title="Create new word" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1">
-                <i class="bi bi-plus-lg"></i> Add
+            <a onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { setId = Model.Id })', '@Localizer["AddNewWord"]')" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-plus-lg"></i> @Localizer["Add"]
             </a>
         </div>
     </div>
@@ -64,12 +68,12 @@
                 }
                 else
                 {
-                    <p class="no-image mb-0">No image</p>
+                    <p class="no-image mb-0">@Localizer["NoImage"]</p>
                 }
             </div>
 
             <div class="quizlet-block actions">
-                <button onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { word.SetId, word.Id })', 'Edit word')" class="quizlet-btn edit">
+                <button onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { word.SetId, word.Id })', '@Localizer["EditWord"]')" class="quizlet-btn edit">
                     <i class="bi bi-pencil"></i>
                 </button>
                 <button data-id="@word.Id" class="quizlet-btn delete deleteWord">
@@ -78,7 +82,7 @@
             </div>
         </div>
     }
-    <button id="scrollToBottomBtn" title="Scroll to bottom">
+    <button id="scrollToBottomBtn" title="@Localizer["Scroll"]">
         <i class="bi bi-arrow-down-short"></i>
     </button>
 </div>
@@ -131,7 +135,7 @@
                 var id = $(this).data("id");
                 var card = $(this).closest(".quizlet-card");
 
-                bootbox.confirm("Do you really wanna delete this word?", function(result) {
+                bootbox.confirm("@Localizer["BootBoxDeleteWord"]", function(result) {
                     if(result){
                         $.ajax({
                             url: '@Url.Action("DeleteWord", "Home")',
@@ -141,9 +145,9 @@
                                 count -= 1;
 
                                 $("#numWords").text(count);
-                                $("#word").text(count === 1 ? "word" : "words");
+                                $("#word").text(count === 1 ? "@Localizer["Word"]" : "@Localizer["Words"]");
 
-                                toastr.success("The word has been successfully deleted");
+                                toastr.success("@Localizer["ToastrDeleteWord"]");
 
                                 card.css('background','tomato');
                                 card.fadeOut(800, function(){
@@ -156,13 +160,13 @@
                             error: function (xhr) {
                                 if (xhr.status === 401) {
                                     // User was logged out — show warning and redirect
-                                    toastr.warning("You have been logged out. Redirecting to the login page...");
+                                    toastr.warning("@Localizer["ToastrLogout"]");
                                     setTimeout(function (res) {
                                         window.location.href = logoutUrl;
                                     }, 2000);
                                 } else {
                                     // Optional: handle other errors
-                                    toastr.error("An error occurred while trying to delete the set.");
+                                    toastr.error("@Localizer["ToastrDeleteWordError"]");
                                 }
                             }
                         });
@@ -171,7 +175,7 @@
             });
 
             $("#deleteSet").on("click", function () {
-                bootbox.confirm("Do you really wanna delete this set?", function(result) {
+                bootbox.confirm("@Localizer["BootBoxDeleteSet"]", function(result) {
                     if(result){
 
                         // Disable both "Study" buttons to prevent premature navigation
@@ -193,13 +197,13 @@
 
                                 if (xhr.status === 401) {
                                     // User was logged out — show warning and redirect
-                                    toastr.warning("You have been logged out. Redirecting to the login page...");
+                                    toastr.warning("@Localizer["ToastrLogout"]");
                                     setTimeout(function (res) {
                                         window.location.href = logoutUrl;
                                     }, 2000);
                                 } else {
                                     // General error handling
-                                    toastr.error("An error occurred while trying to delete the set.");
+                                    toastr.error("@Localizer["ToastrDeleteSetError"]");
                                 }
                             }
                         });

@@ -117,10 +117,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ImageURL" xml:space="preserve">
-    <value>Image URL</value>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
   </data>
-  <data name="Save" xml:space="preserve">
-    <value>Save</value>
+  <data name="AddNewWord" xml:space="preserve">
+    <value>Add new word</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="BootBoxDeleteSet" xml:space="preserve">
+    <value>Do you really wanna delete this set?</value>
+  </data>
+  <data name="BootBoxDeleteWord" xml:space="preserve">
+    <value>Do you really wanna delete this word?</value>
+  </data>
+  <data name="DeleteSet" xml:space="preserve">
+    <value>Delete set</value>
+  </data>
+  <data name="EditSet" xml:space="preserve">
+    <value>Edit set</value>
+  </data>
+  <data name="EditWord" xml:space="preserve">
+    <value>Edit word</value>
+  </data>
+  <data name="NoImage" xml:space="preserve">
+    <value>No image</value>
+  </data>
+  <data name="Scroll" xml:space="preserve">
+    <value>Scroll to bottom</value>
+  </data>
+  <data name="SetCount" xml:space="preserve">
+    <value>This set has in total </value>
+  </data>
+  <data name="SetName" xml:space="preserve">
+    <value>Name of the set is </value>
+  </data>
+  <data name="Study" xml:space="preserve">
+    <value>Study</value>
+  </data>
+  <data name="StudyFavorite" xml:space="preserve">
+    <value>Favorite</value>
+  </data>
+  <data name="ToastrDeleteSet" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ToastrDeleteSetError" xml:space="preserve">
+    <value>An error occurred while trying to delete the set.</value>
+  </data>
+  <data name="ToastrDeleteWord" xml:space="preserve">
+    <value>The word has been successfully deleted</value>
+  </data>
+  <data name="ToastrDeleteWordError" xml:space="preserve">
+    <value>An error occurred while trying to delete the word.</value>
+  </data>
+  <data name="ToastrLogout" xml:space="preserve">
+    <value>You have been logged out. Redirecting to the login page...</value>
+  </data>
+  <data name="Words" xml:space="preserve">
+    <value>words</value>
   </data>
 </root>

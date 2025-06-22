@@ -6,10 +6,9 @@ namespace Flashcards.Web.Areas.Sets.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Name is required.")]
-        [Display(Name = "Name of the set")]
-        [MaxLength(20, ErrorMessage = "The name of the set must be with a maximum length of 20 characters")]
-        //[Remote(action: "CheckSet", controller: "Home", areaName: "Sets", HttpMethod = "POST", AdditionalFields = nameof(Id), ErrorMessage = "Set with this name already exists")]
+        [Required(ErrorMessage = "RequiredMessage")]
+        [Display(Name = "SetName")]
+        [StringLength(20, MinimumLength = 1, ErrorMessage = "StringLengthMessage")]
         public string Name { get; set; } = null!;
 
         /// <summary>This property exists in order to avoid unnecessary calls to DB, when trying to rename set with the same value</summary>

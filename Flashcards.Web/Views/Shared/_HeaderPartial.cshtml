@@ -55,7 +55,7 @@
                         <li>
                             <a asp-area="Account" asp-controller="Account" asp-action="Settings"
                                class="dropdown-item d-flex align-items-center gap-2 responsive-text">
-                                <i class="bi bi-gear"></i> Settings
+                                <i class="bi bi-gear"></i> @Localizer["Settings"]
                             </a>
                         </li>
 
@@ -64,7 +64,7 @@
                             <form method="post" asp-area="Account" asp-controller="Account" asp-action="Logout">
                                 <button type="submit"
                                         class="dropdown-item d-flex align-items-center gap-2 text-danger responsive-text">
-                                    <i class="bi bi-x-circle"></i> Logout
+                                    <i class="bi bi-x-circle"></i> @Localizer["Logout"]
                                 </button>
                             </form>
                         </li>

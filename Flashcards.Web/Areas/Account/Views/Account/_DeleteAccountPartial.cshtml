@@ -9,7 +9,7 @@
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <span class="text-danger">Be aware that you won't be able to restore it. If you wish to proceed enter your password.</span>
+        <span class="text-danger">@SharedLocalizer["MessageUponDeleteAcc"]</span>
 
         <div class="my-3 text-center">
             <label asp-for="@Model.Password" class="form-label"></label>
@@ -19,7 +19,7 @@
 
         <div class="text-center">
             <button type="submit" class="btn btn-submit">
-                Delete
+                @SharedLocalizer["Delete"]
             </button>
         </div>
     </div>

@@ -1,7 +1,7 @@
 ﻿@model VerifyEmailViewModel;
 
 @{
-    string Title = "Verify Email";
+    string Title = Localizer["Title"].Value;
     ViewBag.Title = Title;
 }
 
@@ -22,10 +22,10 @@
             </div>
 
 
-            <input type="submit" value="Verify" class="btn btn-success w-100 p-2" />
+            <input type="submit" value="@Localizer["Verify"]" class="btn btn-success w-100 p-2" />
 
             <div class="text-center mt-2">
-                <a asp-area="Account" asp-controller="Account" asp-action="Login" class="text-decoration-none mt-3">Back</a>
+                <a asp-area="Account" asp-controller="Account" asp-action="Login" class="text-decoration-none mt-3">@Localizer["Back"]</a>
             </div>
 
         </form>

@@ -5,24 +5,25 @@ namespace Flashcards.Web.Areas.Account.Models
 {
     public class RegisterViewModel
     {
-        [Required(ErrorMessage = "Login is required.")]
+        [Required(ErrorMessage = "RequiredMessage")]
         [Display(Name = "Login")]
         public string? Username { get; set; }
 
-        [Required(ErrorMessage = "Email is required.")]
+        [Required(ErrorMessage = "RequiredMessage")]
         [EmailAddress]
+        [Display (Name = "Email")]
         public string? Email { get; set; }
 
-        [Required(ErrorMessage = "Password is required.")]
-        [StringLength(20, MinimumLength = 6, ErrorMessage = "The {0} must be at {2} and at max {1} characters long.")]
+        [Required(ErrorMessage = "RequiredMessage")]
+        [StringLength(20, MinimumLength = 6, ErrorMessage = "StringLengthMessage")]
         [DataType(DataType.Password)]
         [DisplayName("Password")]
-        [Compare("ConfirmPassword", ErrorMessage = "Password does not match.")]
+        [Compare("ConfirmPassword", ErrorMessage = "ErrorForPassword")]
         public string? Password { get; set; }
 
-        [Required(ErrorMessage = "Password is required.")]
+        [Required(ErrorMessage = "RequiredMessage")]
         [DataType(DataType.Password)]
-        [DisplayName("Confirm password")]
+        [DisplayName("ConfirmPassword")]
         public string? ConfirmPassword { get; set; }
     }
 }

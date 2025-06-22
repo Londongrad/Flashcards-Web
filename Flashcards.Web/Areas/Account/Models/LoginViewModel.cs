@@ -4,15 +4,16 @@ namespace Flashcards.Web.Areas.Account.Models
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "Login is required.")]
+        [Required(ErrorMessage = "RequiredMessage")]
         [Display(Name = "Login")]
         public string? Username { get; set; }
 
-        [Required(ErrorMessage = "Password is required.")]
+        [Required(ErrorMessage = "RequiredMessage")]
         [DataType(DataType.Password)]
+        [Display (Name = "Password")]
         public string? Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "RememberMe")]
         public bool RememberMe { get; set; }
     }
 }

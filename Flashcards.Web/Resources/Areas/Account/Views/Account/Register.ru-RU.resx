@@ -117,7 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Save" xml:space="preserve">
-    <value>Сохранить</value>
+  <data name="Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="HaveAccount" xml:space="preserve">
+    <value>Уже есть аккаунт? </value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Войти</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Зарегестрировать</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Страница регистрации</value>
   </data>
 </root>

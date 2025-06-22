@@ -7,7 +7,7 @@
 <!-- Кнопка "назад к предыдущему представлению" для десктопа-->
 <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.FirstWord.SetId"
    class="back-button-fixed mobile-hidden" id="BtnBack">
-    <i class="bi bi-arrow-left-circle"></i> Back to the set
+    <i class="bi bi-arrow-left-circle"></i> @Localizer["Back"] 
 </a>
 
 <!-- Счётчик -->
@@ -25,11 +25,11 @@
     <div class="modal-dialog modal-dialog-top-end modal-sm">
         <div class="modal-content bg-dark text-white">
             <div class="modal-header">
-                <h5 class="modal-title text-light" id="settingsModalLabel">Voice Settings</h5>
+                <h5 class="modal-title text-light" id="settingsModalLabel">@Localizer["VoiceSettings"]</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                <label for="voiceSelect" class="form-label">Select voice:</label>
+                <label for="voiceSelect" class="form-label">@Localizer["SelectVoice"]</label>
                 <select id="voiceSelect" class="form-select">
                     <!-- Опции будут добавлены динамически -->
                 </select>
@@ -51,10 +51,10 @@
         <div id="card" class="quizlet-flip-container">
 
             <div class="quizlet-top-buttons">
-                <a id="BtnSound" class="btn sound-fav-btn" title="Play sound">
+                <a id="BtnSound" class="btn sound-fav-btn" title="@Localizer["PlaySound"]">
                     <i class="bi bi-volume-up-fill"></i>
                 </a>
-                <a id="BtnFav" class="btn sound-fav-btn" title="Favorite"
+                <a id="BtnFav" class="btn sound-fav-btn" title="@Localizer["Favorite"]"
                    style="background-color: @(!Model.FirstWord.IsFavorite ? "transparent" : "yellow")">
                     <i class="bi bi-star-fill"></i>
                 </a>
@@ -94,7 +94,7 @@
 <div class="mobile-back-wrapper mobile-only">
     <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.FirstWord.SetId"
        class="back-button-bottom">
-        <i class="bi bi-arrow-left-circle"></i> Back to the set
+        <i class="bi bi-arrow-left-circle"></i> @Localizer["Back"]
     </a>
 </div>
 
@@ -330,7 +330,7 @@
                     const voices = await waitForVoicesToLoad();
                     populateVoiceList(voices);
                 } catch (err) {
-                    console.warn("Failed to load voices:", err);
+                    console.warn("@Localizer["LoadVoicesError"]", err);
                 }
             }
         }
@@ -345,7 +345,7 @@
 
             voices.forEach((voice) => {
                 const option = document.createElement("option");
-                option.value = voice.name; // 👈 используем name, не индекс
+                option.value = voice.name;
                 option.textContent = `${voice.name} (${voice.lang})`;
                 voiceSelect.appendChild(option);
             });
@@ -369,12 +369,11 @@
             utterance.voice = currentVoice;
 
             speechSynthesis.cancel();
-            console.log("Speaking with:", currentVoice?.name);
             speechSynthesis.speak(utterance);
         }
 
         function handleSessionExpired() {
-            toastr.warning("You have been logged out. Redirecting to the login page...");
+            toastr.warning("@Localizer["ToastrLogout"]");
             setTimeout(() => {
                 window.location.href = "/Account/Account/Login";
             }, 2000);
@@ -396,11 +395,11 @@
             })
             .catch(() => {
                 console.error("Auth check failed:", err);
-                toastr.error("Lost connection to server. Redirecting...");
+                toastr.error("@Localizer["LostConn"]");
                 setTimeout(() => {
                     window.location.href = "/Account/Account/Login";
                 }, 2000);
             });
-        }, 5000); // every 30 seconds
+        }, 30000); // every 30 seconds
     </script>
 }

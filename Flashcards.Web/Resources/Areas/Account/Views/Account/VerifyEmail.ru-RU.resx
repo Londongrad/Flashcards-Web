@@ -117,10 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ImageURL" xml:space="preserve">
-    <value>Путь до картинки</value>
+  <data name="Back" xml:space="preserve">
+    <value>Назад</value>
   </data>
-  <data name="Save" xml:space="preserve">
-    <value>Сохранить</value>
+  <data name="Title" xml:space="preserve">
+    <value>Подтвертить почту</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>Подтвердить</value>
   </data>
 </root>

@@ -117,8 +117,41 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Подтвердите пароль</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Почта</value>
+  </data>
+  <data name="ErrorForPassword" xml:space="preserve">
+    <value>Пароли не совпадают</value>
+  </data>
   <data name="ImageURL" xml:space="preserve">
     <value>Путь до картинки</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Логин</value>
+  </data>
+  <data name="MessageUponDeleteAcc" xml:space="preserve">
+    <value>Учтите, что после удаления восстановить аккаунт невозможно. Для продолжения введите пароль.</value>
+  </data>
+  <data name="SetName" xml:space="preserve">
+    <value>Название набора</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>Новый пароль</value>
+  </data>
+  <data name="OldPassword" xml:space="preserve">
+    <value>Старый пароль</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>Запомнить меня?</value>
   </data>
   <data name="RequiredMessage" xml:space="preserve">
     <value>Заполните поле</value>
@@ -128,5 +161,53 @@
   </data>
   <data name="StringLengthMessage" xml:space="preserve">
     <value>Поле {0} должно быть от {2} до {1} символов.</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Подтвердить</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Логин</value>
+  </data>
+  <data name="WordName" xml:space="preserve">
+    <value>Название слова</value>
+  </data>
+  <data name="WordDefinition" xml:space="preserve">
+    <value>Определение слова</value>
+  </data>
+  <data name="CreateSet" xml:space="preserve">
+    <value>Создать набор</value>
+  </data>
+  <data name="UpdateSet" xml:space="preserve">
+    <value>Изменить набор</value>
+  </data>
+  <data name="CreateWord" xml:space="preserve">
+    <value>Добавить слово</value>
+  </data>
+  <data name="UpdateWord" xml:space="preserve">
+    <value>Изменить слово</value>
+  </data>
+  <data name="ToastrDeleteWordSuccess" xml:space="preserve">
+    <value>Слово было успешно удалено</value>
+  </data>
+  <data name="ToastrDeleteSetSuccess" xml:space="preserve">
+    <value>Набор был успешно удален</value>
+  </data>
+  <data name="WordExists" xml:space="preserve">
+    <value>Такое слово уже существует</value>
+  </data>
+  <data name="ToastrNewWordAdded" xml:space="preserve">
+    <value>Новое слово было успешно добавлено</value>
+  </data>
+  <data name="ToastrWordUpdated" xml:space="preserve">
+    <value>Слово было успешно обновлено</value>
+  </data>
+  <data name="SetExists" xml:space="preserve">
+    <value>Такой набор уже существует</value>
+  </data>
+  <data name="SameSet" xml:space="preserve">
+    <value>Одно и тоже название</value>
+  </data>
+  <data name="ToastrNewSetAdded" xml:space="preserve">
+    <value>Новый набор был успешно добавлен</value>
   </data>
 </root>

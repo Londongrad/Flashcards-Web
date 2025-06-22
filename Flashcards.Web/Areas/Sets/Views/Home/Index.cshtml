@@ -1,6 +1,6 @@
 ﻿@model List<SetSummaryViewModel>
 @{
-    ViewData["Title"] = "Flashcards";
+    ViewData["Title"] = Localizer["Flashcards"];
 }
 
 <div class="py-3 m-1">
@@ -9,10 +9,10 @@
         <div class="empty-library-container">
             <div class="empty-card">
                 <img src="/images/empty.png" alt="No sets" class="empty-illustration">
-                <h2>Your library is empty</h2>
-                <p class="text-light">You don't have any sets yet. Click the button below to create one.</p>
-                <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home")', 'New set')" title="Create new set" class="btn btn-custom-dark">
-                    <i class="bi bi-plus-circle"></i> Add New Set
+                <h2>@Localizer["EmptyLib"]</h2>
+                <p class="text-light">@Localizer["EmptyUser"]</p>
+                <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home")', '@Localizer["NewSet"]')" class="btn btn-custom-dark">
+                    <i class="bi bi-plus-circle"></i> @Localizer["AddNewSet"]
                 </a>
             </div>
         </div>
@@ -20,9 +20,9 @@
     else
     {
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="section-title mb-0">My Sets</h2>
-            <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home")', 'New set')" title="Create new set" class="btn btn-custom-dark">
-                <i class="bi bi-plus-lg"></i> Add new set
+            <h2 class="section-title mb-0">@Localizer["MySets"]</h2>
+            <a onclick="showInPopup('@Url.Action("AddOrEditSet", "Home")', '@Localizer["NewSet"]')" class="btn btn-custom-dark">
+                <i class="bi bi-plus-lg"></i> @Localizer["AddNewSet"]
             </a>
         </div>
 
@@ -41,7 +41,7 @@
                             <div class="set-info">
                                 <div class="set-title">@set.Name</div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div>@set.WordCount termins</div>
+                                    <div>@set.WordCount @Localizer["Termins"]</div>
 
                                     @if (set.HasImages)
                                     {

@@ -117,97 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ConfirmPassword" xml:space="preserve">
-    <value>Confirm password</value>
+  <data name="Back" xml:space="preserve">
+    <value>Назад к набору</value>
   </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Delete</value>
+  <data name="Favorite" xml:space="preserve">
+    <value>В избранное</value>
   </data>
-  <data name="Email" xml:space="preserve">
-    <value>Email</value>
+  <data name="LoadVoicesError" xml:space="preserve">
+    <value>Ошибка при загрузке голосов:</value>
   </data>
-  <data name="ErrorForPassword" xml:space="preserve">
-    <value>Password does not match.</value>
+  <data name="LostConn" xml:space="preserve">
+    <value>Потеря соединения с сервером. Перенаправление...</value>
   </data>
-  <data name="ImageURL" xml:space="preserve">
-    <value>Image URL</value>
+  <data name="PlaySound" xml:space="preserve">
+    <value>Озвучить слово</value>
   </data>
-  <data name="Login" xml:space="preserve">
-    <value>Login</value>
+  <data name="SelectVoice" xml:space="preserve">
+    <value>Выбрать голос:</value>
   </data>
-  <data name="MessageUponDeleteAcc" xml:space="preserve">
-    <value>Be aware that you won't be able to restore it. If you wish to proceed enter your password.</value>
+  <data name="ToastrLogout" xml:space="preserve">
+    <value>Вы вышли из системы. Выполняется перенаправление...</value>
   </data>
-  <data name="SetName" xml:space="preserve">
-    <value>Name of the set</value>
-  </data>
-  <data name="NewPassword" xml:space="preserve">
-    <value>New password</value>
-  </data>
-  <data name="OldPassword" xml:space="preserve">
-    <value>Old password</value>
-  </data>
-  <data name="Password" xml:space="preserve">
-    <value>Password</value>
-  </data>
-  <data name="RememberMe" xml:space="preserve">
-    <value>Remember me?</value>
-  </data>
-  <data name="RequiredMessage" xml:space="preserve">
-    <value>Field is required</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="StringLengthMessage" xml:space="preserve">
-    <value>The {0} must be at least {2} and at max {1} characters long.</value>
-  </data>
-  <data name="Submit" xml:space="preserve">
-    <value>Submit</value>
-  </data>
-  <data name="Username" xml:space="preserve">
-    <value>Username</value>
-  </data>
-  <data name="WordName" xml:space="preserve">
-    <value>Name of the word</value>
-  </data>
-  <data name="WordDefinition" xml:space="preserve">
-    <value>Definition of the word</value>
-  </data>
-  <data name="CreateSet" xml:space="preserve">
-    <value>Create set</value>
-  </data>
-  <data name="UpdateSet" xml:space="preserve">
-    <value>Update set</value>
-  </data>
-  <data name="CreateWord" xml:space="preserve">
-    <value>Add word</value>
-  </data>
-  <data name="UpdateWord" xml:space="preserve">
-    <value>Update word</value>
-  </data>
-  <data name="ToastrDeleteWordSuccess" xml:space="preserve">
-    <value>The word has been successfully deleted</value>
-  </data>
-  <data name="ToastrDeleteSetSuccess" xml:space="preserve">
-    <value>The set has been successfully deleted</value>
-  </data>
-  <data name="WordExists" xml:space="preserve">
-    <value>Word with this name already exists</value>
-  </data>
-  <data name="ToastrNewWordAdded" xml:space="preserve">
-    <value>New word has been successfully added</value>
-  </data>
-  <data name="ToastrWordUpdated" xml:space="preserve">
-    <value>The word has been successfully updated</value>
-  </data>
-  <data name="SetExists" xml:space="preserve">
-    <value>Set with this name already exists</value>
-  </data>
-  <data name="SameSet" xml:space="preserve">
-    <value>The name for the set</value>
-  </data>
-  <data name="ToastrNewSetAdded" xml:space="preserve">
-    <value>New set has been successfully created</value>
+  <data name="VoiceSettings" xml:space="preserve">
+    <value>Настройки голоса</value>
   </data>
 </root>

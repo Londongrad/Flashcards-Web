@@ -5,16 +5,18 @@ using Flashcards.Web.Common;
 using Flashcards.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.Text.Json;
 
 namespace Flashcards.Web.Areas.Sets.Controllers
 {
     [Authorize]
     [Area("Sets")]
-    public class HomeController(DataManager dataManager, IMapper mapper) : BaseCotroller
+    public class HomeController(DataManager dataManager, IMapper mapper, IStringLocalizer<SharedResource> localizer) : BaseCotroller
     {
         private readonly DataManager _dataManager = dataManager;
         private readonly IMapper _mapper = mapper;
+        private readonly IStringLocalizer<SharedResource> _localizer = localizer;
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -129,13 +131,13 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
             if (string.Equals(set.OldName, set.Name, StringComparison.OrdinalIgnoreCase))
             {
-                ModelState.AddModelError("", "The same name for the set");
+                ModelState.AddModelError("", _localizer["SameSet"]);
                 return PartialView("_AddOrEditSetPartial", set);
             }
 
             if (await _dataManager.SetRepository.IsNotUnique(set.Name, set.Id, userId))
             {
-                ModelState.AddModelError("", "Set with this name already exists");
+                ModelState.AddModelError("", _localizer["SetExists"]);
                 return PartialView("_AddOrEditSetPartial", set);
             }
 
@@ -143,7 +145,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             {
                 set.UserId = userId;
                 await _dataManager.SetRepository.AddAsync(_mapper.Map<Set>(set));
-                TempData["success"] = "New set has been successfully created";
+                TempData["success"] = _localizer["ToastrNewSetAdded"].Value;
                 return Json(new { success = true, isNew = true });
             }
             else
@@ -199,20 +201,20 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
             if (await _dataManager.WordRepository.IsNotUnique(word.Name, word.Id, userId))
             {
-                ModelState.AddModelError("", "Word with this name already exists");
+                ModelState.AddModelError("", _localizer["WordExists"]);
                 return PartialView("_AddOrEditWordPartial", word);
             }
 
             if (word.Id == 0)
             {
                 await _dataManager.WordRepository.AddAsync(_mapper.Map<Word>(word));
-                TempData["success"] = "New word has been successfully added";
+                TempData["success"] = _localizer["ToastrNewWordAdded"].Value;
                 return Json(new { success = true });
             }
             else
             {
                 await _dataManager.WordRepository.UpdateAsync(_mapper.Map<Word>(word));
-                TempData["success"] = "The word has been successfully updated";
+                TempData["success"] = _localizer["ToastrWordUpdated"].Value;
                 return Json(new { success = true });
             }
         }
@@ -230,7 +232,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                 return BadRequest();
 
             await _dataManager.WordRepository.DeleteAsync(id);
-            return Json(new { message = "The word has been successfully deleted" });
+            return Json(new { message = _localizer["ToastrDeleteWordSuccess"] });
         }
 
         [HttpPost]
@@ -249,7 +251,7 @@ namespace Flashcards.Web.Areas.Sets.Controllers
 
             await _dataManager.SetRepository.DeleteAsync(id, userId);
 
-            TempData["success"] = "The set has been successfully deleted";
+            TempData["success"] = _localizer["ToastrDeleteSetSuccess"].Value;
 
             return Json(new { success = true });
         }

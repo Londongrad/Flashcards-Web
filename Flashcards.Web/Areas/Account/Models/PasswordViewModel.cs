@@ -5,19 +5,19 @@ namespace Flashcards.Web.Areas.Account.Models
 {
     public class PasswordViewModel
     {
-        [Required(ErrorMessage = "Email is required.")]
+        [Required(ErrorMessage = "RequiredMessage")]
         [EmailAddress]
         public string? Email { get; set; }
 
-        [Required(ErrorMessage = "Password is required.")]
-        [StringLength(20, MinimumLength = 6, ErrorMessage = "The {0} must be at {2} and at max {1} characters long.")]
+        [Required(ErrorMessage = "RequiredMessage")]
+        [StringLength(20, MinimumLength = 6, ErrorMessage = "StringLengthMessage")]
         [DataType(DataType.Password)]
-        [Compare("ConfirmNewPassword", ErrorMessage = "Password does not match.")]
+        [Compare("ConfirmNewPassword", ErrorMessage = "ErrorForPassword")]
         public string? NewPassword { get; set; }
 
-        [Required(ErrorMessage = "Password is required.")]
+        [Required(ErrorMessage = "RequiredMessage")]
         [DataType(DataType.Password)]
-        [DisplayName("Confirm new password")]
+        [DisplayName("ConfirmPassword")]
         public string? ConfirmNewPassword { get; set; }
     }
 }

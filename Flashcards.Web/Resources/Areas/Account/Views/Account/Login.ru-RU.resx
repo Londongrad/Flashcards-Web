@@ -117,19 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ForgotPassword" xml:space="preserve">
-    <value>Забыли пароль?</value>
-  </data>
-  <data name="KickedOut" xml:space="preserve">
-    <value>Вы вышли из системы. В вашу учетную запись был выполнен вход в другом месте</value>
-  </data>
   <data name="LoginPage" xml:space="preserve">
     <value>Страница входа</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Забыли пароль?</value>
   </data>
   <data name="NoAccount" xml:space="preserve">
     <value>Нет аккаунта?</value>
   </data>
+  <data name="KickedOut" xml:space="preserve">
+    <value>Вы вышли из системы. В вашу учетную запись был выполнен вход в другом месте</value>
+  </data>
   <data name="Register" xml:space="preserve">
-    <value>Зарегестрировать</value>
+    <value> Зарегестрировать</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Войти</value>
   </data>
 </root>

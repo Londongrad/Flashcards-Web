@@ -6,6 +6,7 @@ namespace Flashcards.Web.Areas.Account.Models
     {
         [StringLength(20, MinimumLength = 6, ErrorMessage = "StringLengthMessage")]
         [Required(ErrorMessage = "RequiredMessage")]
+        [Display (Name = "Email")]
         public string? Email { get; set; }
     }
 }

@@ -7,16 +7,15 @@ namespace Flashcards.Web.Areas.Sets.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Name is required.")]
-        [Display(Name = "Name of the word")]
-        //[Remote(action: "CheckWord", controller: "Home", areaName: "Sets", HttpMethod = "POST", AdditionalFields = nameof(Id), ErrorMessage = "Word with this name already exists")]
+        [Required(ErrorMessage = "RequiredMessage")]
+        [Display(Name = "WordName")]
         public string Name { get; set; } = "";
 
-        [Required(ErrorMessage = "Definition is required.")]
-        [Display(Name = "Definition of the word")]
+        [Required(ErrorMessage = "RequiredMessage")]
+        [Display(Name = "WordDefinition")]
         public string Definition { get; set; } = "";
 
-        [Display(Name = "Image URL")]
+        [Display(Name = "ImageURL")]
         [ValidateNever]
         public string? ImagePath { get; set; }
 

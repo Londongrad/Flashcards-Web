@@ -32,7 +32,7 @@
 
         <div class="row">
             <div class="col-6 m-auto">
-                <button type="submit" class="m-auto btn btn-primary form-control border-black border-1 text-white">@(Model.Id == 0 ? "Add word" : "Update word")</button>
+                <button type="submit" class="m-auto btn btn-primary form-control border-black border-1 text-white">@(Model.Id == 0 ? SharedLocalizer["CreateWord"] : SharedLocalizer["UpdateWord"])</button>
             </div>
         </div>
     </div>
