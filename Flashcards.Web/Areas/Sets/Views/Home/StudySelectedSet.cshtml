@@ -1,11 +1,11 @@
-﻿@model CurrentWordViewModel
+﻿@model StudySetViewModel
 
 @{
     Layout = "_LayoutForStudyWords";
 }
 
 <!-- Кнопка "назад к предыдущему представлению" для десктопа-->
-<a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.CurrentWord.SetId"
+<a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.FirstWord.SetId"
    class="back-button-fixed mobile-hidden" id="BtnBack">
     <i class="bi bi-arrow-left-circle"></i> Back to the set
 </a>
@@ -31,17 +31,17 @@
                     <i class="bi bi-volume-up-fill"></i>
                 </a>
                 <a id="BtnFav" class="btn sound-fav-btn" title="Favorite"
-                   style="background-color: @(!Model.CurrentWord.IsFavorite ? "transparent" : "yellow")">
+                   style="background-color: @(!Model.FirstWord.IsFavorite ? "transparent" : "yellow")">
                     <i class="bi bi-star-fill"></i>
                 </a>
             </div>
             <div class="quizlet-flipper">
                 <div class="quizlet-front">
-                    <p id="wordName" class="quizlet-word">@Model.CurrentWord.Name</p>
+                    <p id="wordName" class="quizlet-word">@Model.FirstWord.Name</p>
                 </div>
                 <div class="quizlet-back">
-                    <p id="wordDefinition" class="quizlet-definition responsive-text">@Model.CurrentWord.Definition</p>
-                    <img class="zoom-img" id="wordImage" src="@Model.CurrentWord.ImagePath" alt="Image" />
+                    <p id="wordDefinition" class="quizlet-definition responsive-text">@Model.FirstWord.Definition</p>
+                    <img class="zoom-img" id="wordImage" src="@Model.FirstWord.ImagePath" alt="Image" />
                 </div>
             </div>
         </div>
@@ -67,23 +67,38 @@
 
 <!-- Кнопка "назад к предыдущему представлению" для мобилки-->
 <div class="mobile-back-wrapper mobile-only">
-    <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.CurrentWord.SetId"
+    <a asp-area="Sets" asp-controller="Home" asp-action="SelectedSet" asp-route-id="@Model.FirstWord.SetId"
        class="back-button-bottom">
         <i class="bi bi-arrow-left-circle"></i> Back to the set
     </a>
 </div>
 
+
 @section Scripts {
-    @* Flip the card when clicked *@
     <script>
+        const words = JSON.parse('@Html.Raw(Model.WordsJson)');
+        let currentIndex = 0;
+        let id = words[0].Id;
+
+        // Create a variable for speechSynthesis utterance, default voice and get the card
+        let msg = null;
+        let speechSupported = false;
+        const defaultVoiceName = "Microsoft Hazel - English (United Kingdom)";
+        const card = document.getElementById("card");
+
+        // For zoom purposes (on mobile it should be bigger)
+        const isMobile = window.innerWidth < 768;
         let zoomInstance = null;
-        let isMobile = false;
 
         document.addEventListener("DOMContentLoaded", function () {
-            const card = document.getElementById("card");
+            initFlipCard();
+            initSpeechSynthesis();
+            loadWord(currentIndex);
+        });
+
+        function initFlipCard() {
             const topButtons = card.querySelector(".quizlet-top-buttons");
             const wordImage = document.getElementById("wordImage");
-            isMobile = window.innerWidth < 768;
 
             let isDragging = false;
             let mouseDown = false;
@@ -118,169 +133,24 @@
 
             if (wordImage) {
                 wordImage.addEventListener("click", function (e) {
-                    e.stopPropagation(); // не переворачивать обратно
-
-                    // Если зум уже создан, просто открыть его
+                    e.stopPropagation();
                     if (zoomInstance) {
                         zoomInstance.open({ target: wordImage });
                     }
                 });
             }
-        });
 
-        function flipCard(card) {
-            const wasFlipped = card.classList.contains("flipped");
-            card.classList.toggle("flipped");
-
-            if (!wasFlipped) {
-                // Дождаться отрисовки после transform
-                setTimeout(() => {
-                    const zoomTarget = document.querySelector('.quizlet-back .zoom-img');
-
-                    if (zoomTarget) {
-                        if (!zoomInstance) {
-                            zoomInstance = mediumZoom(zoomTarget, {
-                                margin: isMobile ? 5 : 50,
-                                background: "rgba(0, 0, 0, 0.7)"
-                            });
-                        } else {
-                            zoomInstance.attach(zoomTarget);
-                        }
-                    }
-                }, 350); // таймер чуть больше, чем CSS transition (300ms)
-            }
-        }
-    </script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            // Create a variable for speechSynthesis utterance
-            let msg = null;
-            let speechSupported = false;
-
-            // Index of the currently displayed word
-            let currentIndex = 0;
-
-            // Total number of words (from server-side model)
-            const totalCount = @Model.Count;
-
-            // ID of the current word (used for favorite action)
-            let id = @Model.CurrentWord.Id;
-
-            // The initial word to be spoken (fetched from the server-side model)
-            const firstText = "@Model.CurrentWord.Name";
-
-            // The initial word's image to display or hide
-            const firstImageUrl = "@Model.CurrentWord.ImagePath";
-
-            // Flashcard
-            const card = document.getElementById("card");
-
-            // Default voice name for speech synthesis
-            const defaultVoiceName = "Microsoft Hazel - English (United Kingdom)";
-
-            // Проверка поддержки SpeechSynthesis
-            if ('speechSynthesis' in window && typeof SpeechSynthesisUtterance !== "undefined") {
-                msg = new SpeechSynthesisUtterance();
-                speechSupported = true;
-
-                // Установка голоса
-                speechSynthesis.addEventListener('voiceschanged', function () {
-                    msg.voice = speechSynthesis.getVoices().find(voice => voice.name === defaultVoiceName);
-                    // Speak the initial word
-                    speak(firstText);
-                });
-            } else {
-                console.warn("Speech synthesis is not supported.");
-            }
-
-            imageToShowOrHide(firstImageUrl);
-
-            // Function to speak a given text
-            function speak(text) {
-                if (!speechSupported || !msg) return;
-                // Cancel any ongoing speech
-                window.speechSynthesis.cancel();
-
-                // Set the text to be spoken
-                msg.text = text;
-
-                // Start speaking
-                window.speechSynthesis.speak(msg);
-            }
-
-            function imageToShowOrHide(url){
-                if (url) {
-                    $("#wordImage").attr("src", url).show();
-                } else {
-                    $("#wordImage").hide();
-                }
-            }
-
-            // Disable "Next" button if we're already at the last/first word
-            $("#BtnNext, #BtnNextMobile").prop("disabled", currentIndex === totalCount - 1);
-            $("#BtnPrev, #BtnPrevMobile").prop("disabled", currentIndex === 0);
-
-            // Function to load a word by index using AJAX
-            function loadWord(index) {
-                $.ajax({
-                    url: '@Url.Action("SwitchWord", "Home")',
-                    type: 'GET',
-                    data: { index: index },
-                    success: function (data) {
-                        // If the card is flipped, flip it back
-                        if (card.classList.contains("flipped")) {
-                            card.classList.remove("flipped");
-                        }
-
-                        // Update the favorite button's background color
-                        $("#BtnFav").css("background-color", data.isFavorite ? "yellow" : "transparent");
-
-                        // Update counter, word name, definition, and image
-                        $("#counter").text((index + 1) + "/" + totalCount);
-                        $("#wordName").text(data.name);
-                        $("#wordDefinition").text(data.definition);
-
-                        imageToShowOrHide(data.imagePath);
-
-                        // Enable or disable navigation buttons
-                        $("#BtnPrev, #BtnPrevMobile").prop("disabled", index === 0);
-                        $("#BtnNext, #BtnNextMobile").prop("disabled", index === totalCount - 1);
-
-                        // Speak the new word
-                        speak(data.name);
-
-                        // Update current word ID and index
-                        id = data.id;
-                        currentIndex = index;
-                    },
-                    error: function (xhr) {
-                        if (xhr.status === 401) {
-                            // User session expired, show warning and redirect to login
-                            toastr.warning("You have been logged out. Redirecting to the login page...");
-
-                            setTimeout(function () {
-                                window.location.href = "/Account/Account/Login";
-                            }, 2000);
-                        } else {
-                            // General failure case
-                            alert("No more items.");
-                        }
-                    }
-                });
-            }
-
-            // Handle click on "Next" button
-            $("#BtnNext, #BtnNextMobile").on("click", function () {
-                if (currentIndex < totalCount - 1) {
-                    loadWord(currentIndex + 1);
-                }
-            });
-
-            // Handle click on "Previous" button
+            // Handle click on "Previous" buttons
             $("#BtnPrev, #BtnPrevMobile").on("click", function () {
                 if (currentIndex > 0) {
                     loadWord(currentIndex - 1);
+                }
+            });
+
+            // Handle click on "Next" buttons
+            $("#BtnNext, #BtnNextMobile").on("click", function () {
+                if (currentIndex < words.length - 1) {
+                    loadWord(currentIndex + 1);
                 }
             });
 
@@ -291,22 +161,130 @@
                     url: '@Url.Action("Favorite", "Home")',
                     data: { id: id },
                     success: function (res) {
+                        console.log("Favorite result:", res);
                         // Change background color based on favorite status
-                        if (res.isFavorite) {
-                            $("#BtnFav").css("background-color", "yellow");
-                        } else {
-                            $("#BtnFav").css("background-color", "transparent");
+                        $("#BtnFav").css("background-color", res.isFavorite ? "yellow" : "transparent");
+                        words[currentIndex].IsFavorite = res.isFavorite;
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 401) {
+                            handleSessionExpired();
                         }
                     }
                 });
             });
 
             $("#BtnSound").on("click", function () {
-                const word = $("#wordName").text().trim(); // Получаем текущее слово с карточки
+                const word = $("#wordName").text().trim();
                 if (word) {
-                    speak(word); // Используем уже определённую функцию
+                    speak(word);
                 }
             });
-        });
+        }
+
+        function loadWord(index) {
+            if (index < 0 || index >= words.length) return;
+
+            const word = words[index];
+
+            if (card.classList.contains("flipped")) {
+                card.classList.remove("flipped");
+            }
+
+            $("#counter").text((index + 1) + "/" + words.length);
+            $("#wordName").text(word.Name);
+            $("#wordDefinition").text(word.Definition);
+            updateImage(word.ImagePath);
+            $("#BtnFav").css("background-color", word.IsFavorite ? "yellow" : "transparent");
+
+            $("#BtnPrev, #BtnPrevMobile").prop("disabled", index === 0);
+            $("#BtnNext, #BtnNextMobile").prop("disabled", index === words.length - 1);
+
+            speak(word.Name);
+
+            id = word.Id;
+            currentIndex = index;
+        }
+
+        function updateImage(url) {
+            if (url) {
+                $("#wordImage").attr("src", url).show();
+            } else {
+                $("#wordImage").hide();
+            }
+        }
+
+        function flipCard(card) {
+            const wasFlipped = card.classList.contains("flipped");
+            card.classList.toggle("flipped");
+
+            if (!wasFlipped) {
+                setTimeout(() => {
+                    const zoomTarget = document.querySelector('.quizlet-back .zoom-img');
+                    if (zoomTarget) {
+                        if (!zoomInstance) {
+                            zoomInstance = mediumZoom(zoomTarget, {
+                                margin: isMobile ? 5 : 50,
+                                background: "rgba(0, 0, 0, 0.7)"
+                            });
+                        } else {
+                            zoomInstance.attach(zoomTarget);
+                        }
+                    }
+                }, 350);
+            }
+        }
+
+        function initSpeechSynthesis() {
+            if ('speechSynthesis' in window && typeof SpeechSynthesisUtterance !== "undefined") {
+                msg = new SpeechSynthesisUtterance();
+                speechSupported = true;
+
+                speechSynthesis.addEventListener('voiceschanged', function () {
+                    msg.voice = speechSynthesis.getVoices().find(voice => voice.name === defaultVoiceName);
+                    speak(words[currentIndex].Name);
+                });
+            } else {
+                console.warn("Speech synthesis is not supported.");
+            }
+        }
+
+        // TTS
+        function speak(text) {
+            if (!speechSupported || !msg) return;
+            window.speechSynthesis.cancel();
+            msg.text = text;
+            window.speechSynthesis.speak(msg);
+        }
+
+        function handleSessionExpired() {
+            toastr.warning("You have been logged out. Redirecting to the login page...");
+            setTimeout(() => {
+                window.location.href = "/Account/Account/Login";
+            }, 2000);
+        }
+
+        // Optional: periodic session check
+        setInterval(() => {
+            console.log("Checking auth at", new Date());
+
+            fetch('/Account/Account/IsAuthenticated?ts=' + Date.now(), {
+                method: 'GET',
+                credentials: 'include'
+            })
+            .then(res => {
+                console.log("Auth status:", res.status);
+                if (res.status === 401) {
+                    handleSessionExpired();
+                }
+            })
+            .catch(() => {
+                console.error("Auth check failed:", err);
+                toastr.error("Lost connection to server. Redirecting...");
+                setTimeout(() => {
+                    window.location.href = "/Account/Account/Login";
+                }, 2000);
+            });
+        }, 5000); // every 30 seconds
     </script>
 }

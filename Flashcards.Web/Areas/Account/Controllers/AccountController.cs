@@ -412,5 +412,17 @@ namespace Flashcards.Web.Areas.Account.Controllers
         #endregion [ Change username ] 
 
         #endregion [ UserActions ]
+
+        #region [ IsAuthenticated ]
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult IsAuthenticated()
+        {
+            Console.WriteLine("➡ IsAuthenticated CALLED!");
+            return User.Identity?.IsAuthenticated == true ? Ok() : Unauthorized();
+        }
+
+        #endregion [ IsAuthenticated ]
     }
 }

@@ -13,15 +13,20 @@ namespace Flashcards.Web.Middleware
         {
             var path = context.Request.Path.Value?.ToLower();
 
-            // Исключаем публичные маршруты (иначе будет бесконечный редирект)
-            if (path != null && (
-                path.Contains("/account/login") ||
-                path.Contains("/account/logout") ||
-                path.Contains("/account/register") ||
-                path.Contains("/account/verifyemail") ||
-                path.Contains("/account/changepassword") ||
-                path.Contains("/css") || path.Contains("/js") || path.Contains("/lib") // опционально: исключения для статики
-                ))
+            // Пути, которые НЕ должны проверяться
+            var excludedPaths = new[]
+            {
+                "/account/login",
+                "/account/logout",
+                "/account/register",
+                "/account/verifyemail",
+                "/account/changepassword",
+                "/css",
+                "/js",
+                "/lib"
+            };
+
+            if (path != null && excludedPaths.Any(p => path.StartsWith(p)))
             {
                 await _next(context);
                 return;
@@ -39,17 +44,18 @@ namespace Flashcards.Web.Middleware
 
                     if (user != null && user.SessionToken != tokenFromClaims)
                     {
-                        await context.SignOutAsync();
+                        // Принудительный выход и удаление куки
+                        await context.SignOutAsync(IdentityConstants.ApplicationScheme);
+                        context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
 
-                        var isAjax = context.Request.Headers.XRequestedWith == "XMLHttpRequest";
-
-                        if (isAjax)
+                        // Если это AJAX-запрос — просто 401
+                        if (context.Request.Headers.XRequestedWith == "XMLHttpRequest")
                         {
                             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                            await context.Response.WriteAsync("Session expired");
                             return;
                         }
 
+                        // Иначе редиректим на логин с флагом
                         context.Response.Redirect("/Account/Account/Login?forcedLogout=true");
                         return;
                     }

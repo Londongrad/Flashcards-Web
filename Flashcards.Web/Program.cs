@@ -1,7 +1,6 @@
 using Flashcards.Application.Interfaces;
 using Flashcards.Infrastructure.Data;
 using Flashcards.Infrastructure.Repositories;
-using Flashcards.Infrastructure.Services;
 using Flashcards.Web.Middleware;
 using Flashcards.Web.Services;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -22,7 +21,8 @@ namespace Flashcards.Web
                     options => options.UseSqlServer(builder.Configuration.GetConnectionString("Host"))
                 );
 
-            //Identity system
+            // Add services to the container.
+            // Identity system
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
@@ -44,13 +44,11 @@ namespace Flashcards.Web
                 options.SlidingExpiration = true;
             });
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<ISetRepository, SetRepository>();
             builder.Services.AddScoped<IWordRepository, WordRepository>();
             builder.Services.AddScoped<DataManager>();
-            builder.Services.AddScoped<SetStorage>();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var app = builder.Build();
@@ -71,7 +69,6 @@ namespace Flashcards.Web
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();

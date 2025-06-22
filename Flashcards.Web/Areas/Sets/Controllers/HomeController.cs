@@ -1,21 +1,20 @@
 using AutoMapper;
 using Flashcards.Domain.Entities;
-using Flashcards.Infrastructure.Services;
 using Flashcards.Web.Areas.Sets.Models;
 using Flashcards.Web.Common;
 using Flashcards.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Flashcards.Web.Areas.Sets.Controllers
 {
     [Authorize]
     [Area("Sets")]
-    public class HomeController(DataManager dataManager, IMapper mapper, SetStorage setStorage) : BaseCotroller
+    public class HomeController(DataManager dataManager, IMapper mapper) : BaseCotroller
     {
         private readonly DataManager _dataManager = dataManager;
         private readonly IMapper _mapper = mapper;
-        private readonly SetStorage _setStorage = setStorage;
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -61,31 +60,32 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (flag)
                 set.Words = set.Words.Where(w => w.IsFavorite).ToList();
 
-            _setStorage.Set(_mapper.Map<Set>(set));
-
-            var currentWord = new CurrentWordViewModel()
+            var studyVM = new StudySetViewModel()
             {
                 Count = set.Words.Count,
-                CurrentWord = set.Words[0]
+                FirstWord = set.Words[0],
+                WordsJson = JsonSerializer.Serialize(set.Words)
             };
 
-            return View(currentWord);
+            return View(studyVM);
         }
 
+        #region [ Lazy Loading ]
+
         [HttpGet]
-        public IActionResult SwitchWord(int index = 0)
+        public IActionResult LoadMore(int skip, int take)
         {
-            var set = _setStorage.Get();
-            if (set is not null)
-            {
-                if (index < 0 || index >= set.Words.Count)
-                {
-                    return NotFound();
-                }
-                return Json(set.Words[index]);
-            }
-            return NotFound();
+            var sets = _setRepository
+                .GetAll() // Уже учитывает текущего пользователя через IHttpContextAccessor
+                .OrderBy(s => s.Id)
+                .Skip(skip)
+                .Take(take)
+                .ToList();
+
+            return PartialView("_SetPartial", sets);
         }
+
+        #endregion [ Lazy Loading ]
 
         #region [ FAVORITE ]
 
@@ -101,8 +101,6 @@ namespace Flashcards.Web.Areas.Sets.Controllers
                     word.IsFavorite = true;
 
                 await _dataManager.WordRepository.UpdateAsync(word);
-
-                _setStorage.Modify(word);
 
                 return Json(new { success = true, isFavorite = word.IsFavorite });
             }
