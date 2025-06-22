@@ -419,7 +419,6 @@ namespace Flashcards.Web.Areas.Account.Controllers
         [HttpGet]
         public IActionResult IsAuthenticated()
         {
-            Console.WriteLine("➡ IsAuthenticated CALLED!");
             return User.Identity?.IsAuthenticated == true ? Ok() : Unauthorized();
         }
 

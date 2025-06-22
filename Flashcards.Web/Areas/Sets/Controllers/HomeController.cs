@@ -70,23 +70,6 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             return View(studyVM);
         }
 
-        #region [ Lazy Loading ]
-
-        [HttpGet]
-        public IActionResult LoadMore(int skip, int take)
-        {
-            var sets = _setRepository
-                .GetAll() // Уже учитывает текущего пользователя через IHttpContextAccessor
-                .OrderBy(s => s.Id)
-                .Skip(skip)
-                .Take(take)
-                .ToList();
-
-            return PartialView("_SetPartial", sets);
-        }
-
-        #endregion [ Lazy Loading ]
-
         #region [ FAVORITE ]
 
         [HttpPost]
