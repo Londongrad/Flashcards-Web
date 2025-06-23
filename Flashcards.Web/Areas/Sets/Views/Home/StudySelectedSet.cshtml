@@ -190,6 +190,42 @@
                 });
             }
 
+            // ======================
+            // Увеличение картинки по клику
+            // ======================
+            wordImage.addEventListener("click", function () {
+                const src = this.src;
+                if (!src) return;
+
+                const modal = document.createElement("div");
+                modal.classList.add("image-overlay");
+
+                const img = document.createElement("img");
+                img.src = src;
+                img.classList.add("zoomed-image");
+
+                modal.appendChild(img);
+                document.body.appendChild(modal);
+
+                function closeModal() {
+                    modal.classList.add("fade-out");
+                    img.classList.add("zoom-out");
+
+                    setTimeout(() => {
+                        modal.remove();
+                    }, 250);
+                }
+
+                modal.addEventListener("click", closeModal);
+
+                document.addEventListener("keydown", function escListener(e) {
+                    if (e.key === "Escape") {
+                        closeModal();
+                        document.removeEventListener("keydown", escListener);
+                    }
+                });
+            });
+
             // Кнопки "Назад"/"Вперёд"
             $("#BtnPrev, #BtnPrevMobile").on("click", function () {
                 if (currentIndex > 0) {
