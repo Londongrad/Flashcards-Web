@@ -51,12 +51,12 @@
         <div id="card" class="quizlet-flip-container">
 
             <div class="quizlet-top-buttons">
-                <a id="BtnSound" class="btn icon-btn" title="@Localizer["PlaySound"]">
-                    <i class="bi bi-volume-up-fill"></i>
-                </a>
                 <a id="BtnFav" class="btn icon-btn" title="@Localizer["Favorite"]"
                    style="color: @(!Model.FirstWord.IsFavorite ? "white" : "gold")">
                     <i class="bi bi-star-fill"></i>
+                </a>
+                <a id="BtnSound" class="btn icon-btn" title="@Localizer["PlaySound"]">
+                    <i class="bi bi-volume-up-fill"></i>
                 </a>
             </div>
 
@@ -118,8 +118,9 @@
                 // Если поддерживается, показываем кнопку
                 document.getElementById("BtnSettings").style.display = "inline-block";
             } else {
-                // Если не поддерживается, скрываем кнопку
+                // Если не поддерживается, скрываем кнопку выбора голоса и кнопку озвучки
                 document.getElementById("BtnSettings").style.display = "none";
+                document.getElementById("BtnSound").style.display = "none";
             }
 
             initFlipCard();
@@ -345,11 +346,16 @@
             if ('speechSynthesis' in window && typeof SpeechSynthesisUtterance !== "undefined") {
                 speechSupported = true;
 
+                // Принудительно триггерим загрузку голосов
+                const dummy = new SpeechSynthesisUtterance('');
+                speechSynthesis.speak(dummy);
+                speechSynthesis.cancel();
+
                 try {
                     const voices = await waitForVoicesToLoad();
                     populateVoiceList(voices);
                 } catch (err) {
-                    console.warn("@Localizer["LoadVoicesError"]", err);
+                    console.warn("LoadVoicesError", err);
                 }
             }
         }
