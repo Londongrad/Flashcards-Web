@@ -54,13 +54,15 @@ namespace Flashcards.Web.Areas.Sets.Controllers
             if (id is 0)
                 return BadRequest();
 
-            var set = _mapper.Map<SetViewModel>(await _dataManager.SetRepository.GetAsync(id, userId));
+            SetViewModel set;
+
+            if (flag)
+                set = _mapper.Map<SetViewModel>(await _dataManager.SetRepository.GetFavoriteAsync(id, userId));
+            else
+                set = _mapper.Map<SetViewModel>(await _dataManager.SetRepository.GetWithWordsAsync(id, userId));
 
             if (set is null)
                 return NotFound();
-
-            if (flag)
-                set.Words = set.Words.Where(w => w.IsFavorite).ToList();
 
             var studyVM = new StudySetViewModel()
             {

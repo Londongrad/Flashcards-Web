@@ -104,6 +104,7 @@
         const words = JSON.parse('@Html.Raw(Model.WordsJson)');
         let currentIndex = 0;
         let id = words[0].Id;
+        const setId = words[0].SetId;
 
         // Create a variable for current voice, default voice and get the card
         let speechSupported = false;
@@ -226,7 +227,7 @@
                 $.ajax({
                     type: "POST",
                     url: '@Url.Action("Favorite", "Home")',
-                    data: { id: id },
+                    data: { id: id, setId: setId },
                     success: function (res) {
                         console.log("Favorite result:", res);
                         // Change background color based on favorite status

@@ -210,4 +210,34 @@
   <data name="ToastrNewSetAdded" xml:space="preserve">
     <value>Новый набор был успешно добавлен</value>
   </data>
+  <data name="ToastrAvatarUpdated" xml:space="preserve">
+    <value>Аватар был успешно изменен</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Произошла ошибка</value>
+  </data>
+  <data name="URLSame" xml:space="preserve">
+    <value>Одинаковый адрес картинки</value>
+  </data>
+  <data name="ToastrPasswordChanged" xml:space="preserve">
+    <value>Пароль был успешно изменен</value>
+  </data>
+  <data name="ToastrEmailChanged" xml:space="preserve">
+    <value>Почта была успешно изменена</value>
+  </data>
+  <data name="ErrorWrongInputForEmail" xml:space="preserve">
+    <value>Произошла ошибка. Возможно пользователь с такой почтой уже существует, либо неверный ввод.</value>
+  </data>
+  <data name="SameEmail" xml:space="preserve">
+    <value>Одинаковая почта</value>
+  </data>
+  <data name="ToastrUsernameChanged" xml:space="preserve">
+    <value>Логин был успешно изменен</value>
+  </data>
+  <data name="ErrorWrongInputForUsername" xml:space="preserve">
+    <value>Произошла ошибка. Возможно пользователь с таким логином уже существует, либо неверный ввод.</value>
+  </data>
+  <data name="SameUsername" xml:space="preserve">
+    <value>Одинаковый логин</value>
+  </data>
 </root>

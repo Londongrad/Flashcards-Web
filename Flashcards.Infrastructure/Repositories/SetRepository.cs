@@ -80,5 +80,19 @@ namespace Flashcards.Infrastructure.Repositories
         {
             await GetUserSets(userId).ExecuteDeleteAsync();
         }
+
+        public async Task<Set?> GetFavoriteAsync(int id, string userId)
+        {
+            return await GetUserSets(userId)
+                .Where(s => s.Id == id)
+                .Select(s => new Set(s.Id, s.Name, s.UserId)
+                    {
+                        Words = s.Words
+                            .Where(w => w.IsFavorite)
+                            .ToList()
+                    })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        }
     }
 }

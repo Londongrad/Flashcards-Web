@@ -210,4 +210,34 @@
   <data name="ToastrNewSetAdded" xml:space="preserve">
     <value>New set has been successfully created</value>
   </data>
+  <data name="ToastrAvatarUpdated" xml:space="preserve">
+    <value>User avatar has been successfully updated</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>An error occured during this process.</value>
+  </data>
+  <data name="URLSame" xml:space="preserve">
+    <value>The same image URL</value>
+  </data>
+  <data name="ToastrPasswordChanged" xml:space="preserve">
+    <value>Password has been successfully changed</value>
+  </data>
+  <data name="ToastrEmailChanged" xml:space="preserve">
+    <value>Email has been successfully updated</value>
+  </data>
+  <data name="ErrorWrongInputForEmail" xml:space="preserve">
+    <value>An error occured during this process. It's either your input is incorrect or user with this email already exists.</value>
+  </data>
+  <data name="SameEmail" xml:space="preserve">
+    <value>The same email</value>
+  </data>
+  <data name="ToastrUsernameChanged" xml:space="preserve">
+    <value>Username has been successfully changed</value>
+  </data>
+  <data name="ErrorWrongInputForUsername" xml:space="preserve">
+    <value>An error occured during this process. It's either your input is incorrect or user with this username already exists.</value>
+  </data>
+  <data name="SameUsername" xml:space="preserve">
+    <value>The same username</value>
+  </data>
 </root>

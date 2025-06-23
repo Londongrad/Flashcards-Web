@@ -80,7 +80,7 @@
 
             <div class="quizlet-block actions">
                 <div class="quizlet-block actions">
-                    <button id="BtnFav" class="icon-btn fav-btn @(word.IsFavorite ? "favorited" : "")" data-id="@word.Id" data-setid="@word.SetId" title="@Localizer["Favorite"]">
+                    <button id="BtnFavSel" class="icon-btn fav-btn fav-btn-in-sel @(word.IsFavorite ? "favorited" : "")" data-id="@word.Id" data-setid="@word.SetId" title="@Localizer["Favorite"]">
                         <i class="bi bi-star-fill"></i>
                     </button>
                     <button onclick="showInPopup('@Url.Action("AddOrEditWord", "Home", new { word.SetId, word.Id })', '@Localizer["EditWord"]')" class="icon-btn edit-btn" title="@Localizer["Edit"]">
@@ -222,7 +222,7 @@
                 });
             });
 
-            $("#BtnFav").on("click", function () {
+            $(".fav-btn-in-sel").on("click", function () {
                 const button = $(this);
                 const wordId = button.data("id");
                 const setId = button.data("setid");

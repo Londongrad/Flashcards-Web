@@ -25,6 +25,9 @@ namespace Flashcards.Application.Interfaces
         /// <summary>Retrieves a specific set by ID with corresponding words if it belongs to the current user.</summary>
         Task<Set?> GetWithWordsAsync(int id, string userId);
 
+        /// <summary>Retrieves a specific set by ID with corresponding favorite words only if it belongs to the current user.</summary>
+        Task<Set?> GetFavoriteAsync(int id, string userId);
+
         /// <summary>Retrieves all sets that belong to the current user without their associated words.</summary>
         Task<IEnumerable<SetDTO>> GetAllSummariesAsync(string userId);
 

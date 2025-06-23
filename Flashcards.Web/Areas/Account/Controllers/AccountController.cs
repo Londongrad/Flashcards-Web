@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.Globalization;
 using System.Security.Claims;
 
@@ -14,7 +15,10 @@ namespace Flashcards.Web.Areas.Account.Controllers
 {
     [Area("Account")]
     [Authorize]
-    public class AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, DataManager dataManager) : BaseCotroller
+    public class AccountController(SignInManager<ApplicationUser> signInManager, 
+        UserManager<ApplicationUser> userManager, 
+        DataManager dataManager,
+        IStringLocalizer<SharedResource> localizer) : BaseCotroller
     {
         #region [ Login ]
 
@@ -295,7 +299,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
 
             if (string.Equals(vm.ImageURL, user.ImageURL))
             {
-                ModelState.AddModelError("", "The same image URL");
+                ModelState.AddModelError("", localizer["URLSame"]);
                 return PartialView("_ChangeAvatarPartial");
             }
 
@@ -303,10 +307,10 @@ namespace Flashcards.Web.Areas.Account.Controllers
             IdentityResult result = await userManager.UpdateAsync(user);
             if (result.Succeeded)
             {
-                TempData["success"] = "User avatar has been successfully updated";
+                TempData["success"] = localizer["ToastrAvatarUpdated"].Value;
                 return Json(new { success = true });
             }
-            ModelState.AddModelError("", "An error occured during this process.");
+            ModelState.AddModelError("", localizer["Error"]);
             return Json(new { success = false });
         }
 
@@ -333,10 +337,10 @@ namespace Flashcards.Web.Areas.Account.Controllers
                 IdentityResult result = await userManager.ChangePasswordAsync(user, model.OldPassword!, model.NewPassword!);
                 if (result.Succeeded)
                 {
-                    TempData["success"] = "Password has been successfully changed";
+                    TempData["success"] = localizer["ToastrPasswordChanged"].Value;
                     return Json(new { success = true });
                 }
-                TempData["error"] = "An error occured during this process. Try again";
+                TempData["error"] = localizer["Error"];
                 return Json(new { success = false });
             }
             else
@@ -371,17 +375,17 @@ namespace Flashcards.Web.Areas.Account.Controllers
 
             if (string.Equals(model.Email, user.Email))
             {
-                ModelState.AddModelError("", "The same email");
+                ModelState.AddModelError("", localizer["SameEmail"]);
                 return PartialView("_ChangeEmailPartial");
             }
             var emailToken = await userManager.GenerateChangeEmailTokenAsync(user, model.Email!);
             IdentityResult result = await userManager.ChangeEmailAsync(user, model.Email!, emailToken);
             if (result.Succeeded)
             {
-                TempData["success"] = "Email has been successfully updated";
+                TempData["success"] = localizer["ToastrEmailChanged"].Value;
                 return Json(new { success = true });
             }
-            ModelState.AddModelError("", "An error occured during this process. It's either your input is incorrect or user with this email already exists.");
+            ModelState.AddModelError("", localizer["ErrorWrongInputForEmail"]);
             return PartialView("_ChangeEmailPartial", model);
 
         }
@@ -412,17 +416,17 @@ namespace Flashcards.Web.Areas.Account.Controllers
             {
                 if (string.Equals(model.Username, user!.UserName))
                 {
-                    ModelState.AddModelError("", "The same username");
+                    ModelState.AddModelError("", localizer["SameUsername"]);
                     return PartialView("_ChangeUsernamePartial");
                 }
                 user.UserName = model.Username;
                 IdentityResult result = await userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    TempData["success"] = "Username has been successfully changed";
+                    TempData["success"] = localizer["ToastrUsernameChanged"].Value;
                     return Json(new { success = true });
                 }
-                ModelState.AddModelError("", "An error occured during this process. Most likely user with this username is already exists");
+                ModelState.AddModelError("", localizer["ErrorWrongInputForUsername"]);
                 return Json(new { success = false });
             }
             else
