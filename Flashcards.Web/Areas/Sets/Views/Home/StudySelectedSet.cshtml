@@ -104,9 +104,9 @@
     <script>
         function testVoice() {
             const voices = speechSynthesis.getVoices();
-            console.log("Available voices:", voices.map(v => `${v.name} (${v.lang})`));
+            console.log("Available voices:", voices.map(v => `${v.name} (${v.name})`));
 
-            const voice = voices.find(v => v.name === "английский Великобритания (en_GB)"); // ← подставь существующее имя
+            const voice = voices.find(v => v.name === "Google UK English Male");
 
             if (!voice) {
                 console.warn("Voice not found.");
