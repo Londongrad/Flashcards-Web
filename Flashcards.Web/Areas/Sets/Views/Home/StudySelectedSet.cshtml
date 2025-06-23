@@ -100,29 +100,12 @@
 
 @section Scripts {
     <script>
-        function testVoice() {
-            const voices = speechSynthesis.getVoices();
-            const voice = voices.find(v => v.lang === "en_GB") || voices.find(v => v.lang.startsWith("en"));
-
-            if (!voice) {
-                console.warn("Voice not found.");
-            } else {
-                const utter = new SpeechSynthesisUtterance("This is a test with British English.");
-                utter.voice = voice;
-                speechSynthesis.cancel();
-                speechSynthesis.speak(utter);
-
-                console.log("Using voice:", voice.name, voice.lang);
-            }
-        }
-
         const words = JSON.parse('@Html.Raw(Model.WordsJson)');
         let currentIndex = 0;
         let id = words[0].Id;
         const setId = words[0].SetId;
 
         let speechSupported = false;
-        const defaultVoiceLang = "en_GB";
         const card = document.getElementById("card");
         let currentVoice = null;
 
@@ -147,12 +130,12 @@
         }
 
         document.getElementById("voiceSelect").addEventListener("change", function () {
-            const selectedLang = this.value;
+            const selectedURI = this.value;
             const voices = speechSynthesis.getVoices();
-            const selectedVoice = voices.find(v => v.lang === selectedLang);
+            const selectedVoice = voices.find(v => v.voiceURI === selectedURI);
 
             if (selectedVoice) {
-                localStorage.setItem("preferredVoiceLang", selectedVoice.lang);
+                localStorage.setItem("preferredVoiceURI", selectedVoice.voiceURI);
                 currentVoice = selectedVoice;
             }
         });
@@ -350,24 +333,23 @@
 
             console.log("Available voices:", voices.map(v => `${v.name} (${v.lang})`));
 
-            const savedLang = localStorage.getItem("preferredVoiceLang");
-            let selectedLang = savedLang || defaultVoiceLang;
+            const savedURI = localStorage.getItem("preferredVoiceURI");
 
             voices.forEach((voice) => {
                 const option = document.createElement("option");
-                option.value = voice.lang;
+                option.value = voice.voiceURI;
                 option.textContent = `${voice.name} (${voice.lang})`;
                 voiceSelect.appendChild(option);
             });
 
-            const selectedVoice = voices.find(v => v.lang === selectedLang);
+            const selectedVoice = voices.find(v => v.voiceURI === savedURI);
 
             if (selectedVoice) {
-                voiceSelect.value = selectedVoice.lang;
+                voiceSelect.value = selectedVoice.voiceURI;
                 currentVoice = selectedVoice;
             } else {
                 currentVoice = voices[0];
-                voiceSelect.value = voices[0].lang;
+                voiceSelect.value = voices[0].voiceURI;
             }
         }
 
