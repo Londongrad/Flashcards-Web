@@ -241,6 +241,9 @@
                             let currentCount = parseInt(countSpan.innerText);
                             currentCount += res.isFavorite ? 1 : -1;
                             countSpan.innerText = currentCount;
+                            countFav += res.isFavorite ? 1 : -1;
+
+                            $("#BtnStudyFav").prop("disabled", countFav === 0);
 
                             // Обновление подписи: Word или Words
                             const label = currentCount === 1 ? "@Localizer["Word"]" : "@Localizer["Words"]";
