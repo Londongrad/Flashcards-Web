@@ -46,7 +46,7 @@
                             location.reload();
                         } else{
                             $("#setName").text(res.name);
-                            toastr.success("The name of the set has been successfully updated");
+                            toastr.success("@Localizer["ToastrRenameSet"]");
                         }
                     } else {
                         $("#form-modal .modal-body").html(res);

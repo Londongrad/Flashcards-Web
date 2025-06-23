@@ -258,4 +258,7 @@
   <data name="NothingHasChanged" xml:space="preserve">
     <value>Nothing has changed</value>
   </data>
+  <data name="ToastrRenameSet" xml:space="preserve">
+    <value>The name of the set has been successfully updated</value>
+  </data>
 </root>
