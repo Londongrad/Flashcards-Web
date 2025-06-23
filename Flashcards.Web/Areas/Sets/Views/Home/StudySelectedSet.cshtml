@@ -106,7 +106,7 @@
             const voices = speechSynthesis.getVoices();
             console.log("Available voices:", voices.map(v => v.name ));
 
-            const voice = voices.find(v => v.name === "Google UK English Male");
+            const voice = speechSynthesis.getVoices().find(v => v.name.includes("UK"));
 
             if (!voice) {
                 console.warn("Voice not found.");
