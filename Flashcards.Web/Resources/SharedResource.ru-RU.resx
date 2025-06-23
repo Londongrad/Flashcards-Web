@@ -240,4 +240,22 @@
   <data name="SameUsername" xml:space="preserve">
     <value>Одинаковый логин</value>
   </data>
+  <data name="EmailPasswordWrong" xml:space="preserve">
+    <value>Пароль или почта неверны.</value>
+  </data>
+  <data name="EmailNotFound" xml:space="preserve">
+    <value>Почта не найдена</value>
+  </data>
+  <data name="URLError" xml:space="preserve">
+    <value>Адрес должен указывать на картинку</value>
+  </data>
+  <data name="URLError2" xml:space="preserve">
+    <value>Введите правильный адрес</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Вы вышли из системы. Переадресация на страницу входа...</value>
+  </data>
+  <data name="NothingHasChanged" xml:space="preserve">
+    <value>Ничего не изменилось</value>
+  </data>
 </root>

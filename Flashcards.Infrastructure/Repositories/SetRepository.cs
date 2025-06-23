@@ -10,7 +10,7 @@ namespace Flashcards.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
 
-        public IQueryable<Set> GetUserSets(string userId)
+        private IQueryable<Set> GetUserSets(string userId)
         {
             return _dbContext.Sets.Where(s => s.UserId == userId);
         }

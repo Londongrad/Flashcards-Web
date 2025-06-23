@@ -36,7 +36,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
             var user = await userManager.FindByNameAsync(model.Username!);
             if (user == null || !await userManager.CheckPasswordAsync(user, model.Password!))
             {
-                ModelState.AddModelError("", "Email or password is incorrect.");
+                ModelState.AddModelError("", localizer["EmailPasswordWrong"]);
                 return View(model);
             }
 
@@ -123,7 +123,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
 
                 if (user is null)
                 {
-                    ModelState.AddModelError("", "Something is wrong!");
+                    ModelState.AddModelError("", localizer["Error"]);
                     return View(model);
                 }
                 else
@@ -177,13 +177,13 @@ namespace Flashcards.Web.Areas.Account.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Email is not found");
+                    ModelState.AddModelError("", localizer["EmailNotFound"]);
                     return View(model);
                 }
             }
             else
             {
-                ModelState.AddModelError("", "Something went wrong! Try again.");
+                ModelState.AddModelError("", localizer["Error"]);
                 return View(model);
             }
         }
@@ -245,7 +245,7 @@ namespace Flashcards.Web.Areas.Account.Controllers
             }
             else
             {
-                ModelState.AddModelError("", "An error occured during this process. Try again");
+                ModelState.AddModelError("", localizer["Error"]);
                 return PartialView("_DeleteAccountPartial", vm);
             }
         }

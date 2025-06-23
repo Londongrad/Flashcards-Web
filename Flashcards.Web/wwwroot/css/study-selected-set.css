@@ -211,6 +211,89 @@
         color: #ccc;
     }
 
+/*image Zoom*/
+/* Оверлей */
+.image-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease-out;
+    cursor: zoom-out;
+}
+
+/* Изображение (открытие) */
+.zoomed-image {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    transform: scale(0.7);
+    animation: zoomIn 0.25s ease-out forwards;
+}
+
+/* Исходное изображение */
+#wordImage {
+    cursor: zoom-in;
+}
+
+/* Анимации открытия */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.7);
+        opacity: 0.5;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Анимации закрытия */
+.fade-out {
+    animation: fadeOut 0.2s ease-in forwards;
+}
+
+.zoom-out {
+    animation: zoomOut 0.25s ease-in forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes zoomOut {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+}
+
 @media (max-width: 768px) {
     .desktop-only {
         display: none !important;

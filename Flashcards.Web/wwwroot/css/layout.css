@@ -106,7 +106,7 @@ button.accept-policy {
 
 /*Настройка для тостера на мобилке*/
 /* Override Toastr container for top-center on small screens */
-#toast-container.toast-top-center {
+#toastr-container.toast-top-center {
     left: 50% !important;
     transform: translateX(-50%) !important;
     right: auto !important;

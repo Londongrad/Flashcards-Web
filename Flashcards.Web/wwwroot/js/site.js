@@ -17,7 +17,7 @@ showInPopup = (url, title) => {
         },
         error: function (xhr) {
             if (xhr.status === 401) {
-                toastr.warning("You have been logged out. Redirecting to the login page...");
+                toastr.warning(window.localization.loggedOutMessage);
 
                 // Ждём 2 секунды, чтобы тостер успел показаться
                 setTimeout(function () {

@@ -240,4 +240,22 @@
   <data name="SameUsername" xml:space="preserve">
     <value>The same username</value>
   </data>
+  <data name="EmailPasswordWrong" xml:space="preserve">
+    <value>Email or password is incorrect.</value>
+  </data>
+  <data name="EmailNotFound" xml:space="preserve">
+    <value>Email is not found</value>
+  </data>
+  <data name="URLError" xml:space="preserve">
+    <value>URL must point to an image (jpg, png, gif, etc).</value>
+  </data>
+  <data name="URLError2" xml:space="preserve">
+    <value>Please enter a valid URL.</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>You have been logged out. Redirecting to the login page...</value>
+  </data>
+  <data name="NothingHasChanged" xml:space="preserve">
+    <value>Nothing has changed</value>
+  </data>
 </root>

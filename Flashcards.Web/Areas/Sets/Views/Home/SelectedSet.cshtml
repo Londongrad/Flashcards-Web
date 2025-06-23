@@ -146,41 +146,59 @@
                 var id = $(this).data("id");
                 var card = $(this).closest(".quizlet-card");
 
-                bootbox.confirm("@Localizer["BootBoxDeleteWord"]", function(result) {
-                    if(result){
-                        $.ajax({
-                            url: '@Url.Action("DeleteWord", "Home")',
-                            type: "POST",
-                            data: { id: id },
-                            success: function(res) {
-                                count -= 1;
+                bootbox.confirm({
+                    message: "@Localizer["BootBoxDeleteWord"]", 
+                    backdrop: true,
+                    callback: function(result) {
+                        if(result){
+                            $.ajax({
+                                url: '@Url.Action("DeleteWord", "Home")',
+                                type: "POST",
+                                data: { id: id },
+                                success: function(res) {
+                                    count -= 1;
 
-                                $("#numWords").text(count);
-                                $("#word").text(count === 1 ? "@Localizer["Word"]" : "@Localizer["Words"]");
+                                    $("#numWords").text(count);
+                                    $("#word").text(count === 1 ? "@Localizer["Word"]" : "@Localizer["Words"]");
 
-                                toastr.success("@Localizer["ToastrDeleteWord"]");
+                                    toastr.success("@Localizer["ToastrDeleteWord"]");
 
-                                card.css('background','tomato');
-                                card.fadeOut(800, function(){
-                                    $(this).remove();
-                                });
+                                    card.css('background','tomato');
+                                    card.fadeOut(800, function(){
+                                        $(this).remove();
+                                    });
 
-                                $("#BtnStudy").prop("disabled", count === 0);
-                                $("#BtnStudyFav").prop("disabled", countFav === 0);
-                            },
-                            error: function (xhr) {
-                                if (xhr.status === 401) {
-                                    // User was logged out — show warning and redirect
-                                    toastr.warning("@Localizer["ToastrLogout"]");
-                                    setTimeout(function (res) {
-                                        window.location.href = logoutUrl;
-                                    }, 2000);
-                                } else {
-                                    // Optional: handle other errors
-                                    toastr.error("@Localizer["ToastrDeleteWordError"]");
+                                    if (card.find(".fav-btn").hasClass("favorited")) {
+                                        countFav -= 1;
+
+                                        const favCountSpan = document.getElementById("FavCount");
+                                        const favLabelSpan = document.getElementById("FavWordLabel");
+
+                                        if (favCountSpan && favLabelSpan) {
+                                            favCountSpan.innerText = countFav;
+                                            favLabelSpan.innerText = countFav === 1 ? "@Localizer["Word"]" : "@Localizer["Words"]";
+                                        }
+
+                                        $("#BtnStudyFav").prop("disabled", countFav === 0);
+                                    }
+
+                                    $("#BtnStudy").prop("disabled", count === 0);
+                                    $("#BtnStudyFav").prop("disabled", countFav === 0);
+                                },
+                                error: function (xhr) {
+                                    if (xhr.status === 401) {
+                                        // User was logged out — show warning and redirect
+                                        toastr.warning("@Localizer["ToastrLogout"]");
+                                        setTimeout(function (res) {
+                                            window.location.href = logoutUrl;
+                                        }, 2000);
+                                    } else {
+                                        // Optional: handle other errors
+                                        toastr.error("@Localizer["ToastrDeleteWordError"]");
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 });
             });
@@ -240,8 +258,8 @@
                         if (countSpan && wordLabelSpan) {
                             let currentCount = parseInt(countSpan.innerText);
                             currentCount += res.isFavorite ? 1 : -1;
-                            countSpan.innerText = currentCount;
                             countFav += res.isFavorite ? 1 : -1;
+                            countSpan.innerText = currentCount;
 
                             $("#BtnStudyFav").prop("disabled", countFav === 0);
 

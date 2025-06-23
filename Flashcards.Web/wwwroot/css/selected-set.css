@@ -4,7 +4,7 @@
     grid-template-columns: 1fr 6px 2fr 1fr auto;
     background-color: #1a1a40;
     border-radius: 12px;
-    padding: 16px;
+    padding: 10px;
     gap: 16px;
     align-items: center;
     margin-bottom: 5px;
@@ -52,7 +52,7 @@
     .quizlet-block.actions {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 1px;
     }
 
 .icon-btn {
@@ -126,8 +126,12 @@
 }
 
 .zoom-img {
-    width: 200px;
-    height: 100px;
+    max-width: 200px;
+    max-height: 100px;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
 #scrollToBottomBtn {

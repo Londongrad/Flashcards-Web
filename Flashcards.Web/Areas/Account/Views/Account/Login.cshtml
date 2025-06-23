@@ -52,7 +52,7 @@
     @if (Context.Request.Query["forcedLogout"] == "true")
     {
         <script>
-            toastr.warning("You were logged out because your account has been entered elsewhere");
+            toastr.warning("@Localizer["KickedOut"]");
         </script>
     }
 }

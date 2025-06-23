@@ -2,6 +2,7 @@
 
 @{
     Layout = null;
+    bool isEdit = Model.Id != 0;
 }
 
 <form id="form-word" asp-area="Sets" asp-controller="Home" asp-action="AddOrEditWord" method="post">
@@ -10,24 +11,25 @@
 
     <input hidden asp-for="SetId" />
     <input hidden asp-for="Id" />
+    <input hidden asp-for="IsFavorite" />
 
     <div class="modal-form-container">
 
         <div class="mb-3 text-center">
             <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control">
+            <input asp-for="Name" class="form-control" data-original="@Model.Name">
             <span asp-validation-for="Name" class="text-danger small"></span>
         </div>
 
         <div class="mb-3 text-center">
             <label asp-for="Definition" class="form-label"></label>
-            <input asp-for="Definition" class="form-control">
+            <input asp-for="Definition" class="form-control" data-original="@Model.Definition">
             <span asp-validation-for="Definition" class="text-danger small"></span>
         </div>
 
         <div class="mb-3 text-center">
             <label asp-for="ImagePath" class="form-label"></label>
-            <input asp-for="ImagePath" class="form-control">
+            <input asp-for="ImagePath" class="form-control" data-original="@Model.ImagePath">
         </div>
 
         <div class="row">
@@ -39,12 +41,40 @@
 </form>
 
 <script>
-    $(function() {
-        $("#form-word").submit(function(e) {
-            e.preventDefault();
+    $(document).on("submit", "#form-word", function (e) {
+        const form = $(this);
 
-            var form = $(this);
+        // Если создаём новое слово — сразу отправляем
+        const isEdit = @(isEdit.ToString().ToLower()); // true / false в JS
+
+        if (!isEdit) {
+            e.preventDefault();
             popupPost(form);
-        });
+            return;
+        }
+
+        // Иначе сравниваем оригинальные и текущие значения
+        const original = {
+            name: form.find('[name="Name"]').data("original"),
+            definition: form.find('[name="Definition"]').data("original"),
+            imagePath: form.find('[name="ImagePath"]').data("original")
+        };
+
+        const current = {
+            name: form.find('[name="Name"]').val().trim(),
+            definition: form.find('[name="Definition"]').val().trim(),
+            imagePath: form.find('[name="ImagePath"]').val().trim()
+        };
+
+        const isChanged = Object.keys(original).some(key => original[key] !== current[key]);
+
+        if (!isChanged) {
+            e.preventDefault();
+            toastr.info("@SharedLocalizer["NothingHasChanged"]");
+            return false;
+        }
+
+        e.preventDefault();
+        popupPost(form);
     });
 </script>

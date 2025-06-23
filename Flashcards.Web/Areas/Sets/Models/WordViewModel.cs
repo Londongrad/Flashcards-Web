@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Flashcards.Web.Areas.Sets.Models
 {
@@ -16,7 +15,9 @@ namespace Flashcards.Web.Areas.Sets.Models
         public string Definition { get; set; } = "";
 
         [Display(Name = "ImageURL")]
-        [ValidateNever]
+        [Url(ErrorMessage = "URLError2")]
+        [RegularExpression(@".+\.(jpeg|jpg|gif|png|webp|bmp|svg)$",
+        ErrorMessage = "URLError")]
         public string? ImagePath { get; set; }
 
         public bool IsFavorite { get; set; } = false;

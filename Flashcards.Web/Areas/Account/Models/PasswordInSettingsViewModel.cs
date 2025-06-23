@@ -14,7 +14,7 @@ namespace Flashcards.Web.Areas.Account.Models
         [DataType(DataType.Password)]
         [DisplayName("NewPassword")]
         [Required(ErrorMessage = "RequiredMessage")]
-        [Compare("ConfirmPassword", ErrorMessage = "Password does not match")]
+        [Compare("ConfirmPassword", ErrorMessage = "ErrorForPassword")]
         public string? NewPassword { get; set; }
 
         [Display(Name = "ConfirmPassword")]
