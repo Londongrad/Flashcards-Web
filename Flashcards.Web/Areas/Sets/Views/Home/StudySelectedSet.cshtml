@@ -104,14 +104,21 @@
     <script>
         function testVoice() {
             const voices = speechSynthesis.getVoices();
-            const voice = voices.find(v => v.name.includes("UK") || v.lang === "en-GB");
+            console.log("Available voices:", voices.map(v => `${v.name} (${v.lang})`));
 
-            const utter = new SpeechSynthesisUtterance("Test voice selection");
+            const voice = voices.find(v => v.name === "английский Великобритания (en_GB)"); // ← подставь существующее имя
+
+            if (!voice) {
+                console.warn("Voice not found.");
+                return;
+            }
+
+            const utter = new SpeechSynthesisUtterance("Testing selected voice.");
             utter.voice = voice;
             speechSynthesis.cancel();
             speechSynthesis.speak(utter);
 
-            console.log("Testing with voice:", voice?.name, voice?.lang);
+            console.log("Testing with voice:", voice.name, voice.lang);
         }
 
         const words = JSON.parse('@Html.Raw(Model.WordsJson)');
