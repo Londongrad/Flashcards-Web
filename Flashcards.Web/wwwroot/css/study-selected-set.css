@@ -296,6 +296,36 @@
     }
 }
 
+/*Клавиши переключения карточек*/
+.keyboard-hints {
+    position: fixed;
+    bottom: 15px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.6); /* полупрозрачный фон */
+    color: #fff;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    z-index: 9999;
+    pointer-events: auto;
+    transition: background 0.2s ease, opacity 0.2s ease;
+    opacity: 0.2; /* менее заметен по умолчанию */
+}
+
+    .keyboard-hints:hover {
+        background: rgba(0, 0, 0, 0.95); /* почти непрозрачный при наведении */
+        opacity: 1;
+    }
+
+    .keyboard-hints kbd {
+        background: #444;
+        border-radius: 4px;
+        padding: 3px 6px;
+        font-family: monospace;
+        font-size: 13px;
+        margin: 0 2px;
+    }
+
 @media (max-width: 768px) {
     .desktop-only {
         display: none !important;

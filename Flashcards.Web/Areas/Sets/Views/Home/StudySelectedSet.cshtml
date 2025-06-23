@@ -101,22 +101,12 @@
     </a>
 </div>
 
+<div id="keyboardHints" class="keyboard-hints desktop-only">
+    <p><kbd>←</kbd>/<kbd>→</kbd>: Navigate | <kbd>Space</kbd>: Flip | <kbd>S</kbd>: Speak | <kbd>F</kbd>: Favorite</p>
+</div>
+
 @section Scripts {
     <script>
-        document.getElementById("BtnTestVoice").addEventListener("click", function () {
-            if (!speechSupported || !currentVoice) {
-                alert("Speech synthesis not supported or voice not selected.");
-                return;
-            }
-
-            const testUtterance = new SpeechSynthesisUtterance("This is a test voice.");
-            testUtterance.voice = currentVoice;
-            testUtterance.lang = currentVoice.lang;
-
-            speechSynthesis.cancel();
-            speechSynthesis.speak(testUtterance);
-        });
-
         const words = JSON.parse('@Html.Raw(Model.WordsJson)');
         let currentIndex = 0;
         let id = words[0].Id;
@@ -164,12 +154,14 @@
             let isDragging = false;
             let mouseDown = false;
 
+            // Отключаем всплытие клика для кнопок сверху
             topButtons.querySelectorAll("a").forEach(button => {
                 button.addEventListener("click", function (e) {
                     e.stopPropagation();
                 });
             });
 
+            // Поддержка мыши
             card.addEventListener("mousedown", () => {
                 mouseDown = true;
                 isDragging = false;
@@ -198,6 +190,7 @@
                 });
             }
 
+            // Кнопки "Назад"/"Вперёд"
             $("#BtnPrev, #BtnPrevMobile").on("click", function () {
                 if (currentIndex > 0) {
                     loadWord(currentIndex - 1);
@@ -210,6 +203,7 @@
                 }
             });
 
+            // Кнопка избранного
             $("#BtnFav").on("click", function () {
                 $.ajax({
                     type: "POST",
@@ -228,6 +222,7 @@
                 });
             });
 
+            // Кнопка воспроизведения
             $("#BtnSound").on("click", function () {
                 const word = $("#wordName").text().trim();
                 if (word) {
@@ -235,38 +230,32 @@
                 }
             });
 
-            document.getElementById("wordImage").addEventListener("click", function () {
-                const src = this.src;
-                if (!src) return;
+            // ======================
+            // ✅ Поддержка свайпа
+            // ======================
+            let touchStartX = 0;
+            let touchEndX = 0;
 
-                const modal = document.createElement("div");
-                modal.classList.add("image-overlay");
+            card.addEventListener("touchstart", function (e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
 
-                const img = document.createElement("img");
-                img.src = src;
-                img.classList.add("zoomed-image");
+            card.addEventListener("touchend", function (e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipeGesture();
+            }, { passive: true });
 
-                modal.appendChild(img);
-                document.body.appendChild(modal);
+            function handleSwipeGesture() {
+                const deltaX = touchEndX - touchStartX;
 
-                function closeModal() {
-                    modal.classList.add("fade-out");
-                    img.classList.add("zoom-out");
-
-                    setTimeout(() => {
-                        modal.remove();
-                    }, 250);
-                }
-
-                modal.addEventListener("click", closeModal);
-
-                document.addEventListener("keydown", function escListener(e) {
-                    if (e.key === "Escape") {
-                        closeModal();
-                        document.removeEventListener("keydown", escListener);
+                if (Math.abs(deltaX) > 50) {
+                    if (deltaX > 0 && currentIndex > 0) {
+                        loadWord(currentIndex - 1); // свайп вправо
+                    } else if (deltaX < 0 && currentIndex < words.length - 1) {
+                        loadWord(currentIndex + 1); // свайп влево
                     }
-                });
-            });
+                }
+            }
         }
 
         function loadWord(index) {
@@ -351,8 +340,6 @@
             // Оставляем только английские голоса
             const englishVoices = voices.filter(v => v.lang.toLowerCase().startsWith("en"));
 
-            console.log("English voices:", englishVoices.map(v => `${v.name} (${v.lang})`));
-
             const savedURI = localStorage.getItem("preferredVoiceURI");
 
             englishVoices.forEach((voice) => {
@@ -382,7 +369,6 @@
 
             speechSynthesis.cancel();
             speechSynthesis.speak(utterance);
-            console.log("Using voice:", currentVoice.name, currentVoice.voiceURI, currentVoice.lang);
         }
 
         function handleSessionExpired() {
@@ -393,25 +379,74 @@
         }
 
         setInterval(() => {
-            console.log("Checking auth at", new Date());
-
             fetch('/Account/Account/IsAuthenticated?ts=' + Date.now(), {
                 method: 'GET',
                 credentials: 'include'
             })
             .then(res => {
-                console.log("Auth status:", res.status);
                 if (res.status === 401) {
                     handleSessionExpired();
                 }
             })
             .catch(() => {
-                console.error("Auth check failed:", err);
                 toastr.error("@Localizer["LostConn"]");
                 setTimeout(() => {
                     window.location.href = "/Account/Account/Login";
                 }, 2000);
             });
         }, 30000);
+
+        // Кнопка с тестовым текстом для озвучки
+        document.getElementById("BtnTestVoice").addEventListener("click", function () {
+            if (!speechSupported || !currentVoice) {
+                return;
+            }
+
+            const testUtterance = new SpeechSynthesisUtterance("This is a test voice.");
+            testUtterance.voice = currentVoice;
+            testUtterance.lang = currentVoice.lang;
+
+            speechSynthesis.cancel();
+            speechSynthesis.speak(testUtterance);
+        });
+
+        // Кнопки для карточки (навигация, избранное и т.д.)
+        document.addEventListener("keydown", function (e) {
+            // Игнорируем, если фокус в input/textarea (если появятся позже)
+            const tag = e.target.tagName.toLowerCase();
+            if (tag === "input" || tag === "textarea") return;
+
+            switch (e.key) {
+                case "ArrowLeft":
+                    if (currentIndex > 0) {
+                        loadWord(currentIndex - 1);
+                    }
+                    break;
+
+                case "ArrowRight":
+                    if (currentIndex < words.length - 1) {
+                        loadWord(currentIndex + 1);
+                    }
+                    break;
+
+                case "f":
+                case "F":
+                    $("#BtnFav").trigger("click");
+                    break;
+
+                case "s":
+                case "S":
+                    const word = $("#wordName").text().trim();
+                    if (word) {
+                        speak(word);
+                    }
+                    break;
+
+                case " ":
+                    e.preventDefault(); // Чтобы не прокручивалась страница
+                    flipCard(document.getElementById("card"));
+                    break;
+            }
+        });
     </script>
 }
