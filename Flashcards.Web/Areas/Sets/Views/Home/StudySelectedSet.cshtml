@@ -98,13 +98,11 @@
     </a>
 </div>
 
-<button onclick="testVoice()">Test voice</button>
-
 @section Scripts {
     <script>
         function testVoice() {
             const voices = speechSynthesis.getVoices();
-            const voice = voices.find(v => v.lang === "en_GB"); // или "en_US", "en_IN" и т.п.
+            const voice = voices.find(v => v.lang === "en_GB") || voices.find(v => v.lang.startsWith("en"));
 
             if (!voice) {
                 console.warn("Voice not found.");
@@ -117,31 +115,28 @@
                 console.log("Using voice:", voice.name, voice.lang);
             }
         }
+
         const words = JSON.parse('@Html.Raw(Model.WordsJson)');
         let currentIndex = 0;
         let id = words[0].Id;
         const setId = words[0].SetId;
 
-        // Create a variable for current voice, default voice and get the card
         let speechSupported = false;
-        const defaultVoiceName = "Microsoft Hazel - English (United Kingdom)";
+        const defaultVoiceLang = "en_GB";
         const card = document.getElementById("card");
         let currentVoice = null;
 
         document.addEventListener("DOMContentLoaded", async function () {
-            // Проверка поддержки TTS (озвучки)
             if ('speechSynthesis' in window && typeof SpeechSynthesisUtterance !== "undefined") {
-                // Если поддерживается, показываем кнопку
                 document.getElementById("BtnSettings").style.display = "inline-block";
             } else {
-                // Если не поддерживается, скрываем кнопку выбора голоса и кнопку озвучки
                 document.getElementById("BtnSettings").style.display = "none";
                 document.getElementById("BtnSound").style.display = "none";
             }
 
             initFlipCard();
             await initSpeechSynthesis();
-            loadWord(currentIndex); // теперь currentVoice уже готов
+            loadWord(currentIndex);
         });
 
         if (typeof speechSynthesis !== 'undefined') {
@@ -151,14 +146,13 @@
             };
         }
 
-        // Обработчик выбора голоса
         document.getElementById("voiceSelect").addEventListener("change", function () {
-            const selectedName = this.value;
+            const selectedLang = this.value;
             const voices = speechSynthesis.getVoices();
-            const selectedVoice = voices.find(v => v.name === selectedName);
+            const selectedVoice = voices.find(v => v.lang === selectedLang);
 
             if (selectedVoice) {
-                localStorage.setItem("preferredVoiceName", selectedVoice.name);
+                localStorage.setItem("preferredVoiceLang", selectedVoice.lang);
                 currentVoice = selectedVoice;
             }
         });
@@ -198,28 +192,24 @@
                 isDragging = false;
             });
 
-            // Disable flip upon clicking on image
             if (wordImage) {
                 wordImage.addEventListener("click", function (e) {
                     e.stopPropagation();
                 });
             }
 
-            // Handle click on "Previous" buttons
             $("#BtnPrev, #BtnPrevMobile").on("click", function () {
                 if (currentIndex > 0) {
                     loadWord(currentIndex - 1);
                 }
             });
 
-            // Handle click on "Next" buttons
             $("#BtnNext, #BtnNextMobile").on("click", function () {
                 if (currentIndex < words.length - 1) {
                     loadWord(currentIndex + 1);
                 }
             });
 
-            // Handle click on "Favorite" button
             $("#BtnFav").on("click", function () {
                 $.ajax({
                     type: "POST",
@@ -227,7 +217,6 @@
                     data: { id: id, setId: setId },
                     success: function (res) {
                         console.log("Favorite result:", res);
-                        // Change background color based on favorite status
                         $("#BtnFav").css("color", res.isFavorite ? "gold" : "white");
                         words[currentIndex].IsFavorite = res.isFavorite;
                     },
@@ -246,7 +235,6 @@
                 }
             });
 
-            // Zoom image
             document.getElementById("wordImage").addEventListener("click", function () {
                 const src = this.src;
                 if (!src) return;
@@ -262,20 +250,16 @@
                 document.body.appendChild(modal);
 
                 function closeModal() {
-                    // Добавляем классы для анимации закрытия
                     modal.classList.add("fade-out");
                     img.classList.add("zoom-out");
 
-                    // Удаляем из DOM после завершения анимации
                     setTimeout(() => {
                         modal.remove();
-                    }, 250); // должно совпадать с самой медленной анимацией
+                    }, 250);
                 }
 
-                // Закрытие по клику
                 modal.addEventListener("click", closeModal);
 
-                // Закрытие по Esc
                 document.addEventListener("keydown", function escListener(e) {
                     if (e.key === "Escape") {
                         closeModal();
@@ -320,7 +304,6 @@
         }
 
         function flipCard(card) {
-            const wasFlipped = card.classList.contains("flipped");
             card.classList.toggle("flipped");
         }
 
@@ -348,7 +331,6 @@
             if ('speechSynthesis' in window && typeof SpeechSynthesisUtterance !== "undefined") {
                 speechSupported = true;
 
-                // Принудительно триггерим загрузку голосов
                 const dummy = new SpeechSynthesisUtterance('');
                 speechSynthesis.speak(dummy);
                 speechSynthesis.cancel();
@@ -362,35 +344,33 @@
             }
         }
 
-        // Populate settings for voice selection
         function populateVoiceList(voices) {
             const voiceSelect = document.getElementById("voiceSelect");
             voiceSelect.innerHTML = '';
 
             console.log("Available voices:", voices.map(v => `${v.name} (${v.lang})`));
 
-            const savedVoiceName = localStorage.getItem("preferredVoiceName");
-            let selectedVoiceName = savedVoiceName || defaultVoiceName;
+            const savedLang = localStorage.getItem("preferredVoiceLang");
+            let selectedLang = savedLang || defaultVoiceLang;
 
             voices.forEach((voice) => {
                 const option = document.createElement("option");
-                option.value = voice.name;
+                option.value = voice.lang;
                 option.textContent = `${voice.name} (${voice.lang})`;
                 voiceSelect.appendChild(option);
             });
 
-            const selectedVoice = voices.find(v => v.name === selectedVoiceName);
+            const selectedVoice = voices.find(v => v.lang === selectedLang);
 
             if (selectedVoice) {
-                voiceSelect.value = selectedVoice.name;
+                voiceSelect.value = selectedVoice.lang;
                 currentVoice = selectedVoice;
             } else {
                 currentVoice = voices[0];
-                voiceSelect.value = voices[0].name;
+                voiceSelect.value = voices[0].lang;
             }
         }
 
-        // TTS
         function speak(text) {
             if (!speechSupported || !currentVoice) return;
 
@@ -408,7 +388,6 @@
             }, 2000);
         }
 
-        // Optional: periodic session check
         setInterval(() => {
             console.log("Checking auth at", new Date());
 
@@ -429,6 +408,6 @@
                     window.location.href = "/Account/Account/Login";
                 }, 2000);
             });
-        }, 30000); // every 30 seconds
+        }, 30000);
     </script>
 }
