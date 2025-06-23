@@ -148,20 +148,6 @@
             };
         }
 
-        document.getElementById("BtnSettings").addEventListener("click", function (e) {
-            e.stopPropagation();
-            document.getElementById("settingsMenu").classList.toggle("hidden");
-        });
-
-        // Закрыть меню настроек, если клик вне его
-        document.addEventListener("click", function (event) {
-            const menu = document.getElementById("settingsMenu");
-            const settingsBtn = document.getElementById("BtnSettings");
-            if (!menu.contains(event.target) && !settingsBtn.contains(event.target)) {
-                menu.classList.add("hidden");
-            }
-        });
-
         // Обработчик выбора голоса
         document.getElementById("voiceSelect").addEventListener("change", function () {
             const selectedName = this.value;
