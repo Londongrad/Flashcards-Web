@@ -104,23 +104,19 @@
     <script>
         function testVoice() {
             const voices = speechSynthesis.getVoices();
-            console.log("Available voices:", voices.map(v => v.name ));
-
-            const voice = speechSynthesis.getVoices().find(v => v.name.includes("UK"));
+            const voice = voices.find(v => v.lang === "en_GB"); // или "en_US", "en_IN" и т.п.
 
             if (!voice) {
                 console.warn("Voice not found.");
-                return;
+            } else {
+                const utter = new SpeechSynthesisUtterance("This is a test with British English.");
+                utter.voice = voice;
+                speechSynthesis.cancel();
+                speechSynthesis.speak(utter);
+
+                console.log("Using voice:", voice.name, voice.lang);
             }
-
-            const utter = new SpeechSynthesisUtterance("Testing selected voice.");
-            utter.voice = voice;
-            speechSynthesis.cancel();
-            speechSynthesis.speak(utter);
-
-            console.log("Testing with voice:", voice.name, voice.lang);
         }
-
         const words = JSON.parse('@Html.Raw(Model.WordsJson)');
         let currentIndex = 0;
         let id = words[0].Id;
