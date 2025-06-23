@@ -33,6 +33,9 @@
                 <select id="voiceSelect" class="form-select">
                     <!-- Опции будут добавлены динамически -->
                 </select>
+                <button id="BtnTestVoice" class="btn btn-secondary mt-3">
+                    🔊 Test voice
+                </button>
             </div>
         </div>
     </div>
@@ -100,6 +103,19 @@
 
 @section Scripts {
     <script>
+        document.getElementById("BtnTestVoice").addEventListener("click", function () {
+            if (!speechSupported || !currentVoice) {
+                alert("Speech synthesis not supported or voice not selected.");
+                return;
+            }
+
+            const testUtterance = new SpeechSynthesisUtterance("This is a test voice.");
+            testUtterance.voice = currentVoice;
+            testUtterance.lang = currentVoice.lang;
+
+            speechSynthesis.cancel();
+            speechSynthesis.speak(testUtterance);
+        });
         const words = JSON.parse('@Html.Raw(Model.WordsJson)');
         let currentIndex = 0;
         let id = words[0].Id;
@@ -358,6 +374,7 @@
 
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.voice = currentVoice;
+            utterance.lang = currentVoice.lang;
 
             speechSynthesis.cancel();
             speechSynthesis.speak(utterance);
