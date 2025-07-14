@@ -26,7 +26,7 @@ namespace Flashcards.Web.Middleware
                 "/lib"
             };
 
-            if (path != null && excludedPaths.Any(p => path.StartsWith(p)))
+            if (path != null && excludedPaths.Any(path.StartsWith))
             {
                 await _next(context);
                 return;

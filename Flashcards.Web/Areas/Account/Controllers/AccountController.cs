@@ -250,25 +250,6 @@ namespace Flashcards.Web.Areas.Account.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult ChangeLanguage(string lang)
-        {
-            if (lang != null)
-            {
-                var culture = new CultureInfo(lang);
-                CultureInfo.CurrentCulture = culture;
-                CultureInfo.CurrentUICulture = culture;
-
-                // Добавляем cookie, чтобы запомнить выбранный язык
-                Response.Cookies.Append(
-                    ".AspNetCore.Culture",
-                    $"c={lang}|uic={lang}",
-                    new CookieOptions { Expires = DateTime.UtcNow.AddYears(1) });
-            }
-
-            return Redirect(Request.Headers.Referer.ToString());
-        }
-
         #endregion [ Delete account ]
 
         #region [ Change avatar ]
@@ -434,6 +415,29 @@ namespace Flashcards.Web.Areas.Account.Controllers
         }
 
         #endregion [ Change username ] 
+
+        #region [ Change language ]
+
+        [HttpPost]
+        public IActionResult ChangeLanguage(string lang)
+        {
+            if (lang != null)
+            {
+                var culture = new CultureInfo(lang);
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
+
+                // Добавляем cookie, чтобы запомнить выбранный язык
+                Response.Cookies.Append(
+                    ".AspNetCore.Culture",
+                    $"c={lang}|uic={lang}",
+                    new CookieOptions { Expires = DateTime.UtcNow.AddYears(1) });
+            }
+
+            return Redirect(Request.Headers.Referer.ToString());
+        }
+
+        #endregion [ Change language ]
 
         #endregion [ UserActions ]
 
