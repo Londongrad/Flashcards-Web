@@ -13,10 +13,8 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
         #region [ Arrange ]
 
         var repo = new SetRepository(Context);
-        var user1Id = "user1";
-        var user2Id = "user2";
-        var set1 = new Set(1, "Set 1", user1Id);
-        var set2 = new Set(2, "Set 2", user2Id);
+        var set1 = new Set(1, "Set 1", SeedHelper.user1_Id);
+        var set2 = new Set(2, "Set 2", SeedHelper.user2_Id);
 
         #endregion [ Arrange ]
 
@@ -24,7 +22,7 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
 
         await repo.AddAsync(set1);
         await repo.AddAsync(set2);
-        var result = await repo.GetAllSummariesAsync(user2Id);
+        var result = await repo.GetAllSummariesAsync(SeedHelper.user2_Id);
 
         #endregion [ Act ]
 
@@ -41,10 +39,8 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
         #region [ Arrange ]
 
         var repo = new SetRepository(Context);
-        var user1Id = "user1";
-        var user2Id = "user2";
-        var set1 = new Set(1, "Set 1", user1Id);
-        var set2 = new Set(2, "Set 2", user2Id);
+        var set1 = new Set(1, "Set 1", SeedHelper.user1_Id);
+        var set2 = new Set(2, "Set 2", SeedHelper.user2_Id);
 
         #endregion [ Arrange ]
 
@@ -52,7 +48,7 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
 
         await repo.AddAsync(set1);
         await repo.AddAsync(set2);
-        var result = await repo.GetAsync(1, user1Id);
+        var result = await repo.GetAsync(1, SeedHelper.user1_Id);
 
         #endregion [ Act ]
 
@@ -70,9 +66,8 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
         #region [ Arrange ]
 
         var repo = new SetRepository(Context);
-        var userId = "user1";
-        var set1 = new Set(1, "Set 1", userId);
-        var set2 = new Set(2, "Set 2", userId);
+        var set1 = new Set(1, "Set 1", SeedHelper.user1_Id);
+        var set2 = new Set(2, "Set 2", SeedHelper.user1_Id);
 
         #endregion [ Arrange ]
 
@@ -80,8 +75,8 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
 
         await repo.AddAsync(set1);
         await repo.AddAsync(set2);
-        await repo.DeleteAsync(1, userId);
-        var remaining = await repo.GetAsync(2, userId);
+        await repo.DeleteAsync(1, SeedHelper.user1_Id);
+        var remaining = await repo.GetAsync(2, SeedHelper.user1_Id);
 
         #endregion [ Act ]
 
@@ -99,9 +94,8 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
         #region [ Arrange ]
 
         var repo = new SetRepository(Context);
-        var userId = "user1";
-        var originalSet = new Set(1, "Old Name", userId);
-        var updatedSet = new Set(1, "New Name", userId);
+        var originalSet = new Set(1, "Old Name", SeedHelper.user1_Id);
+        var updatedSet = new Set(1, "New Name", SeedHelper.user1_Id);
 
         #endregion [ Arrange ]
 
@@ -109,7 +103,7 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
 
         await repo.AddAsync(originalSet);
         await repo.UpdateAsync(updatedSet);
-        var result = await repo.GetAsync(1, userId);
+        var result = await repo.GetAsync(1, SeedHelper.user1_Id);
 
         #endregion [ Act ]
 
@@ -127,15 +121,14 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
         #region [ Arrange ]
 
         var repo = new SetRepository(Context);
-        var userId = "user1";
-        var set = new Set(1, "Set", userId);
+        var set = new Set(1, "Set", SeedHelper.user1_Id);
 
         #endregion [ Arrange ]
 
         #region [ Act ]
 
         await repo.AddAsync(set);
-        var result = await repo.IsNotUnique("Set", 0, userId);
+        var result = await repo.IsNotUnique("Set", 0, SeedHelper.user1_Id);
 
         #endregion [ Act ]
 
@@ -152,9 +145,8 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
         #region [ Arrange ]
 
         var repo = new SetRepository(Context);
-        var userId = "user1";
-        var set1 = new Set(1, "Set", userId);
-        var set2 = new Set(2, "Set", userId);
+        var set1 = new Set(1, "Set", SeedHelper.user1_Id);
+        var set2 = new Set(2, "Set", SeedHelper.user1_Id);
 
         #endregion [ Arrange ]
 
@@ -162,7 +154,7 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
 
         await repo.AddAsync(set1);
         await repo.AddAsync(set2);
-        var result = await repo.IsNotUnique("Set", 1, userId);
+        var result = await repo.IsNotUnique("Set", 1, SeedHelper.user1_Id);
 
         #endregion [ Act ]
 
@@ -179,10 +171,9 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
         #region [ Arrange ]
 
         var repo = new SetRepository(Context);
-        var userId = "user1";
-        var set1 = new Set(1, "Set 1", userId);
-        var set2 = new Set(2, "Set 2", userId);
-        var set3 = new Set(3, "Set 3", userId);
+        var set1 = new Set(1, "Set 1", SeedHelper.user1_Id);
+        var set2 = new Set(2, "Set 2", SeedHelper.user1_Id);
+        var set3 = new Set(3, "Set 3", SeedHelper.user1_Id);
 
         #endregion [ Arrange ]
 
@@ -191,8 +182,8 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
         await repo.AddAsync(set1);
         await repo.AddAsync(set2);
         await repo.AddAsync(set3);
-        await repo.DeleteAllAsync(userId);
-        var remaining = await repo.GetAllSummariesAsync(userId);
+        await repo.DeleteAllAsync(SeedHelper.user1_Id);
+        var remaining = await repo.GetAllSummariesAsync(SeedHelper.user1_Id);
 
         #endregion [ Act ]
 
@@ -208,7 +199,6 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
     {
         #region [ Arrange ]
 
-        var userId = "user1";
         SeedHelper.SeedData(Context);
 
         var repo = new SetRepository(Context);
@@ -217,7 +207,7 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
 
         #region [ Act ]
 
-        var result = await repo.GetFavoriteAsync(1, userId);
+        var result = await repo.GetFavoriteAsync(1, SeedHelper.user1_Id);
 
         #endregion [ Act ]
 
@@ -234,21 +224,20 @@ public class SetRepositoryTests : SqliteIntegrationTestBase
     {
         #region [ Arrange ]
 
-        var userId = "user1";
         SeedHelper.SeedData(Context);
 
         var repo = new SetRepository(Context);
 
         List<Word> expectedWords = [
-            new Word(1, "Word 1", "Definition 1", "", 1),
-            new Word(4, "Word 4", "Definition 4", "", 1)
+            new Word(1, "Word 1", "Definition 1", 1),
+            new Word(4, "Word 4", "Definition 4", 1)
         ];
 
         #endregion [ Arrange ]
 
         #region [ Act ]
 
-        var result = await repo.GetWithWordsAsync(1, userId);
+        var result = await repo.GetWithWordsAsync(1, SeedHelper.user1_Id);
 
         #endregion [ Act ]
 

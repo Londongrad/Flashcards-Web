@@ -1,65 +1,136 @@
-﻿//using Flashcards.Domain.Entities;
-//using Flashcards.Infrastructure.Repositories;
-//using FluentAssertions;
+﻿using Flashcards.Domain.Entities;
+using Flashcards.Infrastructure.Repositories;
+using Flashcards.IntegrationTests.Base;
+using FluentAssertions;
 
-//namespace Flashcards.Tests;
+namespace Flashcards.IntegrationTests;
 
-//public class WordRepositoryTests
-//{
-//    [Fact]
-//    public async Task AddAsync_ReturnsWord()
-//    {
-//        var repo = CreateWordRep("user1");
-//        await repo.AddAsync(new Word(1, "Word 1", "Definition 1", "", 999));
+public class WordRepositoryTests : SqliteIntegrationTestBase
+{
+    [Fact]
+    public async Task AddAsync_ReturnsWord()
+    {
+        #region [ Arrange ]
 
-//        var result = await repo.GetAsync(1);
-//        result.Should().NotBeNull();
-//        result?.Name.Should().Be("Word 1");
-//    }
+        SeedHelper.SeedData(Context);
+        var repo = new WordRepository(Context);
+        var word = new Word(7, "Word 7", "Definition 7", 3);
 
-//    [Fact]
-//    public async Task DeleteAsync_RemovesWord()
-//    {
-//        var repo = CreateWordRep("user1");
-//        await repo.AddAsync(new Word(1, "Word 1", "Definition 1", "", 999));
+        #endregion [ Arrange ]
 
-//        await repo.DeleteAsync(1);
-//        var result = await repo.GetAsync(1);
-//        result.Should().BeNull();
-//    }
+        #region [ Act ]
 
-//    [Fact]
-//    public async Task UpdateAsync_ChangesName()
-//    {
-//        var repo = CreateWordRep("user1");
+        await repo.AddAsync(word);
+        var result = await repo.GetAsync(word.Id, word.SetId, SeedHelper.user2_Id);
 
-//        var word1 = new Word(1, "Word", "Definition 1", "", 999);
-//        var word2 = new Word(1, "New Word", "Definition 2", "", 999);
+        #endregion [ Act ]
 
-//        await repo.AddAsync(word1);
-//        await repo.UpdateAsync(word2);
+        #region [ Assert ]
 
-//        var result = await repo.GetAsync(1);
-//        result!.Name.Should().Be("New Word");
-//    }
+        result.Should().NotBeNull();
+        result?.Name.Should().Be("Word 7");
 
-//    [Fact]
-//    public async Task IsNotUnique_ReturnsTrueIfNameExists()
-//    {
-//        var repo = CreateWordRep("user1");
+        #endregion [ Assert ]
+    }
 
-//        await repo.AddAsync(new Word(1, "Word 1", "Definition 1", "", 999));
-//        await repo.AddAsync(new Word(2, "Word 2", "Definition 2", "", 999));
+    [Fact]
+    public async Task DeleteAsync_RemovesWord()
+    {
+        #region [ Arrange ]
 
-//        var result1 = await repo.IsNotUnique("Word 1", 0);
-//        result1.Should().BeFalse();
+        SeedHelper.SeedData(Context);
+        var repo = new WordRepository(Context);
+        var word = new Word(6, "Word 6", "Definition 6", 3);
 
-//        var result2 = await repo.IsNotUnique("Word 2", 2);
-//        result2.Should().BeFalse();
-//    }
+        #endregion [ Arrange ]
 
-//    private static WordRepository CreateWordRep(string userId)
-//    {
-//        return new WordRepository(DatabaseTests.CreateSqliteDbContext(), DatabaseTests.MockHttpContextAccessor(userId));
-//    }
-//}
+        #region [ Act ]
+
+        await repo.DeleteAsync(6);
+        var result = await repo.GetAsync(word.Id, word.SetId, SeedHelper.user2_Id);
+
+        #endregion [ Act ]
+
+        #region [ Assert ]
+
+        result.Should().BeNull();
+
+        #endregion [ Assert ]
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ChangesName()
+    {
+        #region [ Arrange ]
+
+        SeedHelper.SeedData(Context);
+        var repo = new WordRepository(Context);
+        var newWord = new Word(1, "New Word", "Definition 2", 1);
+
+        #endregion [ Arrange ]
+
+        #region [ Act ]
+
+        await repo.UpdateAsync(newWord);
+        var result = await repo.GetAsync(newWord.Id, newWord.SetId, SeedHelper.user1_Id);
+
+        #endregion [ Act ]
+
+        #region [ Assert ]
+
+        result.Should().NotBeNull();
+        result.Name.Should().Be("New Word");
+        result.Definition.Should().Be("Definition 2");
+
+        #endregion [ Assert ]
+    }
+
+    [Fact]
+    public async Task IsNotUnique_ReturnsTrueIfNameExists_AddAction()
+    {
+        #region [ Arrange ]
+
+        SeedHelper.SeedData(Context);
+        var repo = new WordRepository(Context);
+        var newWord = new Word(1, "Word 1", "Definition 1", 1);
+
+        #endregion [ Arrange ]
+
+        #region [ Act ]
+
+        var result = await repo.IsNotUnique(newWord.Name, 0, SeedHelper.user1_Id);
+
+        #endregion [ Act ]
+
+        #region [ Assert ]
+
+        result.Should().BeTrue();
+
+        #endregion [ Assert ]
+    }
+
+    [Fact]
+    public async Task IsNotUnique_ReturnsTrueIfDuplicateExists_UpdateAction()
+    {
+        #region [ Arrange ]
+
+        SeedHelper.SeedData(Context);
+        var repo = new WordRepository(Context);
+        var newWord = new Word(10, "Word 1", "Definition 1", 1);
+
+        #endregion [ Arrange ]
+
+        #region [ Act ]
+
+        await repo.AddAsync(newWord);
+        var result = await repo.IsNotUnique(newWord.Name, newWord.Id, SeedHelper.user1_Id);
+
+        #endregion [ Act ]
+
+        #region [ Assert ]
+
+        result.Should().BeTrue();
+
+        #endregion [ Assert ]
+    }
+}

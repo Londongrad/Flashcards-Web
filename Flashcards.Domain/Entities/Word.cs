@@ -1,6 +1,6 @@
 ﻿namespace Flashcards.Domain.Entities
 {
-    public class Word(int id, string name, string definition, string imagePath, int setId, bool isFavorite = false, bool isLastWord = false) : EntityBase(id, name)
+    public class Word(int id, string name, string definition, int setId, string imagePath = "", bool isFavorite = false, bool isLastWord = false) : EntityBase(id, name)
     {
 
         public string Definition { get; set; } = definition;

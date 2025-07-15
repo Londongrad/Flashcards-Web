@@ -36,6 +36,7 @@ namespace Flashcards.Infrastructure.Repositories
         public async Task<Word?> GetAsync(int id, int setId, string userId)
         {
             return await _dbContext.Words
+                .AsNoTracking()
                 .Include(w => w.Set)
                 .Where(w => w.Id == id &&
                             w.SetId == setId &&
