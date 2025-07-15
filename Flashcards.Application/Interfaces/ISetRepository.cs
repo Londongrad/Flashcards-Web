@@ -7,7 +7,11 @@ namespace Flashcards.Application.Interfaces
     {
         /// <summary>Checks whether a set name is not unique. <br/>
         /// If id == 0: check if any set with the same name exists. <br/>
-        /// If id != 0: check if another set with the same name exists (used during updates).</summary>
+        /// If id != 0: check if another set with the same name exists (used during updates).
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> if name is not unique; otherwise, <c>false</c>/>
+        /// </returns>
         Task<bool> IsNotUnique(string name, int id, string userId);
 
         /// <summary>Updates the name of a set if it belongs to the current user.</summary>
