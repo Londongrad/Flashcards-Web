@@ -10,8 +10,8 @@
 Решение работает с SqLite и по возможности разбито на регионы для лучшей навигации. В приложении предусмотрена единственная сессия на пользователя. Следующий вход обнуляет предыдущий. 
 
 # **SCREENSHOTS**
-
-![Authorization menu.](https://github.com/user-attachments/assets/ebc644c4-0ed4-47d5-b0ec-105f7dadfb8c)
+Authorization menu.
+![](https://github.com/user-attachments/assets/ebc644c4-0ed4-47d5-b0ec-105f7dadfb8c)
 
 ![All user sets. User can select one of his created sets or create a new one using modal window.](https://github.com/user-attachments/assets/bfc4ccf9-def6-4120-b403-cf0f5544b6ac)
 
