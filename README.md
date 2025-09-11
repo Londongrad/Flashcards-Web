@@ -14,8 +14,7 @@
 ![Authorization menu.](<img width="1920" height="884" alt="image" src="https://github.com/user-attachments/assets/ebc644c4-0ed4-47d5-b0ec-105f7dadfb8c" />
 )
 
-![All user sets. User can select one of his created sets or create a new one using modal window.](<img width="1914" height="867" alt="image" src="https://github.com/user-attachments/assets/bfc4ccf9-def6-4120-b403-cf0f5544b6ac" />
-)
+![All user sets. User can select one of his created sets or create a new one using modal window.](https://github.com/user-attachments/assets/bfc4ccf9-def6-4120-b403-cf0f5544b6ac")
 
 ![One patrticular selected set. User can delete/rename set or add/delete/update words in this set. In addition user can choose to study it.](<img width="1920" height="869" alt="image" src="https://github.com/user-attachments/assets/6fe6596d-2e27-4b6c-ba81-756871265377" />
 )
