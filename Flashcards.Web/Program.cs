@@ -19,7 +19,7 @@ namespace Flashcards.Web
 
             builder.Services.AddDbContext<ApplicationDbContext>
                 (
-                    options => options.UseSqlServer(builder.Configuration.GetConnectionString("Host"))
+                    options => options.UseSqlite(builder.Configuration.GetConnectionString("SQLite"))
                 );
 
             // Настройка локализации
@@ -64,6 +64,13 @@ namespace Flashcards.Web
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var app = builder.Build();
+
+            // Создаем бд
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                context.Database.EnsureCreated();
+            }
 
             // Поддерживаемые культуры
             var supportedCultures = new[] { "en-US", "ru-RU" };
