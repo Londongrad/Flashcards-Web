@@ -1,7 +1,7 @@
 # 💻 FLASHCARDS-WEB
 
 A completed diploma web application for learning foreign languages.  
-Built with **ASP.NET Core MVC** following Clean Architecture principles.
+Built with **ASP.NET Core MVC** following Clean Architecture(First attempt. So, not perfect) principles.
 
 ---
 
