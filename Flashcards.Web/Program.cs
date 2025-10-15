@@ -26,7 +26,11 @@ namespace Flashcards.Web
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
             builder.Services.AddControllersWithViews()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-                .AddDataAnnotationsLocalization();
+                .AddDataAnnotationsLocalization(options =>
+                {
+                    options.DataAnnotationLocalizerProvider = (type, factory) =>
+                        factory.Create(typeof(SharedResource));
+                });
 
             // Add services to the container.
             // Identity system
@@ -51,12 +55,6 @@ namespace Flashcards.Web
                 options.SlidingExpiration = true;
             });
 
-            builder.Services.AddControllersWithViews()
-                .AddDataAnnotationsLocalization(options =>
-                {
-                    options.DataAnnotationLocalizerProvider = (type, factory) =>
-                        factory.Create(typeof(SharedResource));
-                }); ;
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<ISetRepository, SetRepository>();
             builder.Services.AddScoped<IWordRepository, WordRepository>();
